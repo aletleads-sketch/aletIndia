@@ -102,7 +102,7 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
         </ul>
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] space-y-16 px-5 py-16 sm:px-8 md:space-y-24 md:py-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] space-y-16 overflow-x-clip px-5 py-16 sm:px-8 md:space-y-24 md:py-24 xl:px-12">
         {detail.sections.map((section, index) => {
           const flip = index % 2 === 1;
           return (
