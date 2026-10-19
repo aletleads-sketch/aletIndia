@@ -339,18 +339,99 @@ export const serviceDetails: Record<string, ServiceDetail> = {
   },
 };
 
+export type ServiceLayout = "split" | "immersive" | "editorial";
+
+export type ServiceVisual = {
+  layout: ServiceLayout;
+  theme: [string, string];
+  gallery: [string, string, string];
+  screens?: string[];
+  stat: { value: string; label: string };
+};
+
+export const serviceVisuals: Record<string, ServiceVisual> = {
+  "mobile-apps": {
+    layout: "split",
+    theme: ["#4f46e5", "#06b6d4"],
+    gallery: ["/images/pages/phone-apps.jpg", "/images/mobile-dev.jpg", "/images/pages/developers.jpg"],
+    screens: [
+      "/images/work/tajika-1.png",
+      "/images/QUICK-SAWARI.png",
+      "/images/work/tajika-2.png",
+      "/images/Refult.png",
+      "/images/work/tajika-3.png",
+    ],
+    stat: { value: "2", label: "Platforms, one team" },
+  },
+  "cross-platform": {
+    layout: "immersive",
+    theme: ["#0d9488", "#22d3ee"],
+    gallery: ["/images/pages/developers.jpg", "/images/services/cross-platform.jpg", "/images/pages/code.jpg"],
+    screens: ["/images/work/app-1.png", "/images/QUICK-SAWARI-2.png", "/images/work/app-3.png"],
+    stat: { value: "1", label: "Codebase for every device" },
+  },
+  "web-apps": {
+    layout: "editorial",
+    theme: ["#2563eb", "#7c3aed"],
+    gallery: ["/images/services/web-apps.jpg", "/images/pages/typing.jpg", "/images/pages/developer-woman.jpg"],
+    screens: ["/images/ALL-DEIVERIES.png"],
+    stat: { value: "100%", label: "Responsive builds" },
+  },
+  "graphic-design": {
+    layout: "split",
+    theme: ["#db2777", "#f97316"],
+    gallery: ["/images/services/graphic-design.jpg", "/images/pages/design-desk.jpg", "/images/pages/brainstorm.jpg"],
+    stat: { value: "2017", label: "Designing brands since" },
+  },
+  "ui-design": {
+    layout: "immersive",
+    theme: ["#7c3aed", "#ec4899"],
+    gallery: ["/images/services/ui-design.jpg", "/images/pages/women-coding.jpg", "/images/pages/meeting.jpg"],
+    screens: ["/images/GURI-HOUSES.png", "/images/REFULT-2.png", "/images/GURI-HOUSES-2.png"],
+    stat: { value: "Figma", label: "Prototype before code" },
+  },
+  "digital-marketing": {
+    layout: "editorial",
+    theme: ["#ea580c", "#eab308"],
+    gallery: ["/images/pages/social-apps.jpg", "/images/services/digital-marketing.jpg", "/images/pages/presentation.jpg"],
+    stat: { value: "SEO", label: "SMM · PPC · SMO" },
+  },
+  "ai-data": {
+    layout: "split",
+    theme: ["#0891b2", "#8b5cf6"],
+    gallery: ["/images/pages/ai-abstract.jpg", "/images/services/ai-data.jpg", "/images/industries/ai.jpg"],
+    stat: { value: "24/7", label: "AI assistants" },
+  },
+  salesforce: {
+    layout: "immersive",
+    theme: ["#0284c7", "#38bdf8"],
+    gallery: ["/images/pages/team-meeting.jpg", "/images/industries/salesforce.jpg", "/images/industries/crm.jpg"],
+    stat: { value: "360°", label: "Customer view" },
+  },
+  gaming: {
+    layout: "editorial",
+    theme: ["#16a34a", "#a855f7"],
+    gallery: ["/images/pages/controller.jpg", "/images/services/gaming.jpg", "/images/pages/retro-gaming.jpg"],
+    screens: ["/images/sniper-game.png"],
+    stat: { value: "Unity", label: "& Unreal Engine" },
+  },
+};
+
 export const aboutApproach = [
   {
     title: "Focusing on your needs",
     body: "Our developers channel their skills into building products that focus on your business requirements and empower your business functions.",
+    image: "/images/pages/brainstorm.jpg",
   },
   {
     title: "Apps for every audience",
     body: "We build apps for your specific audience — niche, global, or local — so your product reaches the right people.",
+    image: "/images/pages/phone-apps.jpg",
   },
   {
     title: "Aesthetic appeal",
     body: "We keep design consistent across every platform, so your app looks and feels great on Android, iOS, and the web.",
+    image: "/images/pages/design-desk.jpg",
   },
 ];
 
@@ -400,7 +481,7 @@ export const blogPosts = [
     excerpt:
       "UI/UX plays a critical role in an app's success. Here are the design trends shaping intuitive, beautiful mobile apps this year.",
     href: "https://www.aletindia.com/latest-ui-ux-trends-for-mobile-apps-in-2025/",
-    image: "/images/services/graphic-design.jpg",
+    image: "/images/pages/design-desk.jpg",
     tag: "Design",
   },
   {
@@ -409,7 +490,7 @@ export const blogPosts = [
     excerpt:
       "Whether it's an on-demand service, an e-commerce platform, or a social tool, here's how startups take an app idea to launch.",
     href: "https://www.aletindia.com/startup-app-development-a-step-by-step-guide-to-launching-your-idea/",
-    image: "/images/services/mobile-apps.jpg",
+    image: "/images/pages/brainstorm.jpg",
     tag: "Startups",
   },
   {
@@ -436,7 +517,7 @@ export const blogPosts = [
     excerpt:
       "Mobile apps are a strategic investment. Here's what drives app development costs in 2025 and how to plan your budget.",
     href: "https://www.aletindia.com/app-development-costs-in-2025-what-to-expect/",
-    image: "/images/services/web-apps.jpg",
+    image: "/images/pages/typing.jpg",
     tag: "Business",
   },
   {
@@ -445,7 +526,7 @@ export const blogPosts = [
     excerpt:
       "Mobile apps are now a strategic necessity. Learn how businesses use apps to boost engagement and return on investment.",
     href: "https://www.aletindia.com/how-mobile-apps-help-boost-business-roi-in-2025/",
-    image: "/images/services/digital-marketing.jpg",
+    image: "/images/pages/presentation.jpg",
     tag: "Business",
   },
   {
@@ -463,7 +544,7 @@ export const blogPosts = [
     excerpt:
       "5G is more than faster internet — it's changing how mobile apps are built, experienced, and scaled.",
     href: "https://www.aletindia.com/the-role-of-5g-in-shaping-the-future-of-mobile-apps/",
-    image: "/images/industries/ai.jpg",
+    image: "/images/pages/phone-mockup.jpg",
     tag: "Technology",
   },
   {
@@ -472,7 +553,7 @@ export const blogPosts = [
     excerpt:
       "Planning to launch an app? One critical decision is whether to build a progressive web app or a native app.",
     href: "https://www.aletindia.com/progressive-web-apps-vs-native-apps-which-is-better-for-your-business/",
-    image: "/images/industries/logistics.jpg",
+    image: "/images/pages/code.jpg",
     tag: "Development",
   },
 ];

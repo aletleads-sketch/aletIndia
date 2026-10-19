@@ -105,10 +105,10 @@ function Hero() {
               <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
             </div>
             <Image
-              src="/images/banner.png"
-              alt="Web, mobile and technology services"
-              width={980}
-              height={420}
+              src="/images/hero-technologies.jpg"
+              alt="AI, cloud, web, mobile and modern technology services"
+              width={1280}
+              height={720}
               priority
               className="h-auto w-full"
             />
@@ -119,7 +119,7 @@ function Hero() {
             alt="Tajika mobile app"
             width={280}
             height={560}
-            className="float absolute -bottom-20 -left-4 w-28 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:w-36"
+            className="float absolute -bottom-24 -left-6 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-left-16 sm:w-28"
             style={{ ["--tilt" as string]: "-6deg" }}
           />
           <Image
@@ -127,7 +127,7 @@ function Hero() {
             alt="Cricket FabtasyBuzz mobile app"
             width={280}
             height={560}
-            className="float float-b absolute -right-2 -bottom-24 w-28 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:w-36"
+            className="float float-b absolute -right-4 -bottom-28 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-right-14 sm:w-28"
             style={{ ["--tilt" as string]: "6deg" }}
           />
 
@@ -150,7 +150,7 @@ function Hero() {
             </span>
           </div>
 
-          <div className="float float-b absolute top-[38%] -left-8 z-10 hidden items-center gap-3 rounded-2xl border border-white/15 bg-night-2/95 px-4 py-3 shadow-[0_20px_40px_-10px_rgb(0_0_0_/_0.6)] backdrop-blur sm:flex">
+          <div className="float float-b absolute -bottom-14 left-[30%] z-10 hidden items-center gap-3 rounded-2xl border border-white/15 bg-night-2/95 px-4 py-3 shadow-[0_20px_40px_-10px_rgb(0_0_0_/_0.6)] backdrop-blur sm:flex">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-white">
               <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
                 <path

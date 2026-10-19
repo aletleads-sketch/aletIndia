@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 export function Eyebrow({ children, light = false }: { children: ReactNode; light?: boolean }) {
   return (
@@ -24,6 +25,41 @@ export function Arrow() {
         fill="none"
         stroke="currentColor"
         strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function Photo({
+  src,
+  alt = "",
+  className = "",
+  priority = false,
+  sizes = "(max-width: 1024px) 100vw, 50vw",
+}: {
+  src: string;
+  alt?: string;
+  className?: string;
+  priority?: boolean;
+  sizes?: string;
+}) {
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className="object-cover" />
+    </div>
+  );
+}
+
+export function Check({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path
+        d="m5 12.5 4.5 4.5L19 7.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

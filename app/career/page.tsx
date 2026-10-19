@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/page-hero";
+import { HeroTitle, PhotoHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
-import { Arrow, Eyebrow } from "@/components/ui";
+import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { company } from "@/lib/content";
 import { careers } from "@/lib/pages";
 
@@ -25,17 +25,37 @@ const perks = [
   },
 ];
 
+const life = [
+  { src: "/images/pages/coworking.jpg", className: "h-72" },
+  { src: "/images/pages/team-meeting.jpg", className: "h-96" },
+  { src: "/images/pages/developer-woman.jpg", className: "h-80" },
+  { src: "/images/pages/brainstorm.jpg", className: "h-64" },
+  { src: "/images/pages/presentation.jpg", className: "h-72" },
+  { src: "/images/pages/team-laptops.jpg", className: "h-64" },
+];
+
+const hiringSteps = [
+  { title: "Send your resume", body: `Email ${careers.email} with your resume and the role you're interested in.` },
+  { title: "Meet the team", body: "A technical conversation with our leads about your work, skills, and goals." },
+  { title: "Join ALET", body: "Get your offer, meet your project team, and start building real products." },
+];
+
 export default function CareerPage() {
   return (
     <>
-      <PageHero
+      <PhotoHero
         crumb="Career"
-        title="Build your career at"
-        accent="ALET India"
-        intro="Join a team of developers, designers, and marketers turning ideas into products people love."
-        actions={false}
+        image="/images/pages/women-coding.jpg"
+        imageAlt="Developers working together at ALET India"
+        align="center"
+        className="min-h-[40rem] lg:min-h-[46rem]"
       >
-        <div className="rise d3 mt-9 flex justify-center">
+        <HeroTitle title="Build your career at" accent="ALET India" />
+        <p className="rise d2 mx-auto mt-6 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">
+          Join a team of developers, designers, and marketers turning ideas into products people
+          love.
+        </p>
+        <div className="rise d3 mt-9 flex flex-wrap justify-center gap-3">
           <a
             href={`mailto:${careers.email}`}
             className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_40px_-8px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
@@ -43,24 +63,40 @@ export default function CareerPage() {
             Send your resume
             <Arrow />
           </a>
+          <a
+            href="#openings"
+            className="glass inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/15"
+          >
+            See openings
+          </a>
         </div>
-      </PageHero>
+      </PhotoHero>
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-20 xl:px-12">
-        <ul className="grid gap-5 md:grid-cols-3">
+      <section className="mx-auto grid w-full max-w-[92rem] gap-5 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[1.1fr_0.9fr] xl:px-12">
+        <Reveal className="group relative min-h-[26rem] overflow-hidden rounded-[2.5rem] text-white">
+          <div className="zoom-img absolute inset-0">
+            <Photo src="/images/pages/developers.jpg" className="h-full" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-night via-night/40 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-8 sm:p-10">
+            <Eyebrow light>Why ALET</Eyebrow>
+            <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
+              Grow by building <span className="text-gradient">real products</span>
+            </h2>
+          </div>
+        </Reveal>
+        <ul className="grid gap-5">
           {perks.map((perk, index) => (
             <li key={perk.title}>
               <Reveal delay={index * 90} className="h-full">
-                <article className="gradient-border lift h-full rounded-3xl bg-white p-8 ring-1 ring-line shadow-[0_18px_50px_-35px_rgb(30_27_75_/_0.35)]">
-                  <span className="bg-brand-gradient flex h-12 w-12 items-center justify-center rounded-2xl text-base font-extrabold text-white">
+                <article className="lift flex h-full items-start gap-5 rounded-[2rem] bg-surface p-7 ring-1 ring-line">
+                  <span className="bg-brand-gradient flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-extrabold text-white">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <h2 className="mt-6 text-xl font-extrabold tracking-tight sm:text-[1.35rem]">
-                    {perk.title}
-                  </h2>
-                  <p className="mt-3 text-[0.95rem] leading-7 font-medium text-ink/75">
-                    {perk.body}
-                  </p>
+                  <div>
+                    <h3 className="text-xl font-extrabold tracking-tight">{perk.title}</h3>
+                    <p className="mt-2 text-[0.95rem] leading-7 text-ink/75">{perk.body}</p>
+                  </div>
                 </article>
               </Reveal>
             </li>
@@ -68,7 +104,52 @@ export default function CareerPage() {
         </ul>
       </section>
 
-      <section className="bg-surface">
+      <section className="relative overflow-hidden bg-night text-white">
+        <div className="dot-grid pointer-events-none absolute inset-0" />
+        <div className="relative mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <Eyebrow light>Life at ALET</Eyebrow>
+            <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Where ideas become <span className="text-gradient">products</span>
+            </h2>
+          </Reveal>
+          <div className="masonry mt-12">
+            {life.map((item, index) => (
+              <Reveal key={item.src} delay={(index % 3) * 90}>
+                <div className="group overflow-hidden rounded-[1.8rem]">
+                  <div className="zoom-img">
+                    <Photo src={item.src} className={item.className} sizes="(max-width: 1024px) 50vw, 33vw" />
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+        <Reveal className="max-w-2xl">
+          <Eyebrow>Hiring process</Eyebrow>
+          <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            Three simple <span className="text-gradient-dark">steps</span>
+          </h2>
+        </Reveal>
+        <ol className="mt-12 grid gap-6 md:grid-cols-3">
+          {hiringSteps.map((step, index) => (
+            <li key={step.title}>
+              <Reveal delay={index * 90} className="relative h-full">
+                <p className="text-gradient-dark text-8xl leading-none font-extrabold opacity-90">
+                  {index + 1}
+                </p>
+                <h3 className="mt-4 text-2xl font-extrabold tracking-tight">{step.title}</h3>
+                <p className="mt-3 max-w-sm text-[0.95rem] leading-7 text-ink/75">{step.body}</p>
+              </Reveal>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section id="openings" className="scroll-mt-24 bg-surface">
         <div className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-20 xl:px-12">
           <Reveal>
             <Eyebrow>Open positions</Eyebrow>

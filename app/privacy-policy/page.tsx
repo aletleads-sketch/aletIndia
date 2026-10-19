@@ -16,6 +16,7 @@ export default function Page() {
       intro="How Alet India collects, uses, and protects your personal information."
       sections={privacyPolicy}
       current="/privacy-policy"
+      image="/images/pages/security.jpg"
     />
   );
 }

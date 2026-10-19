@@ -216,22 +216,17 @@ export const showcase = [
   {
     name: "All Deliveries",
     src: "/images/ALL-DEIVERIES.png",
-    alt: "All Deliveries courier and logistics platform",
+    alt: "All Deliveries courier and logistics website",
   },
   {
     name: "All Deliveries",
-    src: "/images/work/ksd-1.png",
+    src: "/images/all_deliveries_app1.jpeg",
     alt: "All Deliveries mobile app home",
   },
   {
     name: "All Deliveries",
-    src: "/images/work/ksd-2.png",
+    src: "/images/all_deliveries_app2.jpeg",
     alt: "All Deliveries mobile app screen",
-  },
-  {
-    name: "All Deliveries",
-    src: "/images/work/ksd-3.png",
-    alt: "All Deliveries order tracking screen",
   },
   {
     name: "Guri Houses",
@@ -299,17 +294,23 @@ export const caseStudies = [
     name: "All Deliveries",
     category: "Courier & Logistics",
     summary:
-      "An on-demand delivery app for parcels, shopping, and vehicle hire, with live order tracking from pickup to drop.",
-    tags: ["Mobile App", "Web Panel", "Tracking"],
+      "A responsive delivery website where customers book parcel, shopping, and vehicle-hire orders, with a web panel to manage bookings and track deliveries.",
+    tags: ["Website", "Web Panel", "Tracking"],
     color: "from-[#c2410c] to-[#f97316]",
     logo: "/images/clients/deliveries.png",
-    screens: [
-      "/images/ALL-DEIVERIES.png",
-      "/images/work/ksd-1.png",
-      "/images/work/ksd-2.png",
-      "/images/work/ksd-3.png",
-    ],
+    screens: ["/images/ALL-DEIVERIES.png"],
     landscape: true,
+  },
+  {
+    name: "All Deliveries",
+    category: "Courier & Logistics",
+    summary:
+      "An on-demand delivery app for parcel and goods delivery, shop-for-me orders, and vehicle hire with a driver, with live order tracking from pickup to drop.",
+    tags: ["Android", "iOS", "Live Tracking"],
+    color: "from-[#b91c1c] to-[#ef4444]",
+    logo: "/images/clients/deliveries.png",
+    screens: ["/images/all_deliveries_app1.jpeg", "/images/all_deliveries_app2.jpeg"],
+    framed: true,
   },
   {
     name: "Guri Houses",

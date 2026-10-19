@@ -16,6 +16,7 @@ export default function Page() {
       intro="The terms that apply when you use www.aletindia.com and our services."
       sections={termsConditions}
       current="/terms-conditions"
+      image="/images/pages/signing.jpg"
     />
   );
 }

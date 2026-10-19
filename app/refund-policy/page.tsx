@@ -16,6 +16,7 @@ export default function Page() {
       intro="When and how Alet India Softwares processes project refunds and cancellations."
       sections={refundPolicy}
       current="/refund-policy"
+      image="/images/pages/blog-laptop.jpg"
     />
   );
 }

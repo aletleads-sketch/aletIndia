@@ -11,6 +11,7 @@ export const cardColors = [
   "bg-[#7c3aed]",
   "bg-[#14532d]",
   "bg-[#b45309]",
+  "bg-[#0f766e]",
 ];
 
 export function CaseStudyCard({
@@ -25,6 +26,8 @@ export function CaseStudyCard({
   hidden?: boolean;
 }) {
   const landscape = "landscape" in study && study.landscape;
+  const framed = "framed" in study && study.framed;
+  const single = study.screens.length === 1;
   return (
     <article
       className={`hover-glow overflow-hidden rounded-[2rem] border border-line bg-white shadow-[0_20px_60px_-30px_rgb(30_27_75_/_0.35)] ${className}`}
@@ -32,7 +35,9 @@ export function CaseStudyCard({
     >
       <div
         className={`flex h-72 justify-center px-5 ${
-          landscape ? "flex-col items-center gap-2 py-4" : "items-end gap-3 pt-10"
+          landscape
+            ? `flex-col items-center gap-2 ${single ? "justify-center py-6" : "py-4"}`
+            : "items-end gap-3 pt-10"
         } ${cardColors[colorIndex % cardColors.length]}`}
       >
         {landscape ? (
@@ -43,7 +48,9 @@ export function CaseStudyCard({
               width={960}
               height={540}
               draggable={false}
-              className="h-auto max-h-32 w-full rounded-xl object-cover shadow-[0_12px_28px_-16px_rgb(0_0_0_/_0.45)]"
+              className={`h-auto w-full rounded-xl object-cover shadow-[0_12px_28px_-16px_rgb(0_0_0_/_0.45)] ${
+                single ? "max-h-60" : "max-h-32"
+              }`}
             />
             {study.screens.length > 1 ? (
               <div className="flex items-end justify-center gap-2">
@@ -70,7 +77,11 @@ export function CaseStudyCard({
               width={280}
               height={560}
               draggable={false}
-              className="h-64 w-auto"
+              className={
+                framed
+                  ? "h-64 w-auto rounded-t-[1.6rem] border-[5px] border-b-0 border-night bg-white object-cover object-top shadow-[0_18px_35px_-12px_rgb(0_0_0_/_0.55)]"
+                  : "h-64 w-auto"
+              }
             />
           ))
         )}
