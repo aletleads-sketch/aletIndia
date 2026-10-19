@@ -1,0 +1,16 @@
+---
+description: Only edit the main homepage; ignore sample routes home1/home2/home3
+alwaysApply: true
+---
+
+# Main homepage only
+
+When making homepage, design, content, portfolio, services, or layout changes:
+
+- **Do** edit the main site: `components/home-page.tsx`, `app/page.tsx`, shared components used by the main home (`header`, `footer`, `inquire-form`, `portfolio-slider`, etc.), and `lib/content.ts` as needed for the main page.
+- **Do not** edit sample pages or their components unless the user explicitly asks:
+  - `app/home1/`, `app/home2/`, `app/home3/`
+  - `components/home1-page.tsx`, `components/home2-page.tsx`, `components/home3-page.tsx`
+  - `components/sample-switcher.tsx`
+
+If a shared content or component change would affect samples incidentally, that is fine — do not spend time updating sample-only layouts to match.

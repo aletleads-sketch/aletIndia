@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/logo";
 import { services } from "@/lib/content";
 
 const links = [
-  { label: "Home", href: "#top" },
-  { label: "About Us", href: "#about" },
-  { label: "Portfolio", href: "#work" },
-  { label: "Contact Us", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about-us" },
+  { label: "Portfolio", href: "/portfolio" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 const groups = ["Development", "Designing", "Digital Marketing"] as const;
@@ -17,6 +18,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const servicesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -43,6 +45,15 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  useEffect(() => {
+    if (!servicesOpen) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!servicesRef.current?.contains(event.target as Node)) setServicesOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [servicesOpen]);
+
   const solid = scrolled || menuOpen;
   const closeAll = () => {
     setMenuOpen(false);
@@ -58,18 +69,18 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-[6.05rem] w-full max-w-[92rem] items-center justify-between gap-4 px-5 sm:px-8 xl:px-12">
-        <a href="#top" aria-label="ALET India home" onClick={closeAll}>
+        <Link href="/" aria-label="ALET India home" onClick={closeAll}>
           <Logo light={!solid} />
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
-          <a
-            href="#top"
+          <Link
+            href="/"
             className={`nav-link text-[1.15rem] font-semibold transition-colors ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
           >
             Home
-          </a>
-          <div className="relative">
+          </Link>
+          <div ref={servicesRef} className="relative">
             <button
               type="button"
               className={`nav-link flex items-center gap-1.5 text-[1.15rem] font-semibold transition-colors ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
@@ -80,29 +91,29 @@ export function Header() {
               <Chevron open={servicesOpen} />
             </button>
             {servicesOpen ? (
-              <div className="menu-pop absolute top-[calc(100%+0.9rem)] left-1/2 w-[22rem] rounded-2xl border border-line bg-white p-5 text-ink shadow-[0_30px_60px_-20px_rgb(30_27_75_/_0.35)]">
+              <div className="menu-pop absolute top-[calc(100%+0.9rem)] left-1/2 max-h-[min(70vh,32rem)] w-[24rem] -translate-x-1/2 overflow-y-auto rounded-2xl border border-line bg-white p-5 text-ink shadow-[0_30px_60px_-20px_rgb(30_27_75_/_0.35)]">
                 <ServiceMenu onNavigate={closeAll} />
               </div>
             ) : null}
           </div>
           {links.slice(1).map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className={`nav-link text-[1.15rem] font-semibold transition-colors ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href="#contact"
+          <Link
+            href="/contact-us"
             className="btn-sheen bg-brand-gradient hidden rounded-full px-6 py-2.5 text-[1.15rem] font-bold text-white shadow-[0_10px_30px_-10px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5 sm:inline-flex"
           >
             Inquire Now
-          </a>
+          </Link>
           <button
             type="button"
             className={`inline-flex h-10 w-10 items-center justify-center rounded-full border lg:hidden ${
@@ -134,27 +145,27 @@ export function Header() {
       {menuOpen ? (
         <div className="max-h-[calc(100dvh-6.05rem)] overflow-y-auto border-t border-line bg-white px-5 py-5 lg:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col gap-4" aria-label="Mobile">
-            <a href="#top" className="text-[1.3rem] font-semibold" onClick={closeAll}>
+            <Link href="/" className="text-[1.3rem] font-semibold" onClick={closeAll}>
               Home
-            </a>
+            </Link>
             <ServiceMenu onNavigate={closeAll} />
             {links.slice(1).map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 className="text-[1.3rem] font-semibold"
                 onClick={closeAll}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
-            <a
-              href="#contact"
+            <Link
+              href="/contact-us"
               onClick={closeAll}
               className="bg-brand-gradient mt-2 inline-flex w-fit rounded-full px-6 py-2.5 text-[1.15rem] font-bold text-white"
             >
               Inquire Now
-            </a>
+            </Link>
           </nav>
         </div>
       ) : null}
@@ -175,13 +186,13 @@ function ServiceMenu({ onNavigate }: { onNavigate: () => void }) {
               .filter((service) => service.group === group)
               .map((service) => (
                 <li key={service.id}>
-                  <a
-                    href={`#${service.id}`}
+                  <Link
+                    href={`/${service.slug}`}
                     onClick={onNavigate}
                     className="text-[1.15rem] text-ink/80 transition hover:text-brand"
                   >
                     {service.nav}
-                  </a>
+                  </Link>
                 </li>
               ))}
           </ul>

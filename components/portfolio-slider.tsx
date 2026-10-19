@@ -1,20 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { CaseStudyCard } from "@/components/case-study-card";
 import { caseStudies } from "@/lib/content";
-
-const cardColors = [
-  "bg-[#5b4bdb]",
-  "bg-[#0e7490]",
-  "bg-[#c2410c]",
-  "bg-[#1d4ed8]",
-  "bg-[#ea580c]",
-  "bg-[#be185d]",
-  "bg-[#7c3aed]",
-  "bg-[#14532d]",
-  "bg-[#b45309]",
-];
 
 const SPEED = 0.35; // px per frame ~ slow continuous scroll
 
@@ -130,72 +118,17 @@ export function PortfolioSlider() {
       aria-label="Portfolio projects"
     >
       <div className="flex w-max gap-7 px-[clamp(1.25rem,4vw,3.5rem)] py-5 xl:px-12">
-        {loop.map((study, i) => {
-          const colorIndex = i % caseStudies.length;
-          const landscape = "landscape" in study && study.landscape;
-          return (
-            <article
-              key={`${study.name}-${i}`}
-              className={`hover-glow w-[82vw] shrink-0 overflow-hidden rounded-[2rem] border border-line bg-white shadow-[0_20px_60px_-30px_rgb(30_27_75_/_0.35)] sm:w-[32rem] xl:w-[36rem] ${
-                colorIndex % 2 === 0 ? "rotate-[-1deg]" : "rotate-[1deg]"
-              }`}
-              aria-hidden={i >= caseStudies.length}
-            >
-              <div
-                className={`flex h-72 justify-center gap-3 px-5 ${
-                  landscape ? "items-center py-6" : "items-end pt-10"
-                } ${cardColors[colorIndex % cardColors.length]}`}
-              >
-                {study.screens.map((src) => (
-                  <Image
-                    key={`${src}-${i}`}
-                    src={src}
-                    alt=""
-                    width={landscape ? 960 : 280}
-                    height={landscape ? 540 : 560}
-                    draggable={false}
-                    className={
-                      landscape
-                        ? "h-auto max-h-60 w-full rounded-xl object-cover shadow-[0_18px_40px_-20px_rgb(0_0_0_/_0.45)]"
-                        : "h-64 w-auto"
-                    }
-                  />
-                ))}
-              </div>
-              <div className="bg-white p-7">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white p-1.5">
-                    <Image
-                      src={study.logo}
-                      alt=""
-                      width={60}
-                      height={60}
-                      draggable={false}
-                      className="max-h-7 w-auto object-contain"
-                    />
-                  </span>
-                  <p className="text-xs font-bold tracking-[0.16em] text-brand uppercase">
-                    {study.category}
-                  </p>
-                </div>
-                <h3 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                  {study.name}
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-muted sm:text-base">{study.summary}</p>
-                <ul className="mt-5 flex flex-wrap gap-2">
-                  {study.tags.map((tag) => (
-                    <li
-                      key={tag}
-                      className="rounded-full border border-line px-3.5 py-1.5 text-xs font-semibold"
-                    >
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          );
-        })}
+        {loop.map((study, i) => (
+          <CaseStudyCard
+            key={`${study.name}-${i}`}
+            study={study}
+            colorIndex={i % caseStudies.length}
+            hidden={i >= caseStudies.length}
+            className={`w-[82vw] shrink-0 sm:w-[32rem] xl:w-[36rem] ${
+              (i % caseStudies.length) % 2 === 0 ? "rotate-[-1deg]" : "rotate-[1deg]"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ const fieldClass =
 
 const selectClass = `${fieldClass} appearance-none bg-[url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22 fill=%22none%22%3E%3Cpath d=%22M1 1.5 6 6.5 11 1.5%22 stroke=%22%23586178%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E')] bg-[length:12px] bg-[right_1.25rem_center] bg-no-repeat pr-12`;
 
-export function InquireForm() {
+export function InquireForm({ defaultService }: { defaultService?: string } = {}) {
   const [sent, setSent] = useState(false);
   const [budget, setBudget] = useState("$50,000+");
   const [startDate, setStartDate] = useState("Within 1–3 months");
@@ -137,7 +137,7 @@ export function InquireForm() {
           <span className="text-sm font-medium text-[#4b5568]">
             Service required <span className="text-accent">*</span>
           </span>
-          <select name="service" required defaultValue={services[0]?.title} className={selectClass}>
+          <select name="service" required defaultValue={defaultService ?? services[0]?.title} className={selectClass}>
             {services.map((service) => (
               <option key={service.id} value={service.title}>
                 {service.title}

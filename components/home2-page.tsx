@@ -235,33 +235,52 @@ export function Home2Page() {
               >
                 <div className="group relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-teal-800 to-teal-600 px-8 pt-14 shadow-xl">
                   <div
-                    className={`flex justify-center gap-4 ${
+                    className={`flex justify-center ${
                       "landscape" in study && study.landscape
-                        ? "items-center pb-10"
-                        : "items-end"
+                        ? "flex-col items-center gap-3 pb-8"
+                        : "items-end gap-4"
                     }`}
                   >
-                    {study.screens.map((src, si) => {
-                      const landscape = "landscape" in study && study.landscape;
-                      return (
+                    {"landscape" in study && study.landscape ? (
+                      <>
+                        <Image
+                          src={study.screens[0]}
+                          alt=""
+                          width={960}
+                          height={540}
+                          className="h-auto w-full rounded-xl object-cover shadow-lg transition duration-700 group-hover:scale-[1.02]"
+                        />
+                        {study.screens.length > 1 ? (
+                          <div className="flex items-end justify-center gap-3">
+                            {study.screens.slice(1).map((src) => (
+                              <Image
+                                key={src}
+                                src={src}
+                                alt=""
+                                width={280}
+                                height={560}
+                                className="w-24 transition duration-700 group-hover:-translate-y-3 sm:w-32"
+                              />
+                            ))}
+                          </div>
+                        ) : null}
+                      </>
+                    ) : (
+                      study.screens.map((src, si) => (
                         <Image
                           key={src}
                           src={src}
                           alt=""
-                          width={landscape ? 960 : 280}
-                          height={landscape ? 540 : 560}
-                          className={
-                            landscape
-                              ? "mb-4 h-auto w-full rounded-xl object-cover shadow-lg transition duration-700 group-hover:scale-[1.02]"
-                              : `w-28 transition duration-700 sm:w-40 ${
-                                  si === 1
-                                    ? "-translate-y-8 group-hover:-translate-y-12"
-                                    : "translate-y-3 group-hover:translate-y-0"
-                                }`
-                          }
+                          width={280}
+                          height={560}
+                          className={`w-28 transition duration-700 sm:w-40 ${
+                            si === 1
+                              ? "-translate-y-8 group-hover:-translate-y-12"
+                              : "translate-y-3 group-hover:translate-y-0"
+                          }`}
                         />
-                      );
-                    })}
+                      ))
+                    )}
                   </div>
                 </div>
                 <div>

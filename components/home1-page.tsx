@@ -207,29 +207,48 @@ export function Home1Page() {
             <Reveal key={study.name} delay={i * 100} className="shrink-0">
               <article className="group hover-glow w-[85vw] border border-white/10 bg-[#0d0d0d] sm:w-[36rem] xl:w-[40rem]">
                 <div
-                  className={`flex h-80 justify-center gap-3 overflow-hidden bg-gradient-to-b from-[#151515] to-[#0d0d0d] px-6 ${
+                  className={`flex h-80 justify-center overflow-hidden bg-gradient-to-b from-[#151515] to-[#0d0d0d] px-6 ${
                     "landscape" in study && study.landscape
-                      ? "items-center py-8"
-                      : "items-end pt-10"
+                      ? "flex-col items-center gap-2 py-6"
+                      : "items-end gap-3 pt-10"
                   }`}
                 >
-                  {study.screens.map((src) => {
-                    const landscape = "landscape" in study && study.landscape;
-                    return (
+                  {"landscape" in study && study.landscape ? (
+                    <>
+                      <Image
+                        src={study.screens[0]}
+                        alt=""
+                        width={960}
+                        height={540}
+                        className="h-auto max-h-36 w-full rounded-xl object-cover transition duration-700 group-hover:scale-[1.02]"
+                      />
+                      {study.screens.length > 1 ? (
+                        <div className="flex items-end justify-center gap-2">
+                          {study.screens.slice(1).map((src) => (
+                            <Image
+                              key={src}
+                              src={src}
+                              alt=""
+                              width={280}
+                              height={560}
+                              className="h-40 w-auto transition duration-700 group-hover:-translate-y-2"
+                            />
+                          ))}
+                        </div>
+                      ) : null}
+                    </>
+                  ) : (
+                    study.screens.map((src) => (
                       <Image
                         key={src}
                         src={src}
                         alt=""
-                        width={landscape ? 960 : 280}
-                        height={landscape ? 540 : 560}
-                        className={
-                          landscape
-                            ? "h-auto max-h-64 w-full rounded-xl object-cover transition duration-700 group-hover:scale-[1.03]"
-                            : "h-72 w-auto transition duration-700 group-hover:-translate-y-5"
-                        }
+                        width={280}
+                        height={560}
+                        className="h-72 w-auto transition duration-700 group-hover:-translate-y-5"
                       />
-                    );
-                  })}
+                    ))
+                  )}
                 </div>
                 <div className="border-t border-white/10 p-8">
                   <p className="text-xs tracking-[0.2em] text-cyan-300 uppercase">

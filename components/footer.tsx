@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { Logo } from "@/components/logo";
 import {
   company,
@@ -18,12 +19,12 @@ export function Footer() {
           <p className="max-w-2xl text-3xl font-extrabold tracking-tight sm:text-4xl">
             Have an idea? <span className="text-gradient">Let&apos;s turn it into reality.</span>
           </p>
-          <a
-            href="#contact"
+          <Link
+            href="/contact-us"
             className="btn-sheen bg-brand-gradient inline-flex shrink-0 items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
           >
             Inquire Now
-          </a>
+          </Link>
         </div>
 
         <div className="grid gap-10 py-10 md:grid-cols-2 lg:grid-cols-12">
@@ -50,7 +51,7 @@ export function Footer() {
             {services
               .filter((service) => service.group === "Development")
               .map((service) => (
-                <FooterLink key={service.id} href={`#${service.id}`}>
+                <FooterLink key={service.id} href={`/${service.slug}`}>
                   {service.nav}
                 </FooterLink>
               ))}
@@ -60,7 +61,7 @@ export function Footer() {
             {services
               .filter((service) => service.group === "Designing")
               .map((service) => (
-                <FooterLink key={service.id} href={`#${service.id}`}>
+                <FooterLink key={service.id} href={`/${service.slug}`}>
                   {service.nav === "UX/UI Designing" ? "UX/UI Design" : "Graphic Design"}
                 </FooterLink>
               ))}
@@ -70,7 +71,7 @@ export function Footer() {
             {services
               .find((service) => service.id === "digital-marketing")
               ?.channels?.map((channel) => (
-                <FooterLink key={channel} href="#digital-marketing">
+                <FooterLink key={channel} href="/digital-marketing">
                   {channel}
                 </FooterLink>
               ))}
@@ -92,14 +93,9 @@ export function Footer() {
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/50">
             {legalLinks.map((link) => (
               <li key={link.label}>
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-white"
-                >
+                <Link href={link.href} className="hover:text-white">
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -131,16 +127,18 @@ function FooterLink({
   href: string;
   children: ReactNode;
 }) {
-  const external = href.startsWith("http");
+  const className = "text-sm text-white/60 transition hover:translate-x-0.5 hover:text-white";
   return (
     <li>
-      <a
-        href={href}
-        {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-        className="text-sm text-white/60 transition hover:translate-x-0.5 hover:text-white"
-      >
-        {children}
-      </a>
+      {href.startsWith("http") ? (
+        <a href={href} target="_blank" rel="noreferrer" className={className}>
+          {children}
+        </a>
+      ) : (
+        <Link href={href} className={className}>
+          {children}
+        </Link>
+      )}
     </li>
   );
 }

@@ -48,6 +48,7 @@ export const coreSolutions = [
 export const services = [
   {
     id: "mobile-apps",
+    slug: "mobile-app-development",
     title: "Mobile Application Development",
     nav: "Mobile Application Development",
     group: "Development",
@@ -58,6 +59,7 @@ export const services = [
   },
   {
     id: "cross-platform",
+    slug: "cross-functional-application",
     title: "Cross platform Application",
     nav: "Cross-functional Application Development",
     group: "Development",
@@ -68,6 +70,7 @@ export const services = [
   },
   {
     id: "web-apps",
+    slug: "web-application",
     title: "Web Application Development",
     nav: "Web Application Development",
     group: "Development",
@@ -78,6 +81,7 @@ export const services = [
   },
   {
     id: "graphic-design",
+    slug: "graphic-design",
     title: "Graphic Designing",
     nav: "Graphic Designing",
     group: "Designing",
@@ -88,6 +92,7 @@ export const services = [
   },
   {
     id: "ui-design",
+    slug: "ux-ui-design",
     title: "UI Designing",
     nav: "UX/UI Designing",
     group: "Designing",
@@ -98,6 +103,7 @@ export const services = [
   },
   {
     id: "digital-marketing",
+    slug: "digital-marketing",
     title: "Digital Marketing",
     nav: "Digital Marketing",
     group: "Digital Marketing",
@@ -110,6 +116,42 @@ export const services = [
       "Social Media Marketing",
       "Search Engine Optimisation",
     ],
+  },
+  {
+    id: "ai-data",
+    slug: "ai-data-solutions",
+    title: "AI & Data Solutions",
+    nav: "AI & Data Solutions",
+    group: "Development",
+    description:
+      "Make sense of your data with simple AI tools — smart chatbots, clear dashboards, and easy automation that help your team work faster.",
+    image: "/images/services/ai-data.jpg",
+    imageAlt: "AI and data analytics workspace",
+    channels: ["AI Chatbots", "Data Dashboards", "Process Automation"],
+  },
+  {
+    id: "salesforce",
+    slug: "salesforce-solutions",
+    title: "Salesforce Solutions",
+    nav: "Salesforce Solutions",
+    group: "Development",
+    description:
+      "We set up, customise, and integrate Salesforce so your sales, service, and customer data stay organised in one trusted CRM.",
+    image: "/images/services/salesforce.jpg",
+    imageAlt: "Salesforce CRM and business collaboration",
+    channels: ["Sales Cloud", "Service Cloud", "Custom Apps"],
+  },
+  {
+    id: "gaming",
+    slug: "game-development",
+    title: "Game Development",
+    nav: "Game Development",
+    group: "Development",
+    description:
+      "From casual and multiplayer games to immersive titles, we design, build, and launch games for mobile and cross-platform play.",
+    image: "/images/services/gaming.jpg",
+    imageAlt: "Game development and esports setup",
+    channels: ["Mobile Games", "Multiplayer", "Unity / Unreal"],
   },
 ];
 
@@ -175,6 +217,21 @@ export const showcase = [
     name: "All Deliveries",
     src: "/images/ALL-DEIVERIES.png",
     alt: "All Deliveries courier and logistics platform",
+  },
+  {
+    name: "All Deliveries",
+    src: "/images/work/ksd-1.png",
+    alt: "All Deliveries mobile app home",
+  },
+  {
+    name: "All Deliveries",
+    src: "/images/work/ksd-2.png",
+    alt: "All Deliveries mobile app screen",
+  },
+  {
+    name: "All Deliveries",
+    src: "/images/work/ksd-3.png",
+    alt: "All Deliveries order tracking screen",
   },
   {
     name: "Guri Houses",
@@ -246,7 +303,12 @@ export const caseStudies = [
     tags: ["Mobile App", "Web Panel", "Tracking"],
     color: "from-[#c2410c] to-[#f97316]",
     logo: "/images/clients/deliveries.png",
-    screens: ["/images/ALL-DEIVERIES.png"],
+    screens: [
+      "/images/ALL-DEIVERIES.png",
+      "/images/work/ksd-1.png",
+      "/images/work/ksd-2.png",
+      "/images/work/ksd-3.png",
+    ],
     landscape: true,
   },
   {
@@ -353,6 +415,18 @@ export const industries = [
     name: "Health & Fitness",
     image: "/images/industries/fitness.jpg",
   },
+  {
+    name: "AI & Data",
+    image: "/images/industries/ai.jpg",
+  },
+  {
+    name: "Salesforce / CRM",
+    image: "/images/industries/crm.jpg",
+  },
+  {
+    name: "Gaming",
+    image: "/images/industries/gaming.jpg",
+  },
 ];
 
 export const faqs = [
@@ -364,7 +438,7 @@ export const faqs = [
   {
     question: "Which services does ALET India offer?",
     answer:
-      "Mobile application development, cross-platform apps, web application development, graphic design, UX/UI design, and digital marketing including Pay Per Click, Social Media Marketing, and SEO.",
+      "Mobile and web application development, cross-platform apps, graphic and UX/UI design, digital marketing, AI & data solutions, Salesforce / CRM, and game development.",
   },
   {
     question: "How does a project move from idea to launch?",
@@ -489,28 +563,19 @@ export const portals = [
 ];
 
 export const legalLinks = [
-  {
-    label: "Privacy Policy",
-    href: "https://www.aletindia.com/privacy-policy/",
-  },
-  {
-    label: "Terms & Conditions",
-    href: "https://www.aletindia.com/terms-conditions/",
-  },
-  {
-    label: "Refund Policy",
-    href: "https://www.aletindia.com/refund-policy/",
-  },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms & Conditions", href: "/terms-conditions" },
+  { label: "Refund Policy", href: "/refund-policy" },
 ];
 
 export const companyLinks = [
-  { label: "Portfolio", href: "#work" },
-  { label: "About Us", href: "#about" },
-  { label: "Career", href: "https://www.aletindia.com/career/" },
-  { label: "Blogs", href: "https://www.aletindia.com/blogs/" },
+  { label: "About Us", href: "/about-us" },
+  { label: "Portfolio", href: "/portfolio" },
+  { label: "Career", href: "/career" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "Contact Us", href: "/contact-us" },
   {
     label: "Brochure",
     href: "https://www.aletindia.com/Alet_Broucher.pdf",
   },
-  { label: "Refund Policy", href: "https://www.aletindia.com/refund-policy/" },
 ];

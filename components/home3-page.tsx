@@ -212,29 +212,48 @@ export function Home3Page() {
                 }`}
               >
                 <div
-                  className={`flex h-72 justify-center gap-3 px-5 ${
+                  className={`flex h-72 justify-center px-5 ${
                     "landscape" in study && study.landscape
-                      ? "items-center py-6"
-                      : "items-end pt-10"
+                      ? "flex-col items-center gap-2 py-4"
+                      : "items-end gap-3 pt-10"
                   } ${i === 0 ? "bg-[#ff4d00]" : i === 1 ? "bg-[#2dd4bf]" : "bg-[#ffe14d]"}`}
                 >
-                  {study.screens.map((src) => {
-                    const landscape = "landscape" in study && study.landscape;
-                    return (
+                  {"landscape" in study && study.landscape ? (
+                    <>
+                      <Image
+                        src={study.screens[0]}
+                        alt=""
+                        width={960}
+                        height={540}
+                        className="h-auto max-h-32 w-full rounded-xl object-cover transition duration-500 hover:scale-[1.02]"
+                      />
+                      {study.screens.length > 1 ? (
+                        <div className="flex items-end justify-center gap-2">
+                          {study.screens.slice(1).map((src) => (
+                            <Image
+                              key={src}
+                              src={src}
+                              alt=""
+                              width={280}
+                              height={560}
+                              className="h-36 w-auto transition duration-500 hover:-translate-y-2"
+                            />
+                          ))}
+                        </div>
+                      ) : null}
+                    </>
+                  ) : (
+                    study.screens.map((src) => (
                       <Image
                         key={src}
                         src={src}
                         alt=""
-                        width={landscape ? 960 : 280}
-                        height={landscape ? 540 : 560}
-                        className={
-                          landscape
-                            ? "h-auto max-h-60 w-full rounded-xl object-cover transition duration-500 hover:scale-[1.02]"
-                            : "h-64 w-auto transition duration-500 hover:-translate-y-3"
-                        }
+                        width={280}
+                        height={560}
+                        className="h-64 w-auto transition duration-500 hover:-translate-y-3"
                       />
-                    );
-                  })}
+                    ))
+                  )}
                 </div>
                 <div className="bg-white p-7">
                   <p className="text-xs font-black tracking-[0.16em] text-[#ff4d00] uppercase">
