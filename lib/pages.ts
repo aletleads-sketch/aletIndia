@@ -439,124 +439,145 @@ export const careers = {
   email: "hr@aletindia.com",
   openings: [
     {
+      id: "senior-android-developer",
       title: "Senior Android Developer",
-      open: true,
+      department: "Engineering",
       type: "Full time",
       location: "New Delhi",
       experience: "3–4 years",
-      summary: "We are looking for a senior Android developer.",
+      image: "/images/services/mobile-apps.jpg",
+      summary:
+        "Lead Android builds for client apps — from architecture and Kotlin code to Play Store releases.",
       responsibilities: [
         "Design and build applications for the Android platform.",
-        "Fix bugs and improve application performance.",
-        "Continuously discover, evaluate, and implement new technologies to maximise development efficiency.",
+        "Own features end to end, from screen flow to API integration and release.",
+        "Fix bugs, improve performance, and keep apps stable after launch.",
+        "Review code and help junior developers ship cleaner work.",
       ],
       skills: [
-        "Expert in Java",
-        "Experience with Android Studio",
-        "Good understanding of design patterns",
-        "Experience with databases",
-        "Knowledge of Git",
-        "Experience publishing apps on the Play Store",
+        "Strong Kotlin and Java",
+        "Android Studio, Jetpack, and Material Design",
+        "REST APIs, local databases, and Firebase",
+        "Git and Play Store publishing",
       ],
     },
-    { title: "iOS Developer", open: false },
-    { title: "Web App Developer", open: false },
-    { title: "PHP Developer", open: false },
+    {
+      id: "ios-developer",
+      title: "iOS Developer",
+      department: "Engineering",
+      type: "Full time",
+      location: "New Delhi",
+      experience: "2–4 years",
+      image: "/images/pages/phone-apps.jpg",
+      summary:
+        "Build iPhone and iPad apps that feel native, from SwiftUI screens to App Store submission.",
+      responsibilities: [
+        "Build and maintain iOS apps in Swift for client products.",
+        "Match designs closely and keep interactions smooth on iPhone and iPad.",
+        "Integrate APIs, push notifications, and in-app payments.",
+        "Prepare builds, TestFlight releases, and App Store listings.",
+      ],
+      skills: [
+        "Swift and SwiftUI or UIKit",
+        "Xcode, Instruments, and the App Store Connect flow",
+        "REST APIs and local persistence",
+        "Care for accessibility and Human Interface Guidelines",
+      ],
+    },
+    {
+      id: "flutter-developer",
+      title: "Flutter Developer",
+      department: "Engineering",
+      type: "Full time",
+      location: "New Delhi · Hybrid",
+      experience: "2–3 years",
+      image: "/images/services/cross-platform.jpg",
+      summary:
+        "Ship one Flutter codebase to Android and iOS without losing the feel of a native app.",
+      responsibilities: [
+        "Build cross-platform apps in Flutter for Android and iOS.",
+        "Create reusable widgets and keep UI consistent with the design files.",
+        "Connect apps to REST APIs, maps, and device features.",
+        "Profile performance and fix platform-specific issues.",
+      ],
+      skills: [
+        "Flutter and Dart",
+        "State management such as Riverpod or Bloc",
+        "REST APIs and Firebase",
+        "Experience releasing apps on both stores",
+      ],
+    },
+    {
+      id: "web-application-developer",
+      title: "Web Application Developer",
+      department: "Engineering",
+      type: "Full time",
+      location: "New Delhi",
+      experience: "2–5 years",
+      image: "/images/services/web-apps.jpg",
+      summary:
+        "Build responsive websites, admin panels, and web apps with React, Next.js, and Node.",
+      responsibilities: [
+        "Develop responsive front ends and the APIs behind them.",
+        "Build admin panels for orders, users, and content.",
+        "Keep pages fast, accessible, and easy to maintain.",
+        "Work with designers so the shipped UI matches the approved screens.",
+      ],
+      skills: [
+        "React and Next.js",
+        "TypeScript, HTML, and CSS",
+        "Node.js or PHP and a SQL database",
+        "Git and comfortable deploying web apps",
+      ],
+    },
+    {
+      id: "ui-ux-designer",
+      title: "UI/UX Designer",
+      department: "Design",
+      type: "Full time",
+      location: "New Delhi",
+      experience: "2–4 years",
+      image: "/images/services/ui-design.jpg",
+      summary:
+        "Turn product ideas into clear flows, wireframes, and polished mobile and web interfaces.",
+      responsibilities: [
+        "Research user flows and turn briefs into wireframes.",
+        "Design mobile and web screens in Figma, ready for development.",
+        "Build simple prototypes so clients can click through a feature.",
+        "Work with developers during build so spacing, type, and states stay intact.",
+      ],
+      skills: [
+        "Figma, components, and auto layout",
+        "Mobile and web UI patterns",
+        "A portfolio of shipped app or web screens",
+        "Clear writing for labels, empty states, and errors",
+      ],
+    },
+    {
+      id: "digital-marketing-executive",
+      title: "Digital Marketing Executive",
+      department: "Marketing",
+      type: "Full time",
+      location: "New Delhi",
+      experience: "1–3 years",
+      image: "/images/services/digital-marketing.jpg",
+      summary:
+        "Plan and run SEO, social, and paid campaigns for ALET and for client products.",
+      responsibilities: [
+        "Plan content and campaigns for search and social channels.",
+        "Set up and report on Google and Meta ads.",
+        "Track leads, traffic, and what to change next month.",
+        "Write clear posts, landing pages, and campaign updates.",
+      ],
+      skills: [
+        "SEO basics and Google Search Console",
+        "Meta Ads or Google Ads",
+        "Social content for LinkedIn and Instagram",
+        "Comfortable reading simple analytics reports",
+      ],
+    },
   ],
 };
-
-export const blogPosts = [
-  {
-    date: "August 30, 2025",
-    title: "Why User-Centric Design Is Key to App Success",
-    excerpt:
-      "Building a successful app goes far beyond clean code or advanced features. The real differentiator is User-Centric Design.",
-    href: "https://www.aletindia.com/why-user-centric-design-is-key-to-app-success/",
-    image: "/images/services/ui-design.jpg",
-    tag: "Design",
-  },
-  {
-    date: "August 23, 2025",
-    title: "Latest UI/UX Trends for Mobile Apps in 2025",
-    excerpt:
-      "UI/UX plays a critical role in an app's success. Here are the design trends shaping intuitive, beautiful mobile apps this year.",
-    href: "https://www.aletindia.com/latest-ui-ux-trends-for-mobile-apps-in-2025/",
-    image: "/images/pages/design-desk.jpg",
-    tag: "Design",
-  },
-  {
-    date: "August 16, 2025",
-    title: "Startup App Development: A Step-by-Step Guide to Launching Your Idea",
-    excerpt:
-      "Whether it's an on-demand service, an e-commerce platform, or a social tool, here's how startups take an app idea to launch.",
-    href: "https://www.aletindia.com/startup-app-development-a-step-by-step-guide-to-launching-your-idea/",
-    image: "/images/pages/brainstorm.jpg",
-    tag: "Startups",
-  },
-  {
-    date: "August 11, 2025",
-    title: "How Mobile Apps Are Revolutionizing Industries: Healthcare, Retail, and Education",
-    excerpt:
-      "Mobile apps are no longer just a convenience — they are transforming how entire industries operate and engage users.",
-    href: "https://www.aletindia.com/how-mobile-apps-are-revolutionizing-industries-healthcare-retail-and-education/",
-    image: "/images/industries/healthcare.jpg",
-    tag: "Industries",
-  },
-  {
-    date: "July 19, 2025",
-    title: "Why Your Business Needs a Mobile App (With Real Case Studies)",
-    excerpt:
-      "A website alone is no longer enough. See how mobile apps improve customer experience, streamline operations, and grow revenue.",
-    href: "https://www.aletindia.com/why-your-business-needs-a-mobile-app-with-real-case-studies/",
-    image: "/images/industries/ecommerce.jpg",
-    tag: "Business",
-  },
-  {
-    date: "July 12, 2025",
-    title: "App Development Costs in 2025: What to Expect",
-    excerpt:
-      "Mobile apps are a strategic investment. Here's what drives app development costs in 2025 and how to plan your budget.",
-    href: "https://www.aletindia.com/app-development-costs-in-2025-what-to-expect/",
-    image: "/images/pages/typing.jpg",
-    tag: "Business",
-  },
-  {
-    date: "July 6, 2025",
-    title: "How Mobile Apps Help Boost Business ROI in 2025",
-    excerpt:
-      "Mobile apps are now a strategic necessity. Learn how businesses use apps to boost engagement and return on investment.",
-    href: "https://www.aletindia.com/how-mobile-apps-help-boost-business-roi-in-2025/",
-    image: "/images/pages/presentation.jpg",
-    tag: "Business",
-  },
-  {
-    date: "June 30, 2025",
-    title: "Why Your Startup Needs a Cross-Platform Mobile App",
-    excerpt:
-      "With limited time and resources, startups need apps that reach users quickly and affordably. Cross-platform is the answer.",
-    href: "https://www.aletindia.com/why-your-startup-needs-a-cross-platform-mobile-app/",
-    image: "/images/services/cross-platform.jpg",
-    tag: "Development",
-  },
-  {
-    date: "June 30, 2025",
-    title: "The Role of 5G in Shaping the Future of Mobile Apps",
-    excerpt:
-      "5G is more than faster internet — it's changing how mobile apps are built, experienced, and scaled.",
-    href: "https://www.aletindia.com/the-role-of-5g-in-shaping-the-future-of-mobile-apps/",
-    image: "/images/pages/phone-mockup.jpg",
-    tag: "Technology",
-  },
-  {
-    date: "June 29, 2025",
-    title: "Progressive Web Apps vs Native Apps: Which is Better for Your Business?",
-    excerpt:
-      "Planning to launch an app? One critical decision is whether to build a progressive web app or a native app.",
-    href: "https://www.aletindia.com/progressive-web-apps-vs-native-apps-which-is-better-for-your-business/",
-    image: "/images/pages/code.jpg",
-    tag: "Development",
-  },
-];
 
 export type LegalSection = { heading?: string; paragraphs: string[]; list?: string[] };
 
