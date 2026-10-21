@@ -279,18 +279,40 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
             </h2>
           </Reveal>
           <ul className={`mt-12 grid gap-6 ${detail.sections.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2"}`}>
-            {detail.sections.map((section, index) => (
+            {detail.sections.map((section, index) => {
+              const image = visual.gallery[(index + 1) % visual.gallery.length];
+              const diagram = /hybrid_app|same_code_different/.test(image);
+              return (
               <li key={section.title}>
                 <Reveal delay={index * 90} className="h-full">
                   <article className="lift group h-full overflow-hidden rounded-[2rem] bg-white ring-1 ring-line shadow-[0_20px_50px_-35px_rgb(30_27_75_/_0.45)]">
-                    <div className="relative h-52 overflow-hidden">
-                      <Photo src={visual.gallery[(index + 1) % visual.gallery.length]} className="zoom-img h-full" />
-                      <span className="theme-gradient absolute bottom-4 left-5 rounded-full px-3.5 py-1.5 text-xs font-extrabold text-white">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
+                    <div className={diagram ? "relative aspect-[3/2] bg-[#f4f7fb]" : "relative h-52 overflow-hidden"}>
+                      {diagram ? (
+                        <Image
+                          src={image}
+                          alt=""
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-contain"
+                        />
+                      ) : (
+                        <Photo src={image} className="zoom-img h-full" />
+                      )}
+                      {diagram ? null : (
+                        <span className="theme-gradient absolute bottom-4 left-5 rounded-full px-3.5 py-1.5 text-xs font-extrabold text-white">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                      )}
                     </div>
                     <div className="p-7 sm:p-8">
-                      <h3 className="text-2xl font-extrabold tracking-tight">{section.title}</h3>
+                      <h3 className="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
+                        {diagram ? (
+                          <span className="theme-gradient inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-extrabold text-white">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                        ) : null}
+                        {section.title}
+                      </h3>
                       <div className="mt-4 space-y-3">
                         {section.body.map((paragraph) => (
                           <p key={paragraph.slice(0, 32)} className="text-[0.95rem] leading-7 text-ink/75">
@@ -302,7 +324,8 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
                   </article>
                 </Reveal>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
       </section>

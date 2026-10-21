@@ -353,10 +353,10 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "mobile-apps": {
     layout: "split",
     theme: ["#4f46e5", "#06b6d4"],
-    gallery: ["/images/pages/phone-apps.jpg", "/images/mobile-dev.jpg", "/images/pages/developers.jpg"],
+    gallery: ["/images/Android.jpeg", "/images/ios.jpeg", "/images/pages/developers.jpg"],
     screens: [
       "/images/work/tajika-1.png",
-      "/images/QUICK-SAWARI.png",
+      "/images/all_deliveries_home.png",
       "/images/work/tajika-2.png",
       "/images/Refult.png",
       "/images/work/tajika-3.png",
@@ -366,7 +366,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "cross-platform": {
     layout: "immersive",
     theme: ["#0d9488", "#22d3ee"],
-    gallery: ["/images/pages/developers.jpg", "/images/services/cross-platform.jpg", "/images/pages/code.jpg"],
+    gallery: ["/images/pages/developers.jpg", "/images/hybrid_app.jpeg", "/images/same_code_different_architecture.jpeg"],
     screens: ["/images/work/app-1.png", "/images/QUICK-SAWARI-2.png", "/images/work/app-3.png"],
     stat: { value: "1", label: "Codebase for every device" },
   },

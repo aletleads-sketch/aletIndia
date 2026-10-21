@@ -6,7 +6,6 @@ import { Reveal } from "@/components/reveal";
 import {
   ContactSection,
   ProcessSection,
-  ServiceCard,
   StatsBar,
   TestimonialsSection,
   yearsOfExperience,
@@ -119,15 +118,15 @@ function Hero() {
             alt="Tajika mobile app"
             width={280}
             height={560}
-            className="float absolute -bottom-24 -left-6 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-left-16 sm:w-28"
+            className="float absolute -bottom-24 -left-6 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-left-16 sm:w-24"
             style={{ ["--tilt" as string]: "-6deg" }}
           />
           <Image
-            src="/images/work/app-1.png"
-            alt="Cricket FabtasyBuzz mobile app"
-            width={280}
-            height={560}
-            className="float float-b absolute -right-4 -bottom-28 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-right-14 sm:w-28"
+            src="/images/all_deliveries_home.png"
+            alt="All Deliveries mobile app home"
+            width={1024}
+            height={1536}
+            className="float float-b absolute -right-2 -bottom-24 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-right-10 sm:w-24"
             style={{ ["--tilt" as string]: "6deg" }}
           />
 
@@ -225,7 +224,28 @@ function Services() {
           {services.map((service, index) => (
             <li key={service.id} id={service.id} className="scroll-mt-28">
               <Reveal delay={(index % 3) * 90} className="h-full">
-                <ServiceCard service={service} />
+                <Link
+                  href={`/${service.slug}`}
+                  className="group relative flex h-72 items-end overflow-hidden rounded-[1.75rem] text-white sm:h-80"
+                >
+                  <Image
+                    src={service.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-night via-night/55 to-night/15" />
+                  <div className="relative p-7">
+                    <h3 className="text-2xl font-extrabold tracking-tight">{service.title}</h3>
+                    <span className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-white/80">
+                      Explore
+                      <span className="transition duration-300 group-hover:translate-x-1.5">
+                        <Arrow />
+                      </span>
+                    </span>
+                  </div>
+                </Link>
               </Reveal>
             </li>
           ))}
@@ -458,19 +478,28 @@ function About() {
 function Faq() {
   return (
     <section className="bg-surface">
-      <div className="mx-auto grid w-full max-w-[92rem] gap-8 px-5 py-14 sm:px-8 md:py-20 xl:px-12 lg:grid-cols-[0.8fr_1.2fr]">
-        <Reveal>
+      <div className="mx-auto grid w-full max-w-[92rem] items-stretch gap-8 px-5 py-14 sm:px-8 md:py-20 xl:px-12 lg:grid-cols-2 lg:gap-10">
+        <Reveal className="flex h-full flex-col">
           <Eyebrow>FAQs</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
             Questions, <span className="text-gradient-dark">answered</span>
           </h2>
-          <p className="mt-5 max-w-sm text-base leading-7 text-muted">
+          <p className="mt-5 text-base leading-7 text-muted">
             Still curious? Write to{" "}
             <a href={`mailto:${company.email}`} className="font-semibold text-brand">
               {company.email}
             </a>
             .
           </p>
+          <div className="relative mt-8 min-h-64 w-full flex-1 overflow-hidden rounded-2xl max-lg:aspect-[4/5] lg:min-h-0">
+            <Image
+              src="/images/pages/faq-question.jpg"
+              alt="A man raising his hand to ask a question"
+              fill
+              sizes="(max-width: 1024px) 100vw, 46vw"
+              className="object-cover object-center"
+            />
+          </div>
         </Reveal>
         <ul className="space-y-3">
           {faqs.map((faq, index) => (
