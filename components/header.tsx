@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/logo";
 import { getPublishedMenu, type CmsMenuItem } from "@/lib/cms-client";
@@ -27,6 +28,7 @@ function makeNavigation(items: CmsMenuItem[]): NavigationItem[] {
 }
 
 export function Header() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openItemId, setOpenItemId] = useState<string | null>(null);
@@ -37,7 +39,10 @@ export function Header() {
   useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
   useEffect(() => { const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") { setMenuOpen(false); setOpenItemId(null); } }; window.addEventListener("keydown", onKey); return () => window.removeEventListener("keydown", onKey); }, []);
   useEffect(() => { if (!openItemId) return; const onPointerDown = (event: PointerEvent) => { if (!dropdownRef.current?.contains(event.target as Node)) setOpenItemId(null); }; document.addEventListener("pointerdown", onPointerDown); return () => document.removeEventListener("pointerdown", onPointerDown); }, [openItemId]);
-  const solid = scrolled || menuOpen;
+  // The home hero is dark, so the reference header starts transparent there.
+  // Every inner page gets a solid header immediately so the logo and links
+  // always remain readable against light page content.
+  const solid = pathname !== "/" || scrolled || menuOpen;
   const closeAll = () => { setMenuOpen(false); setOpenItemId(null); };
   const linkClass = `nav-link text-[1.02rem] font-semibold transition-colors xl:text-[1.12rem] ${solid ? "text-ink" : "text-white/90 hover:text-white"}`;
   return <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${solid ? "border-b border-line/70 bg-white/85 shadow-[0_10px_40px_-15px_rgb(30_27_75_/_0.25)] backdrop-blur-xl" : "bg-transparent"}`}>
