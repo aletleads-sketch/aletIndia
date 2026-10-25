@@ -27,6 +27,28 @@ function makeNavigation(items: CmsMenuItem[]): NavigationItem[] {
   return items.filter((item) => !item.parent_id).sort((a, b) => a.sort_order - b.sort_order).map((item) => ({ ...item, children: items.filter((child) => child.parent_id === item.id).sort((a, b) => a.sort_order - b.sort_order) }));
 }
 
+function groupServiceLinks(children: CmsMenuItem[]) {
+  const groups = new Map<string, CmsMenuItem[]>([
+    ["Development", []],
+    ["Designing", []],
+    ["Digital Marketing", []],
+  ]);
+
+  children.forEach((child) => {
+    const text = `${child.label} ${child.href}`.toLowerCase();
+    const group = /graphic|ux\/?ui|ui\/?ux|design/.test(text)
+      ? "Designing"
+      : /marketing|seo|social|ppc/.test(text)
+        ? "Digital Marketing"
+        : "Development";
+    groups.get(group)?.push(child);
+  });
+
+  return [...groups.entries()]
+    .filter(([, items]) => items.length)
+    .map(([label, items]) => ({ label, items }));
+}
+
 export function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -49,7 +71,7 @@ export function Header() {
     <div className="mx-auto flex h-[6.05rem] w-full max-w-[92rem] items-center justify-between gap-4 px-5 sm:px-8 xl:px-12">
       <Link href="/" aria-label="ALET India home" onClick={closeAll}><Logo light={!solid} /></Link>
       <nav ref={dropdownRef} className="hidden items-center gap-5 xl:gap-7 lg:flex" aria-label="Primary">
-        {navigation.map((item) => item.children.length ? <div key={item.id} className="relative" onMouseEnter={() => setOpenItemId(item.id)} onMouseLeave={() => setOpenItemId(null)}><button type="button" className={`${linkClass} flex items-center gap-1.5`} aria-expanded={openItemId === item.id} onClick={() => setOpenItemId((current) => current === item.id ? null : item.id)}>{item.label}<Chevron open={openItemId === item.id} /></button>{openItemId === item.id ? <div className="menu-pop absolute top-[calc(100%+0.9rem)] left-1/2 w-[40rem] -translate-x-1/2 rounded-2xl border border-line bg-white p-3 text-ink shadow-[0_30px_60px_-20px_rgb(30_27_75_/_0.35)]"><div className="flex items-center justify-between gap-4 rounded-xl bg-surface px-4 py-3"><div><p className="text-sm font-extrabold text-ink">{item.label}</p><p className="mt-0.5 text-xs text-muted">Choose the right team for your next product.</p></div><Link href={item.href || "/"} onClick={closeAll} className="shrink-0 text-sm font-bold text-brand transition hover:text-ink">View all <span aria-hidden="true">→</span></Link></div><ul className="mt-2 grid grid-cols-2 gap-1">{item.children.map((child) => <li key={child.id}><Link href={child.href || "/"} onClick={closeAll} className="group flex items-center justify-between gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-ink/80 transition hover:bg-surface hover:text-brand"><span>{child.label}</span><span aria-hidden="true" className="text-brand opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100">→</span></Link></li>)}</ul></div> : null}</div> : <Link key={item.id} href={item.href || "/"} className={linkClass} onClick={closeAll}>{item.label}</Link>)}
+        {navigation.map((item) => item.children.length ? <div key={item.id} className="relative" onMouseEnter={() => setOpenItemId(item.id)} onMouseLeave={() => setOpenItemId(null)}><button type="button" className={`${linkClass} flex items-center gap-1.5`} aria-expanded={openItemId === item.id} onClick={() => setOpenItemId((current) => current === item.id ? null : item.id)}>{item.label}<Chevron open={openItemId === item.id} /></button>{openItemId === item.id ? <div className="menu-pop absolute top-[calc(100%+0.9rem)] left-1/2 max-h-[calc(100dvh-7.4rem)] w-[36.5rem] -translate-x-1/2 overflow-y-auto rounded-[1.35rem] border border-line bg-white px-8 py-7 text-ink shadow-[0_30px_60px_-20px_rgb(30_27_75_/_0.35)]">{groupServiceLinks(item.children).map((group) => <section key={group.label} className="mb-6 last:mb-0"><p className="mb-3 text-[0.9rem] font-bold tracking-[0.2em] text-brand uppercase">{group.label}</p><ul className="space-y-1">{group.items.map((child) => <li key={child.id}><Link href={child.href || "/"} onClick={closeAll} className="block py-0.5 text-[1.72rem] leading-[1.42] font-medium tracking-[-0.035em] text-ink/90 transition hover:text-brand">{child.label}</Link></li>)}</ul></section>)}</div> : null}</div> : <Link key={item.id} href={item.href || "/"} className={linkClass} onClick={closeAll}>{item.label}</Link>)}
       </nav>
       <div className="flex items-center gap-3"><Link href="/contact-us" className="btn-sheen bg-brand-gradient hidden rounded-full px-6 py-2.5 text-[1.15rem] font-bold text-white shadow-[0_10px_30px_-10px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5 sm:inline-flex">Inquire Now</Link><button type="button" className={`inline-flex h-10 w-10 items-center justify-center rounded-full border lg:hidden ${solid ? "border-line text-ink" : "border-white/25 text-white"}`} aria-expanded={menuOpen} aria-label={menuOpen ? "Close menu" : "Open menu"} onClick={() => { setMenuOpen((open) => !open); setOpenItemId(null); }}>{menuOpen ? <span aria-hidden="true" className="text-xl leading-none">×</span> : <span aria-hidden="true" className="flex flex-col gap-1.5"><span className="block h-px w-4 bg-current" /><span className="block h-px w-4 bg-current" /><span className="block h-px w-4 bg-current" /></span>}</button></div>
     </div>
