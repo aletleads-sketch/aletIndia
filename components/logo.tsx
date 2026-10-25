@@ -3,12 +3,12 @@ import Image from "next/image";
 export function Logo({ light = false }: { light?: boolean }) {
   return (
     <Image
-      src={light ? "/images/logo-white.png" : "/images/logo-dark.png"}
+      src="/images/alet-india-logo.png"
       alt="ALET India, Inspired by Technology"
-      width={322}
-      height={90}
+      width={1010}
+      height={250}
       priority
-      className="h-[4.025rem] w-auto sm:h-[4.6rem]"
+      className={`h-[3.45rem] w-auto rounded-lg ${light ? "bg-white/95 px-2 py-1.5" : ""} sm:h-[4rem]`}
     />
   );
 }

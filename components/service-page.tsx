@@ -552,7 +552,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
             </h2>
           </Reveal>
         </div>
-        <PortfolioSlider />
+        <PortfolioSlider serviceSlug={service.slug} />
       </section>
 
       <section className="mx-auto w-full max-w-[92rem] px-5 pt-16 sm:px-8 md:pt-24 xl:px-12">

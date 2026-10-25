@@ -13,20 +13,22 @@ import {
 import { Arrow, Eyebrow } from "@/components/ui";
 import { WordRotator } from "@/components/word-rotator";
 import { about, achievements, clients, company, faqs, hero, industries, services } from "@/lib/content";
+import { DynamicFaqList } from "@/components/dynamic-faq-list";
+import { DynamicAbout, DynamicClientMarquee, DynamicIndustries } from "@/components/dynamic-home-content";
 
 export function HomePage() {
   return (
     <div id="top">
       <Hero />
       <StatsBar />
-      <ClientMarquee />
+      <DynamicClientMarquee />
       <Services />
       <WhyAlet />
       <Work />
       <ProcessSection />
-      <Industries />
+      <DynamicIndustries />
       <TestimonialsSection />
-      <About />
+      <DynamicAbout />
       <Faq />
       <ContactSection />
     </div>
@@ -501,7 +503,7 @@ function Faq() {
             />
           </div>
         </Reveal>
-        <ul className="space-y-3">
+        <DynamicFaqList fallback={<ul className="space-y-3">
           {faqs.map((faq, index) => (
             <li key={faq.question}>
               <Reveal delay={index * 60}>
@@ -517,7 +519,7 @@ function Faq() {
               </Reveal>
             </li>
           ))}
-        </ul>
+        </ul>} />
       </div>
     </section>
   );

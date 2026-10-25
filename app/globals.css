@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+/* Release marker: ensures browsers retrieve the current compiled stylesheet. */
+:root { --alet-style-release: 20261022; }
+
 :root {
   --background: #ffffff;
   --foreground: #0b1026;
+  --font-jakarta: "Segoe UI", Arial, sans-serif;
+  --font-syne: "Arial Black", "Segoe UI", sans-serif;
+  --font-space: "Segoe UI", Arial, sans-serif;
+  --font-archivo: "Segoe UI", Arial, sans-serif;
 }
 
 @theme inline {

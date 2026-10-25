@@ -29,32 +29,52 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
   const [budget, setBudget] = useState("$50,000+");
   const [startDate, setStartDate] = useState("Within 1–3 months");
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
     const companyName = String(data.get("company") || "").trim();
     const countryCode = String(data.get("countryCode") || "").trim();
+    const country = String(data.get("country") || "").trim();
+    const countryIso = String(data.get("countryIso") || "").trim();
     const mobile = String(data.get("mobile") || "").trim();
     const service = String(data.get("service") || "").trim();
     const details = String(data.get("details") || "").trim();
-    const body = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Company: ${companyName || "—"}`,
-      `Phone: ${countryCode} ${mobile}`,
-      `Service: ${service}`,
-      `Budget: ${budget}`,
-      `Start date: ${startDate}`,
-      "",
-      details || "No additional project details shared.",
-    ].join("\n");
-
-    window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(
-      `Business inquiry from ${name}`,
-    )}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    try {
+      const response = await fetch(
+        "https://seegtwkfeolpjlgjlbyd.supabase.co/functions/v1/lead-intake",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            full_name: name,
+            business_email: email,
+            company_name: companyName,
+            phone: `${countryCode} ${mobile}`.trim(),
+            country,
+            country_code: countryCode,
+            country_iso: countryIso,
+            service,
+            budget,
+            timeline: startDate,
+            project_details: details,
+            source: "website_inquiry",
+            landing_page: window.location.pathname,
+            utm_source: new URLSearchParams(window.location.search).get("utm_source"),
+            utm_medium: new URLSearchParams(window.location.search).get("utm_medium"),
+            utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign"),
+            form_version: "website_inquiry_v1",
+          }),
+        },
+      );
+      if (!response.ok) throw new Error("Unable to send inquiry");
+      setSent(true);
+    } catch {
+      window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(
+        `Business inquiry from ${name}`,
+      )}`;
+    }
   }
 
   if (sent) {
@@ -74,8 +94,8 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
         </span>
         <p className="mt-6 text-2xl font-extrabold">Inquiry ready</p>
         <p className="mt-3 text-sm leading-relaxed text-muted">
-          Your email app should open with this message addressed to {company.email}. If
-          it does not, write to us directly.
+          Thank you. Your enquiry has been safely added to the ALET India team&apos;s CRM.
+          We&apos;ll be in touch shortly.
         </p>
         <button
           type="button"

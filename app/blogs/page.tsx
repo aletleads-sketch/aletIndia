@@ -4,6 +4,7 @@ import { Breadcrumb } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { Arrow, Photo } from "@/components/ui";
 import { blogPosts, readingMinutes } from "@/lib/blogs";
+import { DynamicBlogStories } from "@/components/dynamic-blog-stories";
 
 export const metadata: Metadata = {
   title: "Journal — Alet India",
@@ -36,7 +37,7 @@ export default function BlogsPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
+      <DynamicBlogStories fallback={<section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <Reveal>
           <Link
             href={`/blogs/${featured.slug}`}
@@ -110,7 +111,7 @@ export default function BlogsPage() {
             </li>
           ))}
         </ol>
-      </section>
+      </section>} />
     </div>
   );
 }

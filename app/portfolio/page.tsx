@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Breadcrumb, HeroTitle, Wave } from "@/components/page-hero";
 import { PortfolioGrid } from "@/components/portfolio-grid";
+import { DynamicPortfolioGrid } from "@/components/dynamic-project-showcase";
 import { Reveal } from "@/components/reveal";
 import { ContactSection } from "@/components/sections";
 import { Eyebrow, Photo } from "@/components/ui";
@@ -126,7 +127,7 @@ export default function PortfolioPage() {
               </h2>
             </div>
           </Reveal>
-          <PortfolioGrid />
+          <DynamicPortfolioGrid fallback={<PortfolioGrid />} />
         </div>
       </section>
 

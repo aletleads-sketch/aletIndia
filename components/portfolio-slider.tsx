@@ -1,16 +1,28 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CaseStudyCard } from "@/components/case-study-card";
 import { caseStudies } from "@/lib/content";
+import { getPublishedProjects, type CmsProject, typeLabel } from "@/lib/cms-client";
 
 const SPEED = 0.35; // px per frame ~ slow continuous scroll
 
-export function PortfolioSlider() {
+export function PortfolioSlider({ serviceSlug }: { serviceSlug?: string } = {}) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const resumeTimer = useRef<number | null>(null);
   const halfWidthRef = useRef(0);
+  const [liveProjects, setLiveProjects] = useState<CmsProject[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPublishedProjects()
+      .then((items) => {
+        if (!cancelled) setLiveProjects(serviceSlug ? items.filter((item) => item.service_slugs.includes(serviceSlug)) : items);
+      })
+      .catch(() => { if (!cancelled) setLiveProjects([]); });
+    return () => { cancelled = true; };
+  }, [serviceSlug]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -110,6 +122,24 @@ export function PortfolioSlider() {
   }, []);
 
   const loop = [...caseStudies, ...caseStudies];
+
+  if (liveProjects?.length) {
+    return (
+      <div className="work-scroller mt-10 overflow-x-auto pb-4" aria-label="Portfolio projects">
+        <div className="flex w-max gap-7 px-[clamp(1.25rem,4vw,3.5rem)] py-5 xl:px-12">
+          {liveProjects.map((project) => (
+            <article key={project.id} className="w-[82vw] shrink-0 overflow-hidden rounded-[1.7rem] bg-white ring-1 ring-line sm:w-[32rem] xl:w-[36rem]">
+              <div className="relative h-60 overflow-hidden bg-night sm:h-72">
+                {project.cover_image_url ? <img src={project.cover_image_url} alt={project.name} className="h-full w-full object-cover" /> : <div className="hero-mesh h-full" />}
+                <span className="absolute top-4 left-4 rounded-full bg-night/75 px-3 py-1 text-[0.65rem] font-bold tracking-[0.14em] text-white uppercase">{typeLabel(project.project_type)}</span>
+              </div>
+              <div className="p-6"><p className="text-xs font-bold tracking-[0.13em] text-brand uppercase">{project.industry || "Featured project"}</p><h3 className="mt-2 text-3xl font-extrabold tracking-tight text-ink">{project.name}</h3><p className="mt-3 text-sm leading-6 text-muted">{project.summary}</p></div>
+            </article>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
