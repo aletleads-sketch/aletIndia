@@ -1,20 +1,28 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-const allowedOrigin = 'https://alet-india-premium-2026.nnnarrendra.chatgpt.site'
-const corsHeaders = {
-  'Access-Control-Allow-Origin': allowedOrigin,
+const allowedOrigins = new Set([
+  'https://all-deliveries.com',
+  'https://www.all-deliveries.com',
+  'https://alet-india-premium-2026.nnnarrendra.chatgpt.site',
+])
+const isAllowedOrigin = (origin: string | null) =>
+  !!origin && (allowedOrigins.has(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))
+
+const corsHeaders = (origin: string | null) => ({
+  'Access-Control-Allow-Origin': isAllowedOrigin(origin) ? origin! : 'https://all-deliveries.com',
   'Access-Control-Allow-Headers': 'content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Vary': 'Origin',
-}
-
-const response = (body: Record<string, unknown>, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+})
 
 Deno.serve(async (request) => {
-  if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
+  const origin = request.headers.get('origin')
+  const response = (body: Record<string, unknown>, status = 200) =>
+    new Response(JSON.stringify(body), { status, headers: { ...corsHeaders(origin), 'Content-Type': 'application/json' } })
+
+  if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders(origin) })
   if (request.method !== 'POST') return response({ error: 'Method not allowed' }, 405)
-  if (request.headers.get('origin') !== allowedOrigin) return response({ error: 'Origin not allowed' }, 403)
+  if (!isAllowedOrigin(origin)) return response({ error: 'Origin not allowed' }, 403)
 
   try {
     const body = await request.json()

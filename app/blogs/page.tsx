@@ -37,7 +37,7 @@ export default function BlogsPage() {
         </div>
       </section>
 
-      <DynamicBlogStories fallback={<section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
+      <DynamicBlogStories articleSlugs={blogPosts.map((post) => post.slug)} fallback={<section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <Reveal>
           <Link
             href={`/blogs/${featured.slug}`}

@@ -26,6 +26,8 @@ const selectClass = `${fieldClass} appearance-none bg-[url('data:image/svg+xml,%
 
 export function InquireForm({ defaultService }: { defaultService?: string } = {}) {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const [budget, setBudget] = useState("$50,000+");
   const [startDate, setStartDate] = useState("Within 1–3 months");
 
@@ -41,6 +43,8 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
     const mobile = String(data.get("mobile") || "").trim();
     const service = String(data.get("service") || "").trim();
     const details = String(data.get("details") || "").trim();
+    setSending(true);
+    setError("");
     try {
       const response = await fetch(
         "https://seegtwkfeolpjlgjlbyd.supabase.co/functions/v1/lead-intake",
@@ -68,12 +72,17 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
           }),
         },
       );
-      if (!response.ok) throw new Error("Unable to send inquiry");
+      const result = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) throw new Error(result.error || "Unable to send your enquiry right now.");
       setSent(true);
-    } catch {
-      window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(
-        `Business inquiry from ${name}`,
-      )}`;
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error && submitError.message !== "Failed to fetch"
+          ? submitError.message
+          : "Unable to send your enquiry right now.",
+      );
+    } finally {
+      setSending(false);
     }
   }
 
@@ -193,11 +202,22 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
         </label>
       </div>
 
+      {error ? (
+        <p role="alert" className="mt-6 rounded-2xl bg-red-50 px-5 py-4 text-sm leading-6 text-red-700">
+          {error} Please try again, or email us at{" "}
+          <a href={`mailto:${company.email}`} className="font-bold underline">
+            {company.email}
+          </a>
+          .
+        </p>
+      ) : null}
+
       <button
         type="submit"
-        className="mt-7 inline-flex w-full items-center justify-center rounded-full bg-ink px-6 py-3.5 text-sm font-bold text-white transition hover:bg-ink/90"
+        disabled={sending}
+        className="mt-7 inline-flex w-full items-center justify-center rounded-full bg-ink px-6 py-3.5 text-sm font-bold text-white transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-70"
       >
-        Submit inquiry
+        {sending ? "Sending…" : "Submit inquiry"}
       </button>
     </form>
   );
