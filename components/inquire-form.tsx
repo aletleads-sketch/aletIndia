@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { CountryCodeSelect } from "@/components/country-code-select";
-import { TurnstileCaptcha } from "@/components/turnstile-captcha";
+import { CustomCaptcha, type CaptchaResponse } from "@/components/custom-captcha";
 import { company, services } from "@/lib/content";
 
 const budgets = [
@@ -31,8 +31,8 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
   const [error, setError] = useState("");
   const [budget, setBudget] = useState("$50,000+");
   const [startDate, setStartDate] = useState("Within 1–3 months");
-  const [captchaToken, setCaptchaToken] = useState("");
-  const captchaEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  const [captcha, setCaptcha] = useState<CaptchaResponse | null>(null);
+  const [captchaRefreshKey, setCaptchaRefreshKey] = useState(0);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -47,15 +47,15 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
     const service = String(data.get("service") || "").trim();
     const details = String(data.get("details") || "").trim();
     const website = String(data.get("website") || "").trim();
-    if (captchaEnabled && !captchaToken) {
-      setError("Please complete the CAPTCHA before sending your enquiry.");
+    if (!captcha) {
+      setError("Please answer the human verification question before sending your enquiry.");
       return;
     }
     setSending(true);
     setError("");
     try {
       const response = await fetch(
-        "https://seegtwkfeolpjlgjlbyd.supabase.co/functions/v1/lead-intake",
+        "https://seegtwkfeolpjlgjlbyd.supabase.co/functions/v1/lead-intake-secure",
         {
           method: "POST",
           headers: { "content-type": "application/json" },
@@ -71,7 +71,8 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
             budget,
             timeline: startDate,
             project_details: details,
-            captcha_token: captchaToken,
+            captcha_id: captcha.id,
+            captcha_answer: captcha.answer,
             website,
             source: "website_inquiry",
             landing_page: window.location.pathname,
@@ -91,6 +92,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
           ? submitError.message
           : "Unable to send your enquiry right now.",
       );
+      setCaptchaRefreshKey((current) => current + 1);
     } finally {
       setSending(false);
     }
@@ -218,7 +220,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
           </label>
         </div>
 
-        <TurnstileCaptcha onTokenChange={setCaptchaToken} />
+        <CustomCaptcha onChange={setCaptcha} refreshKey={captchaRefreshKey} />
       </div>
 
       {error ? (
@@ -233,7 +235,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
 
       <button
         type="submit"
-        disabled={sending}
+        disabled={sending || !captcha}
         className="mt-7 inline-flex w-full items-center justify-center rounded-full bg-ink px-6 py-3.5 text-sm font-bold text-white transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-70"
       >
         {sending ? "Sending…" : "Submit inquiry"}
