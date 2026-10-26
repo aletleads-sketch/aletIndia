@@ -39,7 +39,6 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
     const data = new FormData(event.currentTarget);
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
-    const companyName = String(data.get("company") || "").trim();
     const countryCode = String(data.get("countryCode") || "").trim();
     const country = String(data.get("country") || "").trim();
     const countryIso = String(data.get("countryIso") || "").trim();
@@ -62,7 +61,6 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
           body: JSON.stringify({
             full_name: name,
             business_email: email,
-            company_name: companyName,
             phone: `${countryCode} ${mobile}`.trim(),
             country,
             country_code: countryCode,
@@ -149,12 +147,6 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
           placeholder="you@company.com"
           autoComplete="email"
           required
-        />
-        <Field
-          label="Company name"
-          name="company"
-          placeholder="Your company"
-          autoComplete="organization"
         />
 
         <div className="grid gap-2">

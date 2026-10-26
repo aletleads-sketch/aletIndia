@@ -188,7 +188,8 @@ export function ContactSection({
       <div className="relative mx-auto grid max-w-[92rem] gap-8 overflow-hidden rounded-[2.5rem] bg-night px-6 py-12 text-white sm:px-14 sm:py-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
         <div className="orb pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-brand/40 blur-3xl" />
         <div className="orb orb-b pointer-events-none absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />
-        <Reveal className="relative flex flex-col">
+        <Reveal className="relative flex h-full min-h-0 flex-col">
+          <div className="shrink-0">
             <Eyebrow light>Contact us</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
               {title} <span className="text-gradient">{accent}</span>
@@ -249,15 +250,18 @@ export function ContactSection({
             >
               Call {company.phone}
             </a>
+          </div>
+          <div className="relative mt-8 min-h-[14rem] flex-1 overflow-hidden rounded-[2rem] border border-white/10 lg:min-h-0">
             <Image
               src="/images/pages/contact-us-office.jpg"
               alt="ALET India contact team and office details"
-              width={1024}
-              height={614}
-              className="mt-8 h-auto w-full max-w-xl rounded-[2rem] border border-white/10 object-cover shadow-2xl"
+              fill
+              sizes="(min-width: 1024px) 42vw, 100vw"
+              className="object-cover object-center"
             />
+          </div>
         </Reveal>
-        <Reveal delay={120} className="relative">
+        <Reveal delay={120} className="relative h-full">
           <InquireForm defaultService={defaultService} />
         </Reveal>
       </div>
