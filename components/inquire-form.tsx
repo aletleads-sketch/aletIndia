@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { CountryCodeSelect } from "@/components/country-code-select";
+import { TurnstileCaptcha } from "@/components/turnstile-captcha";
 import { company, services } from "@/lib/content";
 
 const budgets = [
@@ -30,6 +31,8 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
   const [error, setError] = useState("");
   const [budget, setBudget] = useState("$50,000+");
   const [startDate, setStartDate] = useState("Within 1–3 months");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const captchaEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -43,6 +46,11 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
     const mobile = String(data.get("mobile") || "").trim();
     const service = String(data.get("service") || "").trim();
     const details = String(data.get("details") || "").trim();
+    const website = String(data.get("website") || "").trim();
+    if (captchaEnabled && !captchaToken) {
+      setError("Please complete the CAPTCHA before sending your enquiry.");
+      return;
+    }
     setSending(true);
     setError("");
     try {
@@ -63,6 +71,8 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
             budget,
             timeline: startDate,
             project_details: details,
+            captcha_token: captchaToken,
+            website,
             source: "website_inquiry",
             landing_page: window.location.pathname,
             utm_source: new URLSearchParams(window.location.search).get("utm_source"),
@@ -200,6 +210,15 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
             className="w-full resize-y rounded-[1.25rem] border border-[#d8dde8] bg-white px-5 py-3.5 text-[0.95rem] text-ink outline-none transition placeholder:text-[#9aa3b5] focus:border-ink/40 focus:ring-4 focus:ring-ink/5"
           />
         </label>
+
+        <div className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+          <label>
+            Website
+            <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+          </label>
+        </div>
+
+        <TurnstileCaptcha onTokenChange={setCaptchaToken} />
       </div>
 
       {error ? (

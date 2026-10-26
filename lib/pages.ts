@@ -353,7 +353,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "mobile-apps": {
     layout: "split",
     theme: ["#4f46e5", "#06b6d4"],
-    gallery: ["/images/Android.jpeg", "/images/ios.jpeg", "/images/pages/developers.jpg"],
+    gallery: ["/images/services/android-app-development.jpg", "/images/services/ios-app-development.jpg", "/images/pages/developers.jpg"],
     screens: [
       "/images/work/tajika-1.png",
       "/images/all_deliveries_home.png",
@@ -366,14 +366,14 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "cross-platform": {
     layout: "immersive",
     theme: ["#0d9488", "#22d3ee"],
-    gallery: ["/images/pages/developers.jpg", "/images/hybrid_app.jpeg", "/images/same_code_different_architecture.jpeg"],
-    screens: ["/images/work/app-1.png", "/images/QUICK-SAWARI-2.png", "/images/work/app-3.png"],
+    gallery: ["/images/pages/developers.jpg", "/images/services/hybrid-app-development.jpg", "/images/same_code_different_architecture.jpeg"],
+    screens: ["/images/work/all-deliveries-app-home.png", "/images/QUICK-SAWARI-2.png", "/images/work/all-deliveries-app-menu.png"],
     stat: { value: "1", label: "Codebase for every device" },
   },
   "web-apps": {
     layout: "editorial",
     theme: ["#2563eb", "#7c3aed"],
-    gallery: ["/images/services/web-apps.jpg", "/images/pages/typing.jpg", "/images/pages/developer-woman.jpg"],
+    gallery: ["/images/pages/web-app-development-2.jpeg", "/images/pages/web-app-development-3.jpeg", "/images/pages/web-app-development.jpeg"],
     screens: ["/images/ALL-DEIVERIES.png"],
     stat: { value: "100%", label: "Responsive builds" },
   },
@@ -387,7 +387,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "immersive",
     theme: ["#7c3aed", "#ec4899"],
     gallery: ["/images/services/ui-design.jpg", "/images/pages/women-coding.jpg", "/images/pages/meeting.jpg"],
-    screens: ["/images/GURI-HOUSES.png", "/images/REFULT-2.png", "/images/GURI-HOUSES-2.png"],
+    screens: ["/images/work/guri-houses-left.png", "/images/REFULT-2.png", "/images/work/guri-houses-right.png"],
     stat: { value: "Figma", label: "Prototype before code" },
   },
   "digital-marketing": {
@@ -399,7 +399,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "ai-data": {
     layout: "split",
     theme: ["#0891b2", "#8b5cf6"],
-    gallery: ["/images/pages/ai-abstract.jpg", "/images/services/ai-data.jpg", "/images/industries/ai.jpg"],
+    gallery: ["/images/pages/ai-chatbots-assistants.jpg", "/images/pages/data-dashboards-reports.jpg", "/images/pages/process-automation.jpg"],
     stat: { value: "24/7", label: "AI assistants" },
   },
   salesforce: {

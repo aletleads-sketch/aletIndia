@@ -545,14 +545,22 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
 
       <section className={`overflow-hidden ${browserShot ? "bg-surface" : ""} py-16 md:py-24`}>
         <div className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 xl:px-12">
-          <Reveal>
-            <Eyebrow>Portfolio</Eyebrow>
-            <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Recent <span className="theme-text">projects</span>
-            </h2>
+          <Reveal className={id === "web-apps" ? "" : "grid items-end gap-8 lg:grid-cols-[0.8fr_1.2fr]"}>
+            <div>
+              <Eyebrow>Portfolio</Eyebrow>
+              <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+                Recent <span className="theme-text">projects</span>
+              </h2>
+            </div>
+            {id !== "web-apps" ? (
+              <p className="max-w-2xl text-base leading-7 text-muted lg:justify-self-end">
+                Explore selected {service.nav.toLowerCase()} work, with the product thinking,
+                interface craft, and delivery detail visible in every project.
+              </p>
+            ) : null}
           </Reveal>
         </div>
-        <PortfolioSlider serviceSlug={service.slug} />
+        <PortfolioSlider />
       </section>
 
       <section className="mx-auto w-full max-w-[92rem] px-5 pt-16 sm:px-8 md:pt-24 xl:px-12">

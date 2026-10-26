@@ -189,66 +189,73 @@ export function ContactSection({
         <div className="orb pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-brand/40 blur-3xl" />
         <div className="orb orb-b pointer-events-none absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />
         <Reveal className="relative flex flex-col">
-          <Eyebrow light>Contact us</Eyebrow>
-          <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            {title} <span className="text-gradient">{accent}</span>
-          </h2>
-          <p className="mt-5 max-w-md text-base leading-7 text-white/70">
-            Tell us about your project, budget, and timeline. We&apos;ll review your inquiry
-            and get back with next steps.
-          </p>
+            <Eyebrow light>Contact us</Eyebrow>
+            <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+              {title} <span className="text-gradient">{accent}</span>
+            </h2>
+            <p className="mt-5 max-w-md text-base leading-7 text-white/70">
+              Tell us about your project, budget, and timeline. We&apos;ll review your inquiry
+              and get back with next steps.
+            </p>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            <div className="glass rounded-2xl px-5 py-4">
-              <p className="text-xs font-bold tracking-[0.16em] text-brand-2 uppercase">
-                Avg. response
-              </p>
-              <p className="mt-2 text-2xl font-extrabold">Under 24 hrs</p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <div className="glass rounded-2xl px-5 py-4">
+                <p className="text-xs font-bold tracking-[0.16em] text-brand-2 uppercase">
+                  Avg. response
+                </p>
+                <p className="mt-2 text-2xl font-extrabold">Under 24 hrs</p>
+              </div>
+              <div className="glass rounded-2xl px-5 py-4">
+                <p className="text-xs font-bold tracking-[0.16em] text-brand-2 uppercase">
+                  Free consult
+                </p>
+                <p className="mt-2 text-2xl font-extrabold">No obligation</p>
+              </div>
             </div>
-            <div className="glass rounded-2xl px-5 py-4">
-              <p className="text-xs font-bold tracking-[0.16em] text-brand-2 uppercase">
-                Free consult
-              </p>
-              <p className="mt-2 text-2xl font-extrabold">No obligation</p>
-            </div>
-          </div>
 
-          <ul className="mt-6 space-y-3 text-sm text-white/75">
-            {[
-              "Mobile, web, UI/UX & marketing under one roof",
-              "Dedicated project manager from day one",
-              "Transparent timelines and milestone updates",
-            ].map((point) => (
-              <li key={point} className="flex gap-3">
-                <span
-                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-2"
-                  aria-hidden="true"
-                />
-                {point}
-              </li>
-            ))}
-          </ul>
+            <ul className="mt-6 space-y-3 text-sm text-white/75">
+              {[
+                "Mobile, web, UI/UX & marketing under one roof",
+                "Dedicated project manager from day one",
+                "Transparent timelines and milestone updates",
+              ].map((point) => (
+                <li key={point} className="flex gap-3">
+                  <span
+                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-2"
+                    aria-hidden="true"
+                  />
+                  {point}
+                </li>
+              ))}
+            </ul>
 
-          <dl className="mt-8 space-y-4">
-            <ContactRow label="Phone">
-              <a href={company.phoneHref} className="hover:text-brand-2">
-                {company.phone}
-              </a>
-            </ContactRow>
-            <ContactRow label="Email">
-              <a href={`mailto:${company.email}`} className="hover:text-brand-2">
-                {company.email}
-              </a>
-            </ContactRow>
-            <ContactRow label="Address">{company.address}</ContactRow>
-          </dl>
+            <dl className="mt-8 space-y-4">
+              <ContactRow label="Phone">
+                <a href={company.phoneHref} className="hover:text-brand-2">
+                  {company.phone}
+                </a>
+              </ContactRow>
+              <ContactRow label="Email">
+                <a href={`mailto:${company.email}`} className="hover:text-brand-2">
+                  {company.email}
+                </a>
+              </ContactRow>
+              <ContactRow label="Address">{company.address}</ContactRow>
+            </dl>
 
-          <a
-            href={company.phoneHref}
-            className="btn-sheen bg-brand-gradient mt-8 inline-flex w-fit items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5"
-          >
-            Call {company.phone}
-          </a>
+            <a
+              href={company.phoneHref}
+              className="btn-sheen bg-brand-gradient mt-8 inline-flex w-fit items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5"
+            >
+              Call {company.phone}
+            </a>
+            <Image
+              src="/images/pages/contact-us-office.jpg"
+              alt="ALET India contact team and office details"
+              width={1024}
+              height={614}
+              className="mt-8 h-auto w-full max-w-xl rounded-[2rem] border border-white/10 object-cover shadow-2xl"
+            />
         </Reveal>
         <Reveal delay={120} className="relative">
           <InquireForm defaultService={defaultService} />

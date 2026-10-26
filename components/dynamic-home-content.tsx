@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Reveal } from "@/components/reveal";
 import { Arrow, Eyebrow } from "@/components/ui";
 import { about, achievements, clients, industries } from "@/lib/content";
+import { assetPath } from "@/lib/site-path";
 import {
   getPublishedClientLogos,
   getPublishedIndustries,
@@ -31,7 +32,7 @@ export function DynamicClientMarquee() {
         <ul className="marquee-track items-center gap-6 pr-6">
           {[...visible, ...visible].map((client, index) => (
             <li key={`${client.logo}-${index}`} className="flex h-20 w-44 shrink-0 items-center justify-center rounded-2xl border border-line bg-white px-5 grayscale transition duration-300 hover:grayscale-0">
-              {client.href ? <a href={client.href} target="_blank" rel="noreferrer"><ClientLogo client={client} alt={index < visible.length ? client.name : ""} /></a> : <ClientLogo client={client} alt={index < visible.length ? client.name : ""} />}
+              {client.href ? <a href={assetPath(client.href)} target="_blank" rel="noreferrer"><ClientLogo client={client} alt={index < visible.length ? client.name : ""} /></a> : <ClientLogo client={client} alt={index < visible.length ? client.name : ""} />}
             </li>
           ))}
         </ul>
@@ -41,7 +42,7 @@ export function DynamicClientMarquee() {
 }
 
 function ClientLogo({ client, alt }: { client: { logo: string; name: string }; alt: string }) {
-  return <img src={client.logo} alt={alt} className="max-h-[3.3rem] w-auto max-w-[8rem] object-contain" />;
+  return <img src={assetPath(client.logo)} alt={alt} className="max-h-[3.3rem] w-auto max-w-[8rem] object-contain" />;
 }
 
 export function DynamicIndustries() {
@@ -68,12 +69,12 @@ export function DynamicIndustries() {
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">{heading} <span className="text-gradient-dark">{accent}</span></h2>
           <p className="mt-5 max-w-md text-base leading-7 text-muted">{intro}</p>
           <ul className="mt-8 flex flex-wrap items-center gap-6">
-            {achievements.map((item) => <li key={item.src}><img src={item.src} alt={item.alt} className="h-24 w-auto object-contain transition duration-300 hover:scale-105" /></li>)}
+            {achievements.map((item) => <li key={item.src}><img src={assetPath(item.src)} alt={item.alt} className="h-24 w-auto object-contain transition duration-300 hover:scale-105" /></li>)}
           </ul>
         </Reveal>
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
           {visible.map((industry, index) => (
-            <li key={`${industry.name}-${index}`}><Reveal delay={(index % 4) * 70} className="h-full"><div className="gradient-border lift group relative flex h-full min-h-32 flex-col justify-between overflow-hidden rounded-2xl bg-white p-5"><div className="pointer-events-none absolute inset-0" aria-hidden="true"><img src={industry.image} alt="" className="h-full w-full scale-105 object-cover blur-[1px] transition duration-700 group-hover:scale-110 group-hover:blur-[0.5px]" /><div className="absolute inset-0 bg-gradient-to-b from-white/65 via-white/72 to-white/82" /></div><span className="relative text-xs font-extrabold text-brand">{String(index + 1).padStart(2, "0")}</span><span className="relative mt-6 text-[0.95rem] leading-snug font-extrabold text-ink">{industry.name}</span></div></Reveal></li>
+            <li key={`${industry.name}-${index}`}><Reveal delay={(index % 4) * 70} className="h-full"><div className="gradient-border lift group relative flex h-full min-h-32 flex-col justify-between overflow-hidden rounded-2xl bg-white p-5"><div className="pointer-events-none absolute inset-0" aria-hidden="true"><img src={assetPath(industry.image)} alt="" className="h-full w-full scale-105 object-cover blur-[1px] transition duration-700 group-hover:scale-110 group-hover:blur-[0.5px]" /><div className="absolute inset-0 bg-gradient-to-b from-white/65 via-white/72 to-white/82" /></div><span className="relative text-xs font-extrabold text-brand">{String(index + 1).padStart(2, "0")}</span><span className="relative mt-6 text-[0.95rem] leading-snug font-extrabold text-ink">{industry.name}</span></div></Reveal></li>
           ))}
         </ul>
       </div>

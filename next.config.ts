@@ -1,15 +1,11 @@
 import type { NextConfig } from "next";
-
-// Leave empty for local development and root-domain deployments. Set this to
-// "/aletindia" in the hosting environment only when the site is deployed
-// below that subfolder.
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+import { BASE_PATH } from "./lib/site-path";
 
 const nextConfig: NextConfig = {
   // Export a portable static site for the existing hosting deployment.
   output: "export",
-  trailingSlash: true,
-  basePath,
+  basePath: BASE_PATH,
+  trailingSlash: false,
   experimental: {
     // The desktop build environment cannot reliably spawn the default worker pool.
     cpus: 1,

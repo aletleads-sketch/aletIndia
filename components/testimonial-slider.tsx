@@ -1,18 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { testimonials } from "@/lib/content";
-import { getPublishedTestimonials, type CmsTestimonial } from "@/lib/cms-client";
 
 const ROTATE_MS = 3000;
 
 export function TestimonialSlider() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [cmsTestimonials, setCmsTestimonials] = useState<CmsTestimonial[] | null>(null);
-  useEffect(() => { getPublishedTestimonials().then((rows) => setCmsTestimonials(rows.length ? rows : null)).catch(() => undefined); }, []);
-  const items = cmsTestimonials?.map((item) => ({ quote:item.quote, name:item.client_name, role:[item.client_role,item.company].filter(Boolean).join(" · "), image:item.image_url || "/images/people/rk.jpg", fit:"cover" as const })) ?? testimonials;
-  const count = items.length;
+  const count = testimonials.length;
 
   useEffect(() => {
     if (paused || count < 2) return;
@@ -42,7 +39,7 @@ export function TestimonialSlider() {
 
         {/* Stack all quotes so the tallest one locks section height */}
         <div className="relative mt-3 grid max-w-3xl">
-          {items.map((t, i) => (
+          {testimonials.map((t, i) => (
             <blockquote
               key={t.name}
               aria-hidden={i !== active}
@@ -58,7 +55,7 @@ export function TestimonialSlider() {
         </div>
 
         <div className="relative mt-5 grid">
-          {items.map((t, i) => (
+          {testimonials.map((t, i) => (
             <figcaption
               key={t.name}
               aria-hidden={i !== active}
@@ -66,9 +63,11 @@ export function TestimonialSlider() {
                 i === active ? "relative" : "invisible pointer-events-none"
               }`}
             >
-              <img
+              <Image
                 src={t.image}
                 alt=""
+                width={72}
+                height={72}
                 className={`h-11 w-11 rounded-full bg-white ring-2 ring-brand-2/60 ${
                   t.fit === "cover" ? "object-cover" : "object-contain p-1"
                 }`}
@@ -94,7 +93,7 @@ export function TestimonialSlider() {
         }}
       >
         <div className="flex gap-2" role="tablist" aria-label="Choose testimonial">
-          {items.map((t, i) => (
+          {testimonials.map((t, i) => (
             <button
               key={t.name}
               type="button"

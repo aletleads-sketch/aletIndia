@@ -245,7 +245,7 @@ export const showcase = [
   },
   {
     name: "Ramba",
-    src: "/images/RAMBA.jpg.jpeg",
+    src: "/images/ROMBA-MOBILE-SHOPPING-APP.png",
     alt: "Ramba clothing shopping app",
   },
   {
@@ -343,8 +343,8 @@ export const caseStudies = [
       "Ramba is a modern clothing and lifestyle shopping app built for simplicity and variety. With intuitive navigation, clear product categories, and highlighted discounts, it offers users a seamless way to browse, discover, and purchase fashion essentials. Designed to combine convenience with style, Ramba makes online shopping engaging and effortless.",
     tags: ["E-Commerce", "Android", "iOS"],
     color: "from-[#be185d] to-[#f472b6]",
-    logo: "/images/RAMBA.jpg.jpeg",
-    screens: ["/images/RAMBA.jpg.jpeg"],
+    logo: "/images/ROMBA-MOBILE-SHOPPING-APP.png",
+    screens: ["/images/ROMBA-MOBILE-SHOPPING-APP.png"],
   },
   {
     name: "Refult",
@@ -577,6 +577,6 @@ export const companyLinks = [
   { label: "Contact Us", href: "/contact-us" },
   {
     label: "Brochure",
-    href: "https://www.aletindia.com/Alet_Broucher.pdf",
+    href: "/Alet_Broucher.pdf",
   },
 ];

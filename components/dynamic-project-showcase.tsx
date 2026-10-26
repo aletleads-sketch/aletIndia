@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { getPublishedProjects, type CmsProject, typeLabel } from "@/lib/cms-client";
+import { assetPath } from "@/lib/site-path";
 
 type Filter = "All" | "Mobile Apps" | "Web" | "Games";
 
@@ -10,7 +11,7 @@ function ProjectCard({ project }: { project: CmsProject }) {
     <article className="group overflow-hidden rounded-[1.7rem] bg-white ring-1 ring-line shadow-[0_18px_45px_-30px_rgb(15_23_42_/_0.4)]">
       <div className="relative aspect-[16/10] overflow-hidden bg-night">
         {project.cover_image_url ? (
-          <img src={project.cover_image_url} alt={project.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+          <img src={assetPath(project.cover_image_url)} alt={project.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
         ) : (
           <div className="hero-mesh flex h-full items-end p-7"><span className="text-3xl font-extrabold text-white">{project.name}</span></div>
         )}

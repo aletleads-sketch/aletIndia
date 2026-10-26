@@ -37,9 +37,27 @@ Deno.serve(async (request) => {
     const budgetRange = typeof body.budget === 'string' ? body.budget.trim() : ''
     const expectedStart = typeof body.timeline === 'string' ? body.timeline.trim() : ''
     const projectDetails = typeof body.project_details === 'string' ? body.project_details.trim() : ''
+    const captchaToken = typeof body.captcha_token === 'string' ? body.captcha_token.trim() : ''
     if (body.website) return response({ ok: true }) // Honeypot field: do not reveal spam detection.
     if (fullName.length < 2 || !/^\S+@\S+\.\S+$/.test(businessEmail)) return response({ error: 'Please provide your name and a valid work email.' }, 400)
     if (fullName.length > 120 || businessEmail.length > 254 || projectDetails.length > 5000) return response({ error: 'Please shorten your response and try again.' }, 400)
+
+    // Keep the secret exclusively in Supabase Edge Function secrets. The browser
+    // receives only the public site key and never has the ability to self-verify.
+    const turnstileSecret = Deno.env.get('TURNSTILE_SECRET_KEY')
+    if (turnstileSecret) {
+      if (!captchaToken) return response({ error: 'Please complete the CAPTCHA before sending your enquiry.' }, 400)
+      const verifyBody = new URLSearchParams({ secret: turnstileSecret, response: captchaToken })
+      const forwardedFor = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      if (forwardedFor) verifyBody.set('remoteip', forwardedFor)
+      const verification = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: verifyBody,
+      })
+      const result = await verification.json().catch(() => ({ success: false })) as { success?: boolean }
+      if (!verification.ok || !result.success) return response({ error: 'CAPTCHA verification failed. Please try again.' }, 400)
+    }
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
