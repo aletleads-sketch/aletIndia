@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ApplicationModal } from "@/components/application-modal";
 import { Arrow, Photo } from "@/components/ui";
 import { careers } from "@/lib/pages";
 
@@ -14,6 +15,7 @@ export function JobBoard() {
     [department],
   );
   const [selectedId, setSelectedId] = useState(openings[0].id);
+  const [applicationOpening, setApplicationOpening] = useState<(typeof openings)[number] | null>(null);
   const selected = visible.find((job) => job.id === selectedId) ?? visible[0];
 
   return (
@@ -99,16 +101,18 @@ export function JobBoard() {
               <JobList title="What you will do" items={selected.responsibilities} />
               <JobList title="What you bring" items={selected.skills} />
             </div>
-            <a
-              href={`mailto:${careers.email}?subject=${encodeURIComponent(`Application: ${selected.title}`)}`}
+            <button
+              type="button"
+              onClick={() => setApplicationOpening(selected)}
               className="btn-sheen mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
             >
               Apply for this role
               <Arrow />
-            </a>
+            </button>
           </div>
         </article>
       </div>
+      {applicationOpening ? <ApplicationModal opening={applicationOpening} onClose={() => setApplicationOpening(null)} /> : null}
     </div>
   );
 }
