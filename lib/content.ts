@@ -309,7 +309,7 @@ export const caseStudies = [
     tags: ["Android", "iOS", "Live Tracking"],
     color: "from-[#b91c1c] to-[#ef4444]",
     logo: "/images/clients/deliveries.png",
-    screens: ["/images/all_deliveries_app1.jpeg", "/images/all_deliveries_app2.jpeg"],
+    screens: ["/images/all_deliveries_app1.jpeg", "/images/all-deliveries-navigation-drawer.png"],
     framed: true,
   },
   {

@@ -5,6 +5,7 @@ import { Breadcrumb, Wave } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { ContactSection } from "@/components/sections";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
+import { CaseStudiesIndex } from "@/components/case-studies-index";
 
 export const metadata: Metadata = {
   title: "Case Studies — Alet India",
@@ -23,7 +24,7 @@ const deliverySteps = [
   ["03", "Build the connected product", "The website, customer experience, and internal workflow were designed to work together."],
 ];
 
-export default function CaseStudiesPage() {
+export function LegacyAllDeliveriesCaseStudy() {
   return (
     <>
       <section className="hero-mesh relative overflow-hidden text-white">
@@ -139,4 +140,8 @@ export default function CaseStudiesPage() {
       <ContactSection title="Have a project with a" accent="story to tell?" />
     </>
   );
+}
+
+export default function CaseStudiesPage() {
+  return <CaseStudiesIndex />;
 }
