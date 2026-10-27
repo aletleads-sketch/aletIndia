@@ -651,6 +651,27 @@ details[open] .faq-icon {
   }
 }
 
+@keyframes journey-flow {
+  from {
+    transform: translateX(-150%);
+  }
+  to {
+    transform: translateX(450%);
+  }
+}
+
+@keyframes journey-node {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 0 0 6px rgb(79 70 229 / 0.16), 0 0 0 0 rgb(6 182 212 / 0.35);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.16);
+    box-shadow: 0 0 0 8px rgb(79 70 229 / 0.1), 0 0 0 15px rgb(6 182 212 / 0);
+  }
+}
+
 .slide-x {
   animation: slide-x 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -673,6 +694,44 @@ details[open] .faq-icon {
 
 .clip-up {
   animation: clip-up 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.journey-rail {
+  overflow: hidden;
+  background: linear-gradient(90deg, rgb(79 70 229 / 0.2), rgb(6 182 212 / 0.65), rgb(139 92 246 / 0.2));
+}
+
+.journey-rail::after {
+  content: "";
+  position: absolute;
+  inset: -5px auto -5px 0;
+  width: 24%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.95), transparent);
+  filter: blur(2px);
+  animation: journey-flow 4.4s ease-in-out infinite;
+}
+
+.journey-node {
+  animation: journey-node 3.8s ease-in-out infinite;
+}
+
+.journey-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.journey-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 25%, rgb(79 70 229 / 0.08) 50%, transparent 75%);
+  transform: translateX(-120%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.journey-card:hover::after {
+  transform: translateX(120%);
 }
 
 .reveal-x {
@@ -812,6 +871,11 @@ details[open] .faq-icon {
   .glow-breathe,
   .bounce-soft,
   .clip-up {
+    animation: none;
+  }
+
+  .journey-rail::after,
+  .journey-node {
     animation: none;
   }
 
