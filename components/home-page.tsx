@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CoreSolutionsList } from "@/components/core-solutions";
+import { AboutSolutionsJourney } from "@/components/about-solutions-journey";
 import Link from "next/link";
 import { PortfolioSlider } from "@/components/portfolio-slider";
 import { Reveal } from "@/components/reveal";
@@ -8,7 +8,6 @@ import {
   ProcessSection,
   StatsBar,
   TestimonialsSection,
-  yearsOfExperience,
 } from "@/components/sections";
 import { Arrow, Eyebrow } from "@/components/ui";
 import { WordRotator } from "@/components/word-rotator";
@@ -144,7 +143,7 @@ function Hero() {
               </svg>
             </span>
             <span>
-              <span className="block text-lg leading-none font-extrabold">1,000+</span>
+              <span className="block text-lg leading-none font-extrabold">500+</span>
               <span className="text-xs text-white/70">Projects delivered</span>
             </span>
           </div>
@@ -257,89 +256,9 @@ function Services() {
 
 function WhyAlet() {
   return (
-    <section
-      id="solutions"
-      className="relative overflow-hidden scroll-mt-24 bg-surface"
-    >
-      <div
-        className="pointer-events-none absolute -top-24 left-0 h-72 w-72 rounded-full bg-brand/10 blur-3xl"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute right-0 -bottom-28 h-80 w-80 rounded-full bg-brand-2/15 blur-3xl"
-        aria-hidden="true"
-      />
-
-      <div className="relative mx-auto grid w-full max-w-[92rem] items-center gap-10 px-5 py-14 sm:px-8 md:py-20 xl:grid-cols-2 xl:px-12">
-        <Reveal className="relative mx-auto w-full max-w-xl xl:mx-0" from="left">
-          <div className="solution-stage relative">
-            <div
-              className="bg-brand-gradient absolute -inset-3 rotate-[3deg] rounded-[2.5rem] opacity-95"
-              aria-hidden="true"
-            />
-            <div
-              className="solution-orb orb absolute -top-8 -left-6 h-28 w-28 rounded-full bg-brand-2/50 blur-2xl"
-              aria-hidden="true"
-            />
-            <div
-              className="solution-orb orb-b absolute -right-4 top-16 h-24 w-24 rounded-full bg-violet/45 blur-2xl"
-              aria-hidden="true"
-            />
-
-            <div className="group relative overflow-hidden rounded-[2rem] shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.55)]">
-              <Image
-                src="/images/mobile-dev.jpg"
-                alt="Mobile shopping application designed by ALET India"
-                width={1200}
-                height={900}
-                className="zoom-img h-[26rem] w-full object-cover sm:h-[28rem]"
-              />
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-night/25 via-transparent to-brand/20"
-                aria-hidden="true"
-              />
-              <div
-                className="solution-scan pointer-events-none absolute inset-x-0 h-24 opacity-40"
-                aria-hidden="true"
-              />
-            </div>
-
-            <div className="float absolute -left-3 top-8 rounded-2xl border border-white/60 bg-white/90 px-4 py-3 shadow-[0_18px_40px_-18px_rgb(30_27_75_/_0.45)] backdrop-blur sm:-left-6">
-              <p className="text-[0.65rem] font-bold tracking-[0.16em] text-muted uppercase">
-                Idea → Build
-              </p>
-              <p className="mt-1 text-sm font-extrabold text-ink">Ship faster</p>
-            </div>
-
-            <div className="float float-b absolute -right-3 -bottom-6 rounded-2xl bg-white p-5 shadow-[0_25px_50px_-15px_rgb(30_27_75_/_0.4)] sm:-right-6 sm:-bottom-8">
-              <p className="text-gradient-dark text-3xl font-extrabold">
-                {yearsOfExperience}+ years
-              </p>
-              <p className="mt-1 text-sm text-muted">
-                Building since {company.established}
-              </p>
-            </div>
-          </div>
-        </Reveal>
-
-        <div>
-          <Reveal from="right">
-            <Eyebrow>ALET&apos;s Core Solution</Eyebrow>
-            <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-              From first idea to the{" "}
-              <span className="text-gradient-dark">next upgrade</span>
-            </h2>
-            <p className="mt-4 max-w-lg text-base leading-7 text-muted">
-              A continuous cycle — we build, refine, and raise the bar so your product
-              keeps winning.
-            </p>
-          </Reveal>
-          <Reveal delay={120}>
-            <CoreSolutionsList />
-          </Reveal>
-        </div>
-      </div>
-    </section>
+    <div id="solutions" className="scroll-mt-24">
+      <AboutSolutionsJourney />
+    </div>
   );
 }
 

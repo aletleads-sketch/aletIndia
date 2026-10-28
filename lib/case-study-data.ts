@@ -42,15 +42,6 @@ export const caseStudyDetails: CaseStudyDetail[] = [
     steps: [["01", "Map the customer need", "We focused the journey around the everyday moment someone needs help at home."], ["02", "Reduce the decisions", "Service details, availability, and booking actions were arranged around what customers need first."], ["03", "Shape the product", "The mobile experience was designed for quick, comfortable use across Android and iOS."]],
   },
   {
-    slug: "cricket-fabtasybuzz", study: findStudy("Cricket FabtasyBuzz"), kicker: "Fantasy sports",
-    heroTitle: "Turn match-day excitement into", heroAccent: "a live digital experience.",
-    challenge: "Cricket FabtasyBuzz needed to make team building, contests, live scoring, and payments feel immediate without making the experience feel complicated.",
-    result: "The platform gives fans an engaging place to follow the action, build teams, and participate in contests from a single mobile experience.",
-    metrics: [["Live", "Match scoring"], ["1", "Fan journey"], ["2", "Mobile platforms"]],
-    outcomes: [["Fast decisions", "Fans can build a team and join the right contest without losing the momentum of match day."], ["Live context", "Scores and contest activity keep the product useful throughout the game."], ["Trusted participation", "Clear flows help users understand their choices before they enter a contest."]],
-    steps: [["01", "Define the live moments", "We identified the moments where fans need quick information and fast actions."], ["02", "Organise the game flow", "Team building, contests, and scores were structured into a familiar mobile rhythm."], ["03", "Design for engagement", "The interface balances energy, clarity, and the confidence needed for real-time participation."]],
-  },
-  {
     slug: "guri-houses", study: findStudy("Guri Houses"), kicker: "Real estate",
     heroTitle: "Property discovery made", heroAccent: "personal and transparent.",
     challenge: "Guri Houses needed a mobile experience that made listings, booking details, and direct owner conversations simpler for people making important property decisions.",
@@ -76,6 +67,15 @@ export const caseStudyDetails: CaseStudyDetail[] = [
     metrics: [["FPS", "Game format"], ["3D", "Game world"], ["Unity", "Development"]],
     outcomes: [["Focused gameplay", "Long-range mechanics and objectives give each encounter a clear purpose."], ["Detailed spaces", "Modular environments support visual immersion and level experimentation."], ["Ready to iterate", "The build supports ongoing improvements to levels, AI behaviour, and game feel."]],
     steps: [["01", "Set the tactical loop", "We defined the rhythm of observing, aiming, making a decision, and acting."], ["02", "Create the environment", "Level spaces were built to support sight lines, movement, and a sense of place."], ["03", "Test and refine", "The game structure leaves room to improve challenge, behaviours, and player feedback over time."]],
+  },
+  {
+    slug: "cricket-fantasybuzz", study: findStudy("Cricket FantasyBuzz"), kicker: "Fantasy sports",
+    heroTitle: "Turn match-day excitement into", heroAccent: "a live digital experience.",
+    challenge: "Cricket FantasyBuzz needed to make team building, contests, live scoring, and payments feel immediate without making the experience feel complicated.",
+    result: "The platform gives fans an engaging place to follow the action, build teams, and participate in contests from a single mobile experience.",
+    metrics: [["Live", "Match scoring"], ["1", "Fan journey"], ["2", "Mobile platforms"]],
+    outcomes: [["Fast decisions", "Fans can build a team and join the right contest without losing the momentum of match day."], ["Live context", "Scores and contest activity keep the product useful throughout the game."], ["Trusted participation", "Clear flows help users understand their choices before they enter a contest."]],
+    steps: [["01", "Define the live moments", "We identified the moments where fans need quick information and fast actions."], ["02", "Organise the game flow", "Team building, contests, and scores were structured into a familiar mobile rhythm."], ["03", "Design for engagement", "The interface balances energy, clarity, and the confidence needed for real-time participation."]],
   },
 ];
 

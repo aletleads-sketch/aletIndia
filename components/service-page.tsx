@@ -441,6 +441,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
   const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   const browserShot = visual.screens?.[0];
+  const screensMockup = visual.screensMockup;
   return (
     <>
       <section className="theme-mesh relative overflow-hidden text-white">
@@ -541,10 +542,22 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
             </h2>
           </Reveal>
           <Reveal delay={120} className="relative mt-12">
-            <div className="theme-gradient absolute -inset-4 rounded-[2.5rem] opacity-25 blur-2xl" aria-hidden="true" />
-            <div className="relative overflow-hidden rounded-[1.6rem] border-[6px] border-night bg-night shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.6)]">
-              <Image src={browserShot} alt="" width={1920} height={1080} className="h-auto w-full" />
-            </div>
+            {screensMockup ? (
+              <Image
+                src={browserShot}
+                alt="All Deliveries website built and launched by ALET"
+                width={1920}
+                height={1080}
+                className="mx-auto h-auto w-full drop-shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.55)]"
+              />
+            ) : (
+              <>
+                <div className="theme-gradient absolute -inset-4 rounded-[2.5rem] opacity-25 blur-2xl" aria-hidden="true" />
+                <div className="relative overflow-hidden rounded-[1.6rem] border-[6px] border-night bg-night shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.6)]">
+                  <Image src={browserShot} alt="" width={1920} height={1080} className="h-auto w-full" />
+                </div>
+              </>
+            )}
           </Reveal>
         </section>
       ) : null}

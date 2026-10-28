@@ -6,7 +6,8 @@ import { AboutSolutionsJourney } from "@/components/about-solutions-journey";
 import { AboutStoryJourney } from "@/components/about-story-journey";
 import { HeroActions, HeroTitle, PhotoHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
-import { StatsBar, TestimonialsSection, yearsOfExperience } from "@/components/sections";
+import { YearsSinceFounding } from "@/components/count-up";
+import { StatsBar, TestimonialsSection } from "@/components/sections";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { achievements, clients, company } from "@/lib/content";
 import { aboutApproach } from "@/lib/pages";
@@ -63,10 +64,12 @@ export default function AboutPage() {
       <section className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-[4.5rem] xl:px-12">
         <div className="grid gap-10 rounded-[2.5rem] bg-surface p-7 sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:p-14">
           <Reveal>
-            <Eyebrow>Building digital possibilities since 2017</Eyebrow>
-            <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-              Ideas deserve more than a <span className="text-gradient-dark">good beginning.</span>
+            <h2 className="text-3xl font-extrabold tracking-tight text-balance text-brand sm:text-4xl">
+              Building digital possibilities since 2017
             </h2>
+            <p className="mt-4 text-xs font-extrabold tracking-tight text-balance">
+              Ideas deserve more than a <span className="text-gradient-dark">good beginning.</span>
+            </p>
           </Reveal>
           <Reveal delay={120} className="space-y-5 text-base leading-8 text-muted">
             {companyIntroduction.map((paragraph, index) => <p key={paragraph} className={index === 0 ? "text-lg text-ink/80" : ""}>{paragraph}</p>)}
@@ -82,7 +85,9 @@ export default function AboutPage() {
             <Photo src="/images/pages/coworking.jpg" className="col-span-2 h-48 rounded-[2rem] sm:h-56" />
           </div>
           <div className="bg-brand-gradient absolute top-1/2 left-1/2 flex h-32 w-32 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border-[6px] border-white text-white shadow-2xl">
-            <span className="text-4xl font-extrabold">{yearsOfExperience}+</span>
+            <span className="text-4xl font-extrabold">
+              <YearsSinceFounding />
+            </span>
             <span className="text-[0.65rem] font-bold tracking-widest uppercase">Years</span>
           </div>
         </Reveal>
@@ -117,9 +122,6 @@ export default function AboutPage() {
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
               A journey that began with <span className="text-gradient-dark">a vision.</span>
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-muted">
-              Our philosophy is simple: build with purpose, improve continuously, and innovate for the future.
-            </p>
           </Reveal>
         </div>
       </section>
@@ -128,13 +130,16 @@ export default function AboutPage() {
       <AboutStoryJourney />
 
       <section className="bg-surface">
-        <div className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-[4.5rem] xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 pt-6 pb-14 sm:px-8 md:pt-8 md:pb-16 xl:px-12">
           <Reveal className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-2xl">
-              <Eyebrow>What makes us different</Eyebrow>
-              <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-                Beyond development. <span className="text-gradient-dark">Beyond delivery.</span>
+              <h2 className="text-5xl font-extrabold tracking-tight text-balance sm:text-6xl">
+                What makes us different
               </h2>
+              <p className="mt-4 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase text-brand">
+                <span className="h-0.5 w-6 rounded-full bg-brand" aria-hidden="true" />
+                Beyond development. <span className="text-gradient-dark">Beyond delivery.</span>
+              </p>
             </div>
             <p className="max-w-md text-base leading-7 text-muted">
               Our focus is not simply on what we build, but on why it matters to your business.
@@ -178,33 +183,37 @@ export default function AboutPage() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-brand/60" />
-        <div className="relative mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-16 sm:px-8 md:py-20 lg:grid-cols-[1.3fr_0.7fr] lg:items-end xl:px-12">
+        <div className="relative mx-auto grid w-full max-w-[92rem] items-start gap-10 px-5 py-12 sm:px-8 md:py-14 lg:grid-cols-[1.2fr_0.8fr] xl:px-12">
           <Reveal>
             <Eyebrow light>Our mission</Eyebrow>
-            <p className="mt-6 text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-5xl">
-              The next chapter starts with <span className="text-gradient">you.</span>
-            </p>
-            <p className="mt-4 text-lg font-bold text-white/90 sm:text-xl">Let&apos;s build something that matters.</p>
+            <h2 className="mt-5 max-w-3xl text-4xl leading-[1.12] font-extrabold tracking-tight text-balance sm:text-5xl">
+              Turn every idea into a product that is{" "}
+              <span className="text-gradient italic">fast, beautiful, and built to last.</span>
+            </h2>
           </Reveal>
-          <Reveal delay={120} className="space-y-4">
-            <p className="text-sm leading-7 text-white/75">Since 2017, our journey has been shaped by ideas, technology, and the ambition to create something better. And while technology will continue to change, our commitment remains the same: helping businesses turn possibilities into progress.</p>
-            <p className="text-sm leading-7 text-white/75">Whether you&apos;re launching a new digital product, enhancing an existing platform, or exploring your next technology opportunity, we&apos;re ready to build alongside you. Your vision. Our expertise. A future built together.</p>
+          <Reveal delay={120} className="max-w-md space-y-6 lg:pt-1">
+            <p className="text-sm leading-7 text-white/75">
+              Stay competitive &amp; let Dramatics Digital transform your business application
+              requirements. ALET India&apos;s award-winning software development service, offers
+              custom Mobile &amp; Web apps development services for entrepreneurs &amp; small
+              businesses. From design to development to testing and support, we provide end-to-end
+              software development services to help in building apps with trusted frameworks.
+            </p>
             <Link
               href="/contact-us"
               className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold"
             >
-              Start a conversation
+              Start a project
               <Arrow />
             </Link>
-            <Link href="/portfolio" className="ml-4 inline-flex items-center gap-2 text-sm font-bold text-white transition hover:text-brand-2">Explore our work <Arrow /></Link>
           </Reveal>
         </div>
       </section>
 
       <AboutSolutionsJourney />
 
-      <section className="px-5 sm:px-8">
-        <Reveal className="mx-auto max-w-[92rem] rounded-[2.5rem] bg-surface px-6 py-12 sm:px-12">
+      <section className="px-5 pt-2 sm:px-8">
+        <Reveal className="mx-auto max-w-[92rem] rounded-[2.5rem] bg-surface px-6 pt-7 pb-10 sm:px-12 sm:pt-8 sm:pb-12">
           <p className="text-center text-xs font-bold tracking-[0.22em] text-muted uppercase">
             Trusted by growing businesses
           </p>

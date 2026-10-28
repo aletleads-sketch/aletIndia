@@ -65,9 +65,9 @@
   .i2{background:linear-gradient(145deg,#f8f3ff,#eadfff);box-shadow:0 20px 36px -16px rgba(110,50,200,.35)}
   .i3{background:linear-gradient(145deg,#f1fcf6,#daf5e7);box-shadow:0 20px 36px -16px rgba(20,150,80,.35)}
 
-  .title{font-size:27px;font-weight:700;letter-spacing:-.02em;color:#0b0d1a;z-index:4}
-  .desc{font-size:16.5px;line-height:23.5px;color:#5a6075;font-weight:500;z-index:4}
-  .item{display:flex;gap:14px;font-size:16.5px;line-height:22.5px;color:#4b5266;font-weight:500;z-index:4}
+  .title{font-size:24px;font-weight:700;letter-spacing:-.02em;color:#0b0d1a;z-index:4}
+  .desc{font-size:14.5px;line-height:21px;color:#5a6075;font-weight:500;z-index:4}
+  .item{display:flex;align-items:flex-start;gap:12px;font-size:14.5px;line-height:20px;color:#4b5266;font-weight:500;z-index:4}
   .chk{flex:0 0 20px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;margin-top:1px}
   .k1{background:#1a5cf5}.k2{background:#8645ec}.k3{background:#18ad5d}
   .pill{border-radius:14px;display:flex;align-items:center;gap:16px;padding:0 20px;font-size:16px;line-height:21px;font-weight:600;z-index:4}
@@ -101,7 +101,14 @@
     <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
   </a>
 
-  <div class="abs stat" style="left:67px;top:658px"><b>9+</b><span>Years<br>Experience</span></div>
+  <div class="abs stat" style="left:67px;top:658px"><b id="years-stat"></b><span>Years<br>Experience</span></div>
+  <script>
+    (function () {
+      var foundingYear = 2017;
+      var yearsEl = document.getElementById('years-stat');
+      if (yearsEl) yearsEl.textContent = Math.max(1, new Date().getFullYear() - foundingYear) + '+';
+    })();
+  </script>
   <div class="abs vline" style="left:182px;top:660px"></div>
   <div class="abs stat" style="left:215px;top:658px"><b>200+</b><span>Projects<br>Delivered</span></div>
   <div class="abs vline" style="left:335px;top:660px"></div>
@@ -122,10 +129,10 @@
     </div>
     <div class="abs title" style="left:34px;top:180px">Development</div>
     <div class="abs desc" style="left:34px;top:222px;width:240px">We turn your ideas into robust, scalable and high-performing digital products tailored to your business goals.</div>
-    <div class="abs item" style="left:34px;top:328px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Requirement analysis<br>&amp; planning</div>
-    <div class="abs item" style="left:34px;top:381px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Modern technology stack</div>
-    <div class="abs item" style="left:34px;top:412px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Clean and scalable<br>architecture</div>
-    <div class="abs item" style="left:34px;top:465px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Quality-driven development</div>
+    <div class="abs item" style="left:34px;top:312px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Requirement analysis<br>&amp; planning</div>
+    <div class="abs item" style="left:34px;top:368px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Modern technology stack</div>
+    <div class="abs item" style="left:34px;top:404px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Clean and scalable<br>architecture</div>
+    <div class="abs item" style="left:34px;top:460px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Quality-driven development</div>
     <div class="abs item" style="left:34px;top:496px;width:250px"><span class="chk k1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>On-time delivery</div>
     <div class="abs pill p1" style="left:34px;top:540px;width:222px;height:70px">
       <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#1a55e6" stroke-width="2" stroke-linecap="round"><path d="M17 9a7 7 0 0 0-4 12.8V25h8v-3.2A7 7 0 0 0 17 9z"/><path d="M14 28h6"/><path d="M15 16l2 3 2-3"/><path d="M17 2v3M6.5 6.5l2 2M27.5 6.5l-2 2M3 17h3M28 17h3"/></svg>
@@ -244,11 +251,15 @@
     el.style.clipPath = `path('${d}')`;
   });
 
-  // Scale the 1600x960 canvas to fit screen width
+  // Scale the 1600x960 canvas down and keep it centered — never stretch past design size
   function fit(){
-    const s = window.innerWidth / 1600;
-    document.getElementById('stage').style.transform = `scale(${s})`;
-    document.getElementById('viewport').style.height = (960 * s) + 'px';
+    const s = Math.min(window.innerWidth / 1600, 1) * 0.76;
+    const stage = document.getElementById('stage');
+    const viewport = document.getElementById('viewport');
+    stage.style.transformOrigin = 'top center';
+    stage.style.left = '50%';
+    stage.style.transform = `translateX(-50%) scale(${s})`;
+    viewport.style.height = Math.ceil(900 * s) + 'px';
   }
   window.addEventListener('resize', fit); fit();
 </script>

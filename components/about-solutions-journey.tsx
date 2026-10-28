@@ -6,9 +6,9 @@ export function AboutSolutionsJourney() {
     <section className="w-full overflow-hidden bg-[#f6f8fd]">
       <HtmlEmbed
         title="Alet India solution lifecycle"
-        src={assetPath("/alet-india-cycle.html")}
+        src={`${assetPath("/alet-india-cycle.html")}?v=7`}
         className="block w-full border-0"
-        fallbackHeight={1152}
+        fallbackHeight={684}
       />
     </section>
   );

@@ -43,7 +43,7 @@ insert into public.client_logos (client_name, logo_url, status, sort_order) valu
   ('Tajika', '/images/clients/tajika.png', 'published', 20),
   ('All Deliveries', '/images/clients/deliveries.png', 'published', 30),
   ('Lenitive Pharmaceuticals', '/images/clients/lenitive.png', 'published', 40),
-  ('Cricket FabtasyBuzz', '/images/clients/cfb.png', 'published', 50),
+  ('Cricket FantasyBuzz', '/images/clients/cfb.png', 'published', 50),
   ('Tripbins', '/images/clients/tripbins.png', 'published', 60),
   ('Porters', '/images/clients/porters.png', 'published', 70),
   ('Journey Adventure', '/images/clients/ja.jpg', 'published', 80);
@@ -65,7 +65,7 @@ insert into public.testimonials (quote, client_name, client_role, image_url, sta
   ('ALET INDIA is a team of truly devoted people with the best knowledge of their respective fields. Innovative technology are one of the most considered factors by Alet India. Fully satisfied. You guys are awesome! Thanks.', 'RK Sharma', 'Founder of RK Travels', '/images/people/rk.jpg', 'published', 10),
   ('Alet India has supported my business in every step of success. Very satisfied with the service.', 'Aadi', 'Founder of Lenitive Pharmaceuticals', '/images/people/aadi.jpg', 'published', 20),
   ('I heartily appreciate to the ALET INDIA team who offers the tremendous service & support. So i will recommend this company to everyone.', 'INSIGHT STUDIO', 'Educational Service provider Company', '/images/people/insight.png', 'published', 30),
-  ('Thanks to the ALET INDIA who offers the amazing and wonderful support that helps my business to the next level. You guys are splendid and I will recommend this company to everyone', 'Cricket FabtasyBuzz', 'Cricket Fantasy Company', '/images/people/cricket.png', 'published', 40),
+  ('Thanks to the ALET INDIA who offers the amazing and wonderful support that helps my business to the next level. You guys are splendid and I will recommend this company to everyone', 'Cricket FantasyBuzz', 'Cricket Fantasy Company', '/images/people/cricket.png', 'published', 40),
   ('Working with the ALET INDIA is a pleasant experience. They understand your requirements well and propose solutions that best suit you.!', 'Mayank Agarwal', 'CEO of Trisect RPO Group', '/images/people/mayank.png', 'published', 50);
 
 insert into public.site_sections (section_key, eyebrow, heading, accent_text, intro, body, status, sort_order) values

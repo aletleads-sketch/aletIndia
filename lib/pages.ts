@@ -348,6 +348,8 @@ export type ServiceVisual = {
   /** Use contain for illustration assets that include important copy near their edges. */
   galleryFit?: ["cover" | "contain", "cover" | "contain", "cover" | "contain"];
   screens?: string[];
+  /** Screen assets that already include a device mockup — don't wrap them in extra chrome. */
+  screensMockup?: boolean;
   stat: { value: string; label: string };
 };
 
@@ -379,7 +381,8 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     theme: ["#2563eb", "#7c3aed"],
     gallery: ["/images/pages/web-app-development-2.jpeg", "/images/pages/web-app-development-3.jpeg", "/images/pages/web-app-development.jpeg"],
     galleryFit: ["contain", "contain", "contain"],
-    screens: ["/images/ALL-DEIVERIES.png"],
+    screens: ["/images/all-deliveries-website.png"],
+    screensMockup: true,
     stat: { value: "100%", label: "Responsive builds" },
   },
   "graphic-design": {

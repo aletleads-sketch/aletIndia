@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CountUp } from "@/components/count-up";
+import { CountUp, YearsCountUp } from "@/components/count-up";
 import { InquireForm } from "@/components/inquire-form";
 import { Reveal } from "@/components/reveal";
 import { TestimonialSlider } from "@/components/testimonial-slider";
 import { Arrow, Eyebrow } from "@/components/ui";
-import { company, ideology, process as processSteps, services, stats } from "@/lib/content";
+import { company, getYearsOfExperience, ideology, process as processSteps, services, stats } from "@/lib/content";
 
-export const yearsOfExperience = 2026 - company.established;
+export const yearsOfExperience = getYearsOfExperience();
 
 type Service = (typeof services)[number];
 
@@ -32,7 +32,7 @@ export function StatsBar() {
         {items.map((item) => (
           <div key={item.label} className="bg-white px-6 py-6 text-center sm:py-8">
             <p className="text-gradient-dark text-4xl font-extrabold tracking-tight sm:text-5xl">
-              <CountUp value={item.value} />+
+              {item.label === "Years of Experience" ? <YearsCountUp /> : <CountUp value={item.value} />}+
             </p>
             <p className="mt-2 text-sm font-medium text-muted">{item.label}</p>
           </div>

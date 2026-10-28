@@ -48,7 +48,7 @@ export function LegacyAllDeliveriesCaseStudy() {
           <Reveal delay={140} className="relative mx-auto w-full max-w-2xl">
             <div className="absolute -inset-5 rounded-[2.5rem] bg-brand/25 blur-3xl" aria-hidden="true" />
             <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/10 p-3 shadow-[0_32px_80px_-28px_rgb(0_0_0_/_0.7)] backdrop-blur">
-              <Image src="/images/ALL-DEIVERIES.png" alt="All Deliveries website" width={1200} height={700} priority className="h-auto w-full rounded-[1.35rem]" />
+              <Image src="/images/all-deliveries-website.png" alt="All Deliveries website" width={1200} height={700} priority className="h-auto w-full rounded-[1.35rem]" />
             </div>
             <div className="glass absolute -bottom-6 -left-3 rounded-2xl px-5 py-4 text-white sm:-left-8">
               <p className="text-2xl font-extrabold">All Deliveries</p>
@@ -126,7 +126,7 @@ export function LegacyAllDeliveriesCaseStudy() {
       <section className="px-5 py-16 sm:px-8 md:py-24 xl:px-12">
         <div className="mx-auto grid w-full max-w-[92rem] gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <Reveal className="relative overflow-hidden rounded-[2rem] bg-[#c2410c] p-5 sm:p-8">
-            <Image src="/images/ALL-DEIVERIES.png" alt="All Deliveries responsive website design" width={1200} height={700} className="h-auto w-full rounded-[1.35rem] shadow-[0_22px_44px_-18px_rgb(0_0_0_/_0.55)]" />
+            <Image src="/images/all-deliveries-website.png" alt="All Deliveries responsive website design" width={1200} height={700} className="h-auto w-full rounded-[1.35rem] shadow-[0_22px_44px_-18px_rgb(0_0_0_/_0.55)]" />
           </Reveal>
           <Reveal delay={120}>
             <Eyebrow>The result</Eyebrow>

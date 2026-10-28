@@ -9,6 +9,11 @@ export const company = {
   established: 2017,
 };
 
+/** Years of experience = this calendar year minus founding year (2017). */
+export function getYearsOfExperience(now = new Date()) {
+  return Math.max(1, now.getFullYear() - company.established);
+}
+
 export const hero = {
   kicker: "Inspired by Technology",
   title: "Your Trusted Technology Partner",
@@ -172,7 +177,7 @@ export const about = {
 
 export const stats = [
   { label: "Clients", value: 500 },
-  { label: "Projects", value: 1000 },
+  { label: "Projects", value: 500 },
   { label: "Countries", value: 20 },
 ];
 
@@ -181,7 +186,7 @@ export const clients = [
   { name: "Tajika", logo: "/images/clients/tajika.png" },
   { name: "All Deliveries", logo: "/images/clients/deliveries.png" },
   { name: "Lenitive Pharmaceuticals", logo: "/images/clients/lenitive.png" },
-  { name: "Cricket FabtasyBuzz", logo: "/images/clients/cfb.png" },
+  { name: "Cricket FantasyBuzz", logo: "/images/clients/cfb.png" },
   { name: "Tripbins", logo: "/images/clients/tripbins.png" },
   { name: "Porters", logo: "/images/clients/porters.png" },
   { name: "Journey Adventure", logo: "/images/clients/ja.jpg" },
@@ -204,18 +209,8 @@ export const showcase = [
     alt: "Tajika app booking screen",
   },
   {
-    name: "Cricket FabtasyBuzz",
-    src: "/images/work/app-1.png",
-    alt: "Cricket FabtasyBuzz mobile app",
-  },
-  {
-    name: "Cricket FabtasyBuzz",
-    src: "/images/work/app-3.png",
-    alt: "Cricket FabtasyBuzz app screen",
-  },
-  {
     name: "All Deliveries",
-    src: "/images/ALL-DEIVERIES.png",
+    src: "/images/all-deliveries-website.png",
     alt: "All Deliveries courier and logistics website",
   },
   {
@@ -263,6 +258,16 @@ export const showcase = [
     src: "/images/LUDO-ZONE.png",
     alt: "Ludo Game multiplayer board game",
   },
+  {
+    name: "Cricket FantasyBuzz",
+    src: "/images/work/app-1.png",
+    alt: "Cricket FantasyBuzz mobile app",
+  },
+  {
+    name: "Cricket FantasyBuzz",
+    src: "/images/work/app-3.png",
+    alt: "Cricket FantasyBuzz app screen",
+  },
 ];
 
 export const caseStudies = [
@@ -281,16 +286,6 @@ export const caseStudies = [
     ],
   },
   {
-    name: "Cricket FabtasyBuzz",
-    category: "Fantasy Sports App",
-    summary:
-      "A fantasy cricket platform where fans build teams, join contests, and follow live match scoring.",
-    tags: ["Cross-platform", "Real-time", "Payments"],
-    color: "from-[#0e7490] to-[#06b6d4]",
-    logo: "/images/clients/cfb.png",
-    screens: ["/images/work/app-1.png", "/images/work/app-3.png"],
-  },
-  {
     name: "All Deliveries",
     category: "Courier & Logistics",
     summary:
@@ -298,8 +293,9 @@ export const caseStudies = [
     tags: ["Website", "Web Panel", "Tracking"],
     color: "from-[#c2410c] to-[#f97316]",
     logo: "/images/clients/deliveries.png",
-    screens: ["/images/ALL-DEIVERIES.png"],
+    screens: ["/images/all-deliveries-website.png"],
     landscape: true,
+    mockup: true,
   },
   {
     name: "All Deliveries",
@@ -309,8 +305,7 @@ export const caseStudies = [
     tags: ["Android", "iOS", "Live Tracking"],
     color: "from-[#b91c1c] to-[#ef4444]",
     logo: "/images/clients/deliveries.png",
-    screens: ["/images/all_deliveries_app1.jpeg", "/images/all-deliveries-navigation-drawer.png"],
-    framed: true,
+    screens: ["/images/all_deliveries_home.png", "/images/work/all-deliveries-app-menu.png"],
   },
   {
     name: "Guri Houses",
@@ -319,7 +314,7 @@ export const caseStudies = [
       "Guri Houses is a sleek mobile app that makes property deals simple and transparent. With clear listings, easy booking, and direct owner communication, it delivers a modern, user-friendly experience for buyers and sellers alike.",
     tags: ["Android", "iOS", "UI/UX"],
     color: "from-[#1d4ed8] to-[#3b82f6]",
-    logo: "/images/GURI-HOUSES.png",
+    logo: "/images/clients/guri-houses.png",
     screens: ["/images/GURI-HOUSES.png", "/images/GURI-HOUSES-2.png"],
   },
   {
@@ -329,7 +324,7 @@ export const caseStudies = [
       "Quick Savaari is a fast, reliable ride-booking platform built for convenience. With a simple interface, transparent fare details, and easy booking options, it connects users to affordable cab services in just a few taps. Designed for clarity and trust, Quick Savaari makes everyday travel seamless and hassle-free.",
     tags: ["Android", "iOS", "Maps"],
     color: "from-[#ea580c] to-[#fbbf24]",
-    logo: "/images/QUICK-SAWARI.png",
+    logo: "/images/clients/quick-savaari.png",
     screens: [
       "/images/QUICK-SAWARI.png",
       "/images/QUICK-SAWARI-2.png",
@@ -343,7 +338,7 @@ export const caseStudies = [
       "Ramba is a modern clothing and lifestyle shopping app built for simplicity and variety. With intuitive navigation, clear product categories, and highlighted discounts, it offers users a seamless way to browse, discover, and purchase fashion essentials. Designed to combine convenience with style, Ramba makes online shopping engaging and effortless.",
     tags: ["E-Commerce", "Android", "iOS"],
     color: "from-[#be185d] to-[#f472b6]",
-    logo: "/images/ROMBA-MOBILE-SHOPPING-APP.png",
+    logo: "/images/clients/ramba.png",
     screens: ["/images/ROMBA-MOBILE-SHOPPING-APP.png"],
   },
   {
@@ -353,7 +348,7 @@ export const caseStudies = [
       "Reflut is an online clothing brand app designed to bring fashion closer to users with a smooth, modern interface. It offers easy navigation through categories, engaging visuals, and a seamless shopping experience from browsing collections to checkout. Built for style and convenience, Reflut makes discovering and purchasing fashion effortless.",
     tags: ["E-Commerce", "Android", "UI/UX"],
     color: "from-[#7c3aed] to-[#c084fc]",
-    logo: "/images/Refult.png",
+    logo: "/images/clients/refult.jpg",
     screens: [
       "/images/Refult.png",
       "/images/REFULT-2.png",
@@ -378,8 +373,18 @@ export const caseStudies = [
       "Ludo Game is a vibrant digital adaptation of the classic board game, focused on quick multiplayer matches and competitive play. With a colorful, user-friendly interface and clear entry/prize mechanics, it makes casual and tournament-style Ludo accessible and engaging.",
     tags: ["Multiplayer", "Android", "iOS"],
     color: "from-[#b45309] to-[#f59e0b]",
-    logo: "/images/LUDO-ZONE.png",
+    logo: "/images/clients/ludo-zone.png",
     screens: ["/images/LUDO-ZONE.png"],
+  },
+  {
+    name: "Cricket FantasyBuzz",
+    category: "Fantasy Sports App",
+    summary:
+      "A fantasy cricket platform where fans build teams, join contests, and follow live match scoring.",
+    tags: ["Cross-platform", "Real-time", "Payments"],
+    color: "from-[#0e7490] to-[#06b6d4]",
+    logo: "/images/clients/cfb.png",
+    screens: ["/images/work/app-1.png", "/images/work/app-3.png"],
   },
 ];
 
@@ -432,29 +437,44 @@ export const industries = [
 
 export const faqs = [
   {
-    question: "Do you build both Android and iOS apps?",
+    question: "What services does Alet India Softwares offer?",
     answer:
-      "Yes. We build native Android apps in Kotlin and Java, and cross-platform apps with React Native and Flutter, so one product can run on Android and iOS.",
+      "Alet India Softwares delivers customized technology solutions, including mobile application development, web application development, UI/UX design, software modernization, and digital transformation services. We help businesses turn innovative ideas into reliable, scalable digital products.",
   },
   {
-    question: "Which services does ALET India offer?",
+    question: "Why should I choose Alet India Softwares?",
     answer:
-      "Mobile and web application development, cross-platform apps, graphic and UX/UI design, digital marketing, AI & data solutions, Salesforce / CRM, and game development.",
+      "With experience dating back to 2017, Alet India combines technical expertise, transparent communication, and a client-focused approach. We prioritize understanding your business objectives and delivering solutions that create measurable business value.",
   },
   {
-    question: "How does a project move from idea to launch?",
+    question: "How much does it cost to develop an application?",
     answer:
-      "We follow five steps: requirements, designing, development, testing, and delivery. Every project is delivered with a user manual so your team can run it without hindrance.",
+      "The cost depends on functionality, complexity, technology choices, integrations, and resource requirements. We evaluate your business needs and provide a customized proposal with estimated costs, timelines, and deliverables.",
   },
   {
-    question: "Do you work with clients outside India?",
+    question: "How long does it take to complete a project?",
     answer:
-      "Yes. We are based in New Delhi and have delivered projects for clients in more than 20 countries. You can also hire us through Upwork, PeoplePerHour, Freelancer, and Guru.",
+      "The cost depends on functionality, complexity, technology choices, integrations, and resource requirements. We evaluate your business needs and provide a customized proposal with estimated costs, timelines, and deliverables.",
   },
   {
-    question: "Can you improve an app we already have?",
+    question: "Can I hire dedicated developers?",
     answer:
-      "Yes. Beyond new builds, we evaluate and enhance existing products and upgrade their technology so they keep running smoothly and gain new features.",
+      "For projects requiring ongoing development or specialized technical expertise, we can discuss dedicated resource arrangements based on your requirements, technology stack, and expected engagement duration.",
+  },
+  {
+    question: "How can I track my project's progress?",
+    answer:
+      "We believe in maintaining transparency throughout the development lifecycle. Depending on the engagement model, clients can receive regular progress reports, milestone updates, product demonstrations, and structured communication to stay informed about project activities.",
+  },
+  {
+    question: "Will I receive the source code and ownership?",
+    answer:
+      "Source code access, intellectual property rights, and ownership arrangements are defined in the project agreement. We encourage clear contractual terms so clients understand their rights and responsibilities before development begins.",
+  },
+  {
+    question: "Do you provide post-launch maintenance and support?",
+    answer:
+      "Yes, post-launch support and ongoing maintenance can be included in the engagement. Depending on the agreed scope, services may cover bug fixes, performance improvements, security updates, feature enhancements, and technology upgrades.",
   },
 ];
 
@@ -514,7 +534,7 @@ export const testimonials = [
   {
     quote:
       "Thanks to the ALET INDIA who offers the amazing and wonderful support that helps my business to the next level. You guys are splendid and I will recommend this company to everyone",
-    name: "Cricket FabtasyBuzz",
+    name: "Cricket FantasyBuzz",
     role: "Cricket Fantasy Company",
     image: "/images/people/cricket.png",
     fit: "contain" as const,

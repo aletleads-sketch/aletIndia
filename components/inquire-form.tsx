@@ -6,10 +6,10 @@ import { CustomCaptcha, type CaptchaResponse } from "@/components/custom-captcha
 import { company, services } from "@/lib/content";
 
 const budgets = [
-  "Under $5,000",
-  "$5,000–$15,000",
-  "$15,000–$50,000",
-  "$50,000+",
+  "Under $10,000",
+  "$10,000–$20,000",
+  "$20,000–$50,000",
+  "$50,000–$1M",
   "Not decided",
 ];
 
@@ -29,7 +29,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
-  const [budget, setBudget] = useState("$50,000+");
+  const [budget, setBudget] = useState("$50,000–$1M");
   const [startDate, setStartDate] = useState("Within 1–3 months");
   const [captcha, setCaptcha] = useState<CaptchaResponse | null>(null);
   const [captchaRefreshKey, setCaptchaRefreshKey] = useState(0);

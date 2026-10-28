@@ -27,21 +27,33 @@ export function CaseStudyCard({
 }) {
   const landscape = "landscape" in study && study.landscape;
   const framed = "framed" in study && study.framed;
+  const mockup = "mockup" in study && study.mockup;
   const single = study.screens.length === 1;
-  const browserPreview = landscape && study.name === "All Deliveries";
+  const browserPreview = landscape && study.name === "All Deliveries" && !mockup;
   return (
     <article
       className={`hover-glow overflow-hidden rounded-[2rem] border border-line bg-white shadow-[0_20px_60px_-30px_rgb(30_27_75_/_0.35)] ${className}`}
       aria-hidden={hidden || undefined}
     >
       <div
-        className={`flex h-72 justify-center px-5 ${
-          landscape
-            ? `flex-col items-center gap-2 ${single ? "justify-center py-6" : "py-4"}`
-            : "items-end gap-3 pt-10"
-        } ${cardColors[colorIndex % cardColors.length]}`}
+        className={`flex h-72 justify-center ${
+          mockup
+            ? "items-center bg-[#0d7c8c] px-3 py-4"
+            : landscape
+              ? `flex-col items-center gap-2 px-5 ${single ? "justify-center py-6" : "py-4"}`
+              : "items-end gap-3 px-5 pt-10"
+        } ${mockup ? "" : cardColors[colorIndex % cardColors.length]}`}
       >
-        {landscape ? (
+        {mockup ? (
+          <Image
+            src={study.screens[0]}
+            alt=""
+            width={1200}
+            height={700}
+            draggable={false}
+            className="max-h-full w-full object-contain drop-shadow-[0_16px_28px_rgb(0_0_0_/_0.28)]"
+          />
+        ) : landscape ? (
           <>
             <div
               className={`relative w-full overflow-hidden rounded-[1.35rem] border-[8px] border-[#161b27] bg-[#161b27] p-1.5 shadow-[0_18px_35px_-18px_rgb(0_0_0_/_0.7)] ${

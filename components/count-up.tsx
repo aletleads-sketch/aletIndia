@@ -1,6 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { getYearsOfExperience } from "@/lib/content";
+
+export function YearsCountUp() {
+  const [years, setYears] = useState(getYearsOfExperience);
+  useEffect(() => {
+    setYears(getYearsOfExperience());
+  }, []);
+  return <CountUp value={years} />;
+}
+
+export function YearsSinceFounding() {
+  const [years, setYears] = useState(getYearsOfExperience);
+  useEffect(() => {
+    setYears(getYearsOfExperience());
+  }, []);
+  return <>{years}+</>;
+}
 
 export function CountUp({ value }: { value: number }) {
   const [current, setCurrent] = useState(0);
