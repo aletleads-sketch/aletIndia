@@ -8,7 +8,7 @@ export function AboutJourney() {
         title="ALET India journey from 2017 to today"
         src={assetPath("/alet-india-journey.html")}
         className="block w-full border-0"
-        fallbackHeight={790}
+        fallbackHeight={620}
       />
     </section>
   );

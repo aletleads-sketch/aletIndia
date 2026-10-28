@@ -356,7 +356,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "split",
     theme: ["#4f46e5", "#06b6d4"],
     gallery: ["/images/services/android-app-development.jpg", "/images/services/ios-app-development.jpg", "/images/pages/developers.jpg"],
-    galleryFit: ["contain", "contain", "cover"],
+    galleryFit: ["cover", "cover", "cover"],
     screens: [
       "/images/work/tajika-1.png",
       "/images/all_deliveries_home.png",
