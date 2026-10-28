@@ -58,6 +58,7 @@ export function ServicePage({ id }: { id: string }) {
 
 function SplitLayout({ service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
+  const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   return (
     <>
       <section className="theme-mesh relative overflow-hidden text-white">
@@ -72,9 +73,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
 
           <div className="rise d2 relative mx-auto w-full max-w-xl">
             <div className="grid h-[26rem] grid-cols-[1.3fr_1fr] grid-rows-2 gap-4 sm:h-[30rem]">
-              <Photo src={main} alt={service.imageAlt} priority className="row-span-2 rounded-[2rem]" />
-              <Photo src={second} className="rounded-[1.6rem]" />
-              <Photo src={third} className="rounded-[1.6rem]" />
+              <Photo src={main} alt={service.imageAlt} priority fit={galleryFit[0]} className="row-span-2 rounded-[2rem] bg-white/10" />
+              <Photo src={second} fit={galleryFit[1]} className="rounded-[1.6rem] bg-white/10" />
+              <Photo src={third} fit={galleryFit[2]} className="rounded-[1.6rem] bg-white/10" />
             </div>
             <StatBadge visual={visual} className="float absolute -bottom-8 -left-4 sm:-left-10" />
             <div className="float float-b glass absolute -top-6 right-6 rounded-2xl px-4 py-3 text-xs font-bold">
@@ -117,6 +118,7 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
                   />
                   <Photo
                     src={visual.gallery[index % visual.gallery.length]}
+                    fit={galleryFit[index % galleryFit.length]}
                     className="relative h-72 rounded-[2rem] sm:h-96"
                   />
                 </div>
@@ -219,6 +221,7 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
 
 function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
+  const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   const [a, b] = visual.theme;
   return (
     <>
@@ -262,9 +265,9 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
           </div>
         </Reveal>
         <Reveal delay={120} className="relative pb-16 sm:pr-16">
-          <Photo src={second} className="h-80 rounded-[2rem] sm:h-[26rem]" />
+          <Photo src={second} fit={galleryFit[1]} className="h-80 rounded-[2rem] bg-[#f4f7fb] sm:h-[26rem]" />
           <div className="absolute right-0 -bottom-2 w-1/2 overflow-hidden rounded-[1.6rem] border-[6px] border-white shadow-[0_30px_60px_-25px_rgb(30_27_75_/_0.6)]">
-            <Photo src={third} className="h-44 sm:h-56" />
+            <Photo src={third} fit={galleryFit[2]} className="h-44 bg-[#f4f7fb] sm:h-56" />
           </div>
           <div className="theme-gradient absolute -top-5 -left-5 -z-10 h-32 w-32 rounded-[2rem]" aria-hidden="true" />
         </Reveal>
@@ -281,7 +284,8 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
           <ul className={`mt-12 grid gap-6 ${detail.sections.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2"}`}>
             {detail.sections.map((section, index) => {
               const image = visual.gallery[(index + 1) % visual.gallery.length];
-              const diagram = /hybrid_app|same_code_different/.test(image);
+              const fit = galleryFit[(index + 1) % galleryFit.length];
+              const diagram = fit === "contain";
               return (
               <li key={section.title}>
                 <Reveal delay={index * 90} className="h-full">
@@ -435,6 +439,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
 
 function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
+  const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   const browserShot = visual.screens?.[0];
   return (
     <>
@@ -454,17 +459,18 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
 
       <section className="relative z-10 -mt-40 px-5 sm:px-8 lg:-mt-48">
         <div className="mx-auto grid max-w-6xl grid-cols-3 items-end gap-3 sm:gap-5">
-          <Photo src={second} className="rise d2 h-40 rounded-[1.6rem] border-4 border-white shadow-xl sm:h-64" />
+          <Photo src={second} fit={galleryFit[1]} className="rise d2 h-40 rounded-[1.6rem] border-4 border-white bg-[#f4f7fb] shadow-xl sm:h-64" />
           <div className="rise d3 relative">
             <Photo
               src={main}
               alt={service.imageAlt}
               priority
-              className="h-56 rounded-[2rem] border-4 border-white shadow-2xl sm:h-80"
+              fit={galleryFit[0]}
+              className="h-56 rounded-[2rem] border-4 border-white bg-[#f4f7fb] shadow-2xl sm:h-80"
             />
             <StatBadge visual={visual} className="absolute -bottom-6 left-1/2 hidden -translate-x-1/2 sm:flex" />
           </div>
-          <Photo src={third} className="rise d4 h-40 rounded-[1.6rem] border-4 border-white shadow-xl sm:h-64" />
+          <Photo src={third} fit={galleryFit[2]} className="rise d4 h-40 rounded-[1.6rem] border-4 border-white bg-[#f4f7fb] shadow-xl sm:h-64" />
         </div>
       </section>
 
@@ -491,7 +497,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
             <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
               What we <span className="theme-text">deliver</span>
             </h2>
-            <Photo src={main} className="mt-8 h-72 rounded-[2rem] sm:h-80" />
+            <Photo src={main} fit={galleryFit[0]} className="mt-8 h-72 rounded-[2rem] bg-[#f4f7fb] sm:h-80" />
             <ul className="mt-6 flex flex-wrap gap-2">
               {detail.stack.map((tech) => (
                 <li key={tech} className="rounded-full bg-white px-3.5 py-1.5 text-xs font-bold text-ink ring-1 ring-line">

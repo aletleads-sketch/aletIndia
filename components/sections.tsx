@@ -253,11 +253,11 @@ export function ContactSection({
           </div>
           <div className="relative mt-8 min-h-[14rem] flex-1 overflow-hidden rounded-[2rem] border border-white/10 lg:min-h-0">
             <Image
-              src="/images/pages/contact-us-office.jpg"
-              alt="ALET India contact team and office details"
+              src="/images/pages/alet-india-contact-us.png"
+              alt="Contact ALET India"
               fill
               sizes="(min-width: 1024px) 42vw, 100vw"
-              className="object-cover object-center"
+              className="bg-white object-contain object-center"
             />
           </div>
         </Reveal>

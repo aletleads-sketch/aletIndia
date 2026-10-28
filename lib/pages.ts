@@ -345,6 +345,8 @@ export type ServiceVisual = {
   layout: ServiceLayout;
   theme: [string, string];
   gallery: [string, string, string];
+  /** Use contain for illustration assets that include important copy near their edges. */
+  galleryFit?: ["cover" | "contain", "cover" | "contain", "cover" | "contain"];
   screens?: string[];
   stat: { value: string; label: string };
 };
@@ -354,6 +356,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "split",
     theme: ["#4f46e5", "#06b6d4"],
     gallery: ["/images/services/android-app-development.jpg", "/images/services/ios-app-development.jpg", "/images/pages/developers.jpg"],
+    galleryFit: ["contain", "contain", "cover"],
     screens: [
       "/images/work/tajika-1.png",
       "/images/all_deliveries_home.png",
@@ -367,6 +370,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "immersive",
     theme: ["#0d9488", "#22d3ee"],
     gallery: ["/images/pages/developers.jpg", "/images/services/hybrid-app-development.jpg", "/images/same_code_different_architecture.jpeg"],
+    galleryFit: ["cover", "contain", "contain"],
     screens: ["/images/work/all-deliveries-app-home.png", "/images/QUICK-SAWARI-2.png", "/images/work/all-deliveries-app-menu.png"],
     stat: { value: "1", label: "Codebase for every device" },
   },
@@ -374,6 +378,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "editorial",
     theme: ["#2563eb", "#7c3aed"],
     gallery: ["/images/pages/web-app-development-2.jpeg", "/images/pages/web-app-development-3.jpeg", "/images/pages/web-app-development.jpeg"],
+    galleryFit: ["contain", "contain", "contain"],
     screens: ["/images/ALL-DEIVERIES.png"],
     stat: { value: "100%", label: "Responsive builds" },
   },

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { CoreSolutionsList } from "@/components/core-solutions";
+import { AboutJourney } from "@/components/about-journey";
+import { AboutSolutionsJourney } from "@/components/about-solutions-journey";
+import { AboutStoryJourney } from "@/components/about-story-journey";
 import { HeroActions, HeroTitle, PhotoHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { StatsBar, TestimonialsSection, yearsOfExperience } from "@/components/sections";
@@ -15,68 +17,11 @@ export const metadata: Metadata = {
     "ALET India Softwares is an India-based software development and digital solutions company building practical technology since 2017.",
 };
 
-const journey = [
-  {
-    stage: "2017",
-    title: "Where It All Began",
-    body: "ALET India started with a vision to make dependable, high-quality technology solutions accessible to businesses of different sizes.",
-  },
-  {
-    stage: "Growth",
-    title: "Growing Beyond Boundaries",
-    body: "We expanded from individual development projects into mobile, web, user experience, and digital services for diverse markets.",
-  },
-  {
-    stage: "Evolution",
-    title: "Evolving With Technology",
-    body: "Our focus grew from building new products to enhancing platforms, modernising technology, and supporting the full product lifecycle.",
-  },
-  {
-    stage: "Today",
-    title: "Building for Tomorrow",
-    body: "We continue to bring clarity to complex ideas and create digital solutions with lasting value as a technology partner, not only a vendor.",
-  },
-];
-
 const companyIntroduction = [
   "Every great digital experience begins with an idea. At Alet India Softwares, we turn those ideas into technology that helps businesses move forward.",
   "Established in 2017, Alet India Softwares is an India-based software development and digital solutions company committed to helping businesses innovate, adapt, and grow.",
   "From custom mobile applications and web platforms to intuitive digital experiences and application modernization, we combine technology, creativity, and business understanding to deliver solutions built around real-world challenges.",
   "Our philosophy is simple: Build with purpose. Improve continuously. Innovate for the future.",
-];
-
-const storyNarrative = [
-  {
-    stage: "2017 · Where It All Began",
-    paragraphs: [
-      "Alet India Softwares began its journey in 2017 with a vision to make dependable, high-quality technology solutions accessible to businesses of different sizes.",
-      "At a time when digital adoption was transforming how organizations operated, we recognized an opportunity to help businesses bridge the gap between their ideas and the technology needed to realize them.",
-      "Our foundation was built on a commitment to understanding client requirements, creating practical solutions, and building relationships based on trust.",
-    ],
-  },
-  {
-    stage: "Growing Beyond Boundaries",
-    paragraphs: [
-      "As our journey progressed, our ambitions grew beyond individual development projects.",
-      "We expanded our focus to support businesses with mobile applications, web solutions, user experience design, and digital services.",
-      "Our existing company profile describes an international service reach across more than 10 countries. This global perspective continues to shape how we approach collaboration and technology for diverse markets.",
-    ],
-  },
-  {
-    stage: "Evolving With Technology",
-    paragraphs: [
-      "Technology has changed significantly since our founding, and so have the expectations of the businesses that depend on it.",
-      "Our approach has evolved from building digital solutions to supporting their complete lifecycle: developing new applications, enhancing existing platforms, modernizing technology, and helping products remain relevant as business needs change.",
-    ],
-  },
-  {
-    stage: "Today · Building for Tomorrow",
-    paragraphs: [
-      "Today, Alet India Softwares continues its journey with the same entrepreneurial spirit that inspired its beginning.",
-      "We aim to be more than a development vendor. We want to be a technology partner that understands business challenges, brings clarity to complex ideas, and creates digital solutions with lasting value.",
-      "Our journey began in 2017. Our ambition continues to grow.",
-    ],
-  },
 ];
 
 const whoWeAre = [
@@ -115,7 +60,7 @@ export default function AboutPage() {
 
       <StatsBar />
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-[4.5rem] xl:px-12">
         <div className="grid gap-10 rounded-[2.5rem] bg-surface p-7 sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:p-14">
           <Reveal>
             <Eyebrow>Building digital possibilities since 2017</Eyebrow>
@@ -129,7 +74,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-14 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2 xl:px-12">
+      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-14 px-5 py-14 sm:px-8 md:pt-[4.5rem] md:pb-12 lg:grid-cols-2 xl:px-12">
         <Reveal from="left" className="relative">
           <div className="grid grid-cols-2 gap-4">
             <Photo src="/images/pages/office.jpg" className="h-64 rounded-[2rem] sm:h-80" />
@@ -165,7 +110,7 @@ export default function AboutPage() {
         </Reveal>
       </section>
 
-      <section className="bg-surface px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+      <section className="bg-surface px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <div className="mx-auto w-full max-w-[92rem]">
           <Reveal className="max-w-2xl">
             <Eyebrow>Our story</Eyebrow>
@@ -176,41 +121,14 @@ export default function AboutPage() {
               Our philosophy is simple: build with purpose, improve continuously, and innovate for the future.
             </p>
           </Reveal>
-          <div className="relative mt-12">
-            <div className="journey-rail absolute top-6 right-[12.5%] left-[12.5%] hidden h-[3px] rounded-full md:block" aria-hidden="true" />
-            <ol className="grid gap-5 md:grid-cols-4">
-              {journey.map((item, index) => (
-                <li key={item.stage} className="relative md:pt-12">
-                  <span className={`journey-node d${index + 1} absolute top-3 left-1/2 z-10 hidden h-6 w-6 -translate-x-1/2 rounded-full border-[5px] border-white bg-brand shadow-[0_0_0_6px_rgb(79_70_229_/_0.16)] md:block`} aria-hidden="true" />
-                  <Reveal delay={index * 90} className="group relative h-full">
-                    <article className="journey-card h-full rounded-[1.75rem] border border-line bg-white p-6 shadow-[0_20px_50px_-38px_rgb(30_27_75_/_0.45)] transition duration-300 hover:-translate-y-2 hover:border-brand/30 hover:shadow-[0_30px_65px_-36px_rgb(79_70_229_/_0.55)]">
-                      <span className="relative z-10 inline-flex min-w-20 items-center justify-center rounded-full bg-brand-gradient px-4 py-2 text-sm font-extrabold text-white shadow-[0_10px_24px_-12px_rgb(79_70_229_/_0.8)]">{item.stage}</span>
-                      <h3 className="mt-7 text-xl font-extrabold tracking-tight">{item.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-muted">{item.body}</p>
-                    </article>
-                  </Reveal>
-                </li>
-              ))}
-            </ol>
-          </div>
-          <p className="mt-7 text-sm leading-6 text-muted">Only our founding year is dated; the later stages represent the evolution of our work and ambitions over time.</p>
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            {storyNarrative.map((chapter, index) => (
-              <Reveal key={chapter.stage} delay={(index % 2) * 100} className="h-full">
-                <article className="h-full rounded-[1.75rem] border border-line bg-white p-7 shadow-[0_16px_45px_-35px_rgb(30_27_75_/_0.4)] sm:p-8">
-                  <p className="text-xs font-extrabold tracking-[0.16em] text-brand uppercase">{chapter.stage}</p>
-                  <div className="mt-5 space-y-4 text-sm leading-7 text-muted">
-                    {chapter.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                  </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 
+      <AboutJourney />
+      <AboutStoryJourney />
+
       <section className="bg-surface">
-        <div className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-[4.5rem] xl:px-12">
           <Reveal className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-2xl">
               <Eyebrow>What makes us different</Eyebrow>
@@ -260,7 +178,7 @@ export default function AboutPage() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-brand/60" />
-        <div className="relative mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-20 sm:px-8 md:py-28 lg:grid-cols-[1.3fr_0.7fr] lg:items-end xl:px-12">
+        <div className="relative mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-16 sm:px-8 md:py-20 lg:grid-cols-[1.3fr_0.7fr] lg:items-end xl:px-12">
           <Reveal>
             <Eyebrow light>Our mission</Eyebrow>
             <p className="mt-6 text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-5xl">
@@ -283,22 +201,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-10 px-5 py-16 sm:px-8 md:py-24 xl:grid-cols-2 xl:px-12">
-        <Reveal from="left">
-          <Eyebrow>ALET&apos;s Core Solution</Eyebrow>
-          <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-            Building digital possibilities <span className="text-gradient-dark">since 2017.</span>
-          </h2>
-          <p className="mt-4 max-w-lg text-base leading-7 text-muted">
-            We work with entrepreneurs, startups, and businesses looking to launch new products,
-            improve existing systems, or take their digital capabilities to the next level.
-          </p>
-          <Photo src="/images/pages/developers.jpg" className="mt-8 hidden h-72 rounded-[2rem] xl:block" />
-        </Reveal>
-        <Reveal delay={120}>
-          <CoreSolutionsList />
-        </Reveal>
-      </section>
+      <AboutSolutionsJourney />
 
       <section className="px-5 sm:px-8">
         <Reveal className="mx-auto max-w-[92rem] rounded-[2.5rem] bg-surface px-6 py-12 sm:px-12">
@@ -324,7 +227,7 @@ export default function AboutPage() {
         </Reveal>
       </section>
 
-      <div className="py-16 md:py-24">
+      <div className="py-14 md:py-[4.5rem]">
         <TestimonialsSection />
       </div>
     </>
