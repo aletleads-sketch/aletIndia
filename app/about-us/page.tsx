@@ -61,7 +61,7 @@ export default function AboutPage() {
 
       <StatsBar />
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-[4.5rem] xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 pt-14 pb-6 sm:px-8 md:pt-[4.5rem] md:pb-8 xl:px-12">
         <div className="grid gap-10 rounded-[2.5rem] bg-surface p-7 sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:p-14">
           <Reveal>
             <h2 className="text-3xl font-extrabold tracking-tight text-balance text-brand sm:text-4xl">
@@ -77,7 +77,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-14 px-5 py-14 sm:px-8 md:pt-[4.5rem] md:pb-12 lg:grid-cols-2 xl:px-12">
+      <section className="mx-auto grid w-full max-w-[92rem] items-start gap-14 px-5 pt-4 pb-14 sm:px-8 md:pt-6 md:pb-12 lg:grid-cols-2 xl:px-12">
         <Reveal from="left" className="relative">
           <div className="grid grid-cols-2 gap-4">
             <Photo src="/images/pages/office.jpg" className="h-64 rounded-[2rem] sm:h-80" />

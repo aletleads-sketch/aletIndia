@@ -22,8 +22,10 @@ export function HtmlEmbed({ src, title, className, fallbackHeight = 800 }: HtmlE
     const document = frameRef.current?.contentDocument;
     if (!document) return;
 
+    const designed = document.getElementById("viewport");
     const nextHeight = Math.ceil(
-      Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight ?? 0),
+      designed?.offsetHeight ||
+        Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight ?? 0),
     );
 
     if (nextHeight > 0) setHeight(nextHeight);

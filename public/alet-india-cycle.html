@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sacramento&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:#f6f8fd;overflow-x:hidden}
+  html,body{background:#f6f8fd;overflow:hidden;height:auto}
   body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#0b0d1a;-webkit-font-smoothing:antialiased}
 
   /* Fixed 1600x960 design canvas, scaled to screen width */
@@ -259,7 +259,10 @@
     stage.style.transformOrigin = 'top center';
     stage.style.left = '50%';
     stage.style.transform = `translateX(-50%) scale(${s})`;
-    viewport.style.height = Math.ceil(900 * s) + 'px';
+    const h = Math.ceil(920 * s);
+    viewport.style.height = h + 'px';
+    document.documentElement.style.height = h + 'px';
+    document.body.style.height = h + 'px';
   }
   window.addEventListener('resize', fit); fit();
 </script>
