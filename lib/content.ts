@@ -572,6 +572,7 @@ export const legalLinks = [
 export const companyLinks = [
   { label: "About Us", href: "/about-us" },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Case Studies", href: "/case-studies" },
   { label: "Career", href: "/career" },
   { label: "Blogs", href: "/blogs" },
   { label: "Contact Us", href: "/contact-us" },

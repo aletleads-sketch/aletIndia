@@ -9,6 +9,7 @@ const links = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Case Studies", href: "/case-studies" },
   { label: "Career", href: "/career" },
   { label: "Blogs", href: "/blogs" },
   { label: "Contact Us", href: "/contact-us" },
@@ -75,17 +76,17 @@ export function Header() {
           <Logo light={!solid} />
         </Link>
 
-        <nav className="hidden items-center gap-5 xl:gap-7 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-3.5 xl:gap-5 lg:flex" aria-label="Primary">
           <Link
             href="/"
-            className={`nav-link text-[1.02rem] font-semibold transition-colors xl:text-[1.12rem] ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
+            className={`nav-link text-[0.95rem] font-semibold transition-colors xl:text-[1.05rem] ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
           >
             Home
           </Link>
           <div ref={servicesRef} className="relative">
             <button
               type="button"
-              className={`nav-link flex items-center gap-1.5 text-[1.02rem] font-semibold transition-colors xl:text-[1.12rem] ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
+              className={`nav-link flex items-center gap-1.5 text-[0.95rem] font-semibold transition-colors xl:text-[1.05rem] ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
               aria-expanded={servicesOpen}
               onClick={() => setServicesOpen((open) => !open)}
             >
@@ -102,7 +103,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className={`nav-link text-[1.02rem] font-semibold transition-colors xl:text-[1.12rem] ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
+              className={`nav-link text-[0.95rem] font-semibold transition-colors xl:text-[1.05rem] ${solid ? "text-ink" : "text-white/90 hover:text-white"}`}
             >
               {link.label}
             </Link>
