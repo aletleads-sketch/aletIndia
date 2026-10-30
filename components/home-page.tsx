@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { AboutSolutionsJourney } from "@/components/about-solutions-journey";
+import { JourneyTimeline } from "@/components/journey-timeline";
 import Link from "next/link";
 import { PortfolioSlider } from "@/components/portfolio-slider";
 import { Reveal } from "@/components/reveal";
@@ -20,6 +21,7 @@ export function HomePage() {
       <StatsBar />
       <ClientMarquee />
       <Services />
+      <JourneyTimeline />
       <WhyAlet />
       <Work />
       <ProcessSection />

@@ -381,7 +381,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     theme: ["#2563eb", "#7c3aed"],
     gallery: ["/images/pages/web-app-development-2.jpeg", "/images/pages/web-app-development-3.jpeg", "/images/pages/web-app-development.jpeg"],
     galleryFit: ["contain", "contain", "contain"],
-    screens: ["/images/all-deliveries-website.png"],
+    screens: ["/images/all-deliveries-web-live.png"],
     screensMockup: true,
     stat: { value: "100%", label: "Responsive builds" },
   },
@@ -408,6 +408,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "split",
     theme: ["#0891b2", "#8b5cf6"],
     gallery: ["/images/pages/ai-chatbots-assistants.jpg", "/images/pages/data-dashboards-reports.jpg", "/images/pages/process-automation.jpg"],
+    galleryFit: ["contain", "contain", "contain"],
     stat: { value: "24/7", label: "AI assistants" },
   },
   salesforce: {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { AboutDifference } from "@/components/about-difference";
 import { AboutJourney } from "@/components/about-journey";
 import { AboutSolutionsJourney } from "@/components/about-solutions-journey";
 import { AboutStoryJourney } from "@/components/about-story-journey";
@@ -8,9 +8,8 @@ import { HeroActions, HeroTitle, PhotoHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { YearsSinceFounding } from "@/components/count-up";
 import { StatsBar, TestimonialsSection } from "@/components/sections";
-import { Arrow, Eyebrow, Photo } from "@/components/ui";
+import { Eyebrow, Photo } from "@/components/ui";
 import { achievements, clients, company } from "@/lib/content";
-import { aboutApproach } from "@/lib/pages";
 
 export const metadata: Metadata = {
   title: "About Us — Alet India",
@@ -32,14 +31,6 @@ const whoWeAre = [
   "We work with entrepreneurs, startups, and businesses looking to launch new products, improve existing systems, or take their digital capabilities to the next level.",
   "Our focus is not simply on what we build, but on why it matters to your business.",
 ];
-
-const differentiators = [
-  ["We Think Business First", "We begin by understanding the challenge, the opportunity, and the outcome you want to achieve."],
-  ["We Build for Change", "We approach software development with scalability, maintainability, and future enhancements in mind."],
-  ["We Value Transparency", "We believe clear communication and collaborative decision-making create stronger project outcomes."],
-  ["We Focus on the Full Journey", "Our thinking extends beyond launch to continuous enhancement, modernization, and support."],
-  ["We Grow Through Partnerships", "We value long-term relationships and aim to become a dependable extension of our clients' technology journey."],
-] as const;
 
 export default function AboutPage() {
   return (
@@ -128,88 +119,7 @@ export default function AboutPage() {
 
       <AboutJourney />
       <AboutStoryJourney />
-
-      <section className="bg-surface">
-        <div className="mx-auto w-full max-w-[92rem] px-5 pt-6 pb-14 sm:px-8 md:pt-8 md:pb-16 xl:px-12">
-          <Reveal className="flex flex-wrap items-end justify-between gap-6">
-            <div className="max-w-2xl">
-              <h2 className="text-5xl font-extrabold tracking-tight text-balance sm:text-6xl">
-                What makes us different
-              </h2>
-              <p className="mt-4 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase text-brand">
-                <span className="h-0.5 w-6 rounded-full bg-brand" aria-hidden="true" />
-                Beyond development. <span className="text-gradient-dark">Beyond delivery.</span>
-              </p>
-            </div>
-            <p className="max-w-md text-base leading-7 text-muted">
-              Our focus is not simply on what we build, but on why it matters to your business.
-            </p>
-          </Reveal>
-          <ul className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {differentiators.map(([title, body], index) => {
-              const image = aboutApproach[index % aboutApproach.length].image;
-              return (
-              <li key={title}>
-                <Reveal delay={index * 90} className="h-full">
-                  <article className="lift group h-full overflow-hidden rounded-[2rem] bg-white ring-1 ring-line">
-                    <div className="relative h-56 overflow-hidden">
-                      <div className="zoom-img absolute inset-0">
-                        <Photo src={image} className="h-full" sizes="33vw" />
-                      </div>
-                      <span className="bg-brand-gradient absolute top-5 left-5 flex h-12 w-12 items-center justify-center rounded-2xl text-base font-extrabold text-white shadow-lg">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-                    <div className="p-8">
-                      <h3 className="text-xl font-extrabold tracking-tight sm:text-[1.35rem]">{title}</h3>
-                      <p className="mt-3 text-[0.95rem] leading-7 font-medium text-ink/75">
-                        {body}
-                      </p>
-                    </div>
-                  </article>
-                </Reveal>
-              </li>
-            )})}
-          </ul>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden text-white">
-        <Image
-          src="/images/pages/presentation.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-brand/60" />
-        <div className="relative mx-auto grid w-full max-w-[92rem] items-start gap-10 px-5 py-12 sm:px-8 md:py-14 lg:grid-cols-[1.2fr_0.8fr] xl:px-12">
-          <Reveal>
-            <Eyebrow light>Our mission</Eyebrow>
-            <h2 className="mt-5 max-w-3xl text-4xl leading-[1.12] font-extrabold tracking-tight text-balance sm:text-5xl">
-              Turn every idea into a product that is{" "}
-              <span className="text-gradient italic">fast, beautiful, and built to last.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={120} className="max-w-md space-y-6 lg:pt-1">
-            <p className="text-sm leading-7 text-white/75">
-              Stay competitive &amp; let Dramatics Digital transform your business application
-              requirements. ALET India&apos;s award-winning software development service, offers
-              custom Mobile &amp; Web apps development services for entrepreneurs &amp; small
-              businesses. From design to development to testing and support, we provide end-to-end
-              software development services to help in building apps with trusted frameworks.
-            </p>
-            <Link
-              href="/contact-us"
-              className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold"
-            >
-              Start a project
-              <Arrow />
-            </Link>
-          </Reveal>
-        </div>
-      </section>
-
+      <AboutDifference />
       <AboutSolutionsJourney />
 
       <section className="px-5 pt-2 sm:px-8">

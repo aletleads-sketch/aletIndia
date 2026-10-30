@@ -73,9 +73,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
 
           <div className="rise d2 relative mx-auto w-full max-w-xl">
             <div className="grid h-[26rem] grid-cols-[1.3fr_1fr] grid-rows-2 gap-4 sm:h-[30rem]">
-              <Photo src={main} alt={service.imageAlt} priority fit={galleryFit[0]} className="row-span-2 rounded-[2rem] bg-white/10" />
-              <Photo src={second} fit={galleryFit[1]} className="rounded-[1.6rem] bg-white/10" />
-              <Photo src={third} fit={galleryFit[2]} className="rounded-[1.6rem] bg-white/10" />
+              <Photo src={main} alt={service.imageAlt} priority fit="cover" className="row-span-2 rounded-[2rem] bg-white/10" />
+              <Photo src={second} fit="cover" className="rounded-[1.6rem] bg-white/10" />
+              <Photo src={third} fit="cover" className="rounded-[1.6rem] bg-white/10" />
             </div>
             <StatBadge visual={visual} className="float absolute -bottom-8 -left-4 sm:-left-10" />
             <div className="float float-b glass absolute -top-6 right-6 rounded-2xl px-4 py-3 text-xs font-bold">
@@ -106,6 +106,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
       <section className="mx-auto w-full max-w-[92rem] space-y-16 overflow-x-clip px-5 py-16 sm:px-8 md:space-y-24 md:py-24 xl:px-12">
         {detail.sections.map((section, index) => {
           const flip = index % 2 === 1;
+          const imageSrc = visual.gallery[index % visual.gallery.length];
+          const imageFit = galleryFit[index % galleryFit.length];
+          const showFullImage = imageFit === "contain";
           return (
             <div key={section.title} className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
               <Reveal from={flip ? "right" : "left"} className={flip ? "lg:order-2" : ""}>
@@ -116,11 +119,24 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
                     }`}
                     aria-hidden="true"
                   />
-                  <Photo
-                    src={visual.gallery[index % visual.gallery.length]}
-                    fit={galleryFit[index % galleryFit.length]}
-                    className="relative h-72 rounded-[2rem] sm:h-96"
-                  />
+                  {showFullImage ? (
+                    <div className="relative z-10 overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_50px_-28px_rgb(30_27_75_/_0.35)]">
+                      <Image
+                        src={imageSrc}
+                        alt=""
+                        width={1200}
+                        height={900}
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        className="h-auto w-full"
+                      />
+                    </div>
+                  ) : (
+                    <Photo
+                      src={imageSrc}
+                      fit={imageFit}
+                      className="relative h-72 rounded-[2rem] sm:h-96"
+                    />
+                  )}
                 </div>
               </Reveal>
               <Reveal delay={100}>
@@ -498,7 +514,20 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
             <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
               What we <span className="theme-text">deliver</span>
             </h2>
-            <Photo src={main} fit={galleryFit[0]} className="mt-8 h-72 rounded-[2rem] bg-[#f4f7fb] sm:h-80" />
+            {galleryFit[0] === "contain" ? (
+              <div className="mt-8 overflow-hidden rounded-[2rem] bg-white ring-1 ring-line">
+                <Image
+                  src={main}
+                  alt=""
+                  width={1200}
+                  height={900}
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="h-auto w-full"
+                />
+              </div>
+            ) : (
+              <Photo src={main} fit={galleryFit[0]} className="mt-8 h-72 rounded-[2rem] bg-[#f4f7fb] sm:h-80" />
+            )}
             <ul className="mt-6 flex flex-wrap gap-2">
               {detail.stack.map((tech) => (
                 <li key={tech} className="rounded-full bg-white px-3.5 py-1.5 text-xs font-bold text-ink ring-1 ring-line">
@@ -543,13 +572,34 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
           </Reveal>
           <Reveal delay={120} className="relative mt-12">
             {screensMockup ? (
-              <Image
-                src={browserShot}
-                alt="All Deliveries website built and launched by ALET"
-                width={1920}
-                height={1080}
-                className="mx-auto h-auto w-full drop-shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.55)]"
-              />
+              <div className="relative mx-auto w-full max-w-5xl">
+                <div
+                  className="theme-gradient absolute -inset-4 rounded-[2.5rem] opacity-20 blur-2xl"
+                  aria-hidden="true"
+                />
+                <div className="relative overflow-hidden rounded-[1.6rem] border-[8px] border-[#161b27] bg-[#161b27] p-1.5 shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.55)]">
+                  <span
+                    className="absolute top-[0.35rem] left-1/2 z-10 h-1.5 w-12 -translate-x-1/2 rounded-full bg-[#080b12]"
+                    aria-hidden="true"
+                  />
+                  <div className="relative z-10 flex h-9 items-end bg-[#dfe3ea] px-2.5 pt-1.5">
+                    <span className="flex h-7 min-w-44 items-center rounded-t-lg bg-white px-3.5 text-[0.7rem] font-semibold text-[#3b4352] shadow-[0_-1px_3px_rgb(0_0_0_/_0.08)]">
+                      <span className="mr-2 h-2.5 w-2.5 rounded-full bg-[#f04438]" aria-hidden="true" />
+                      Courier &amp; Logistics
+                    </span>
+                  </div>
+                  <div className="overflow-hidden rounded-b-[0.85rem] bg-white">
+                    <Image
+                      src={browserShot}
+                      alt="All Deliveries website built and launched by ALET"
+                      width={1920}
+                      height={900}
+                      className="h-auto w-full"
+                      sizes="(max-width: 1024px) 100vw, 64rem"
+                    />
+                  </div>
+                </div>
+              </div>
             ) : (
               <>
                 <div className="theme-gradient absolute -inset-4 rounded-[2.5rem] opacity-25 blur-2xl" aria-hidden="true" />

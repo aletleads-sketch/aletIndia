@@ -1,0 +1,523 @@
+/* Scoped to .alc-* — Alet India solution lifecycle section.
+   Compact canvas fit: full composition visible in a typical desktop window.
+   .alc-section … selectors protect this block from site / Tailwind globals. */
+.alc-section {
+  --alc-ink: #0b0d1a;
+  --alc-text: #5a6075;
+  --alc-muted: #6b7286;
+  --alc-blue: #1a5cf5;
+  --alc-blue-soft: #eff4ff;
+  --alc-purple: #7b3fe4;
+  --alc-purple-soft: #f4eeff;
+  --alc-green: #16a85a;
+  --alc-green-soft: #e8f8ef;
+  font-family: var(--font-jakarta), system-ui, -apple-system, sans-serif;
+  color: var(--alc-ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow: hidden;
+  padding: 36px 20px 32px;
+  background:
+    radial-gradient(420px 320px at 0% 0%, #dfe8fb 0%, transparent 70%),
+    radial-gradient(480px 360px at 0% 100%, #e3eafb 0%, transparent 70%),
+    radial-gradient(520px 380px at 88% 45%, #e8f8ee 0%, transparent 70%),
+    radial-gradient(500px 360px at 62% 48%, #f1ecfd 0%, transparent 70%),
+    #f7f9fe;
+}
+.alc-section *,
+.alc-section *::before,
+.alc-section *::after {
+  box-sizing: border-box;
+}
+.alc-section h2,
+.alc-section h3,
+.alc-section p,
+.alc-section ul,
+.alc-section li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+}
+.alc-section h2,
+.alc-section h3 {
+  font-size: unset;
+  font-weight: unset;
+  line-height: unset;
+  letter-spacing: unset;
+  color: inherit;
+  text-transform: none;
+}
+.alc-section li::marker {
+  content: none;
+}
+.alc-section ul {
+  list-style: none;
+}
+.alc-section a {
+  text-decoration: none;
+  color: inherit;
+}
+.alc-section svg {
+  display: block;
+  max-width: none;
+}
+.alc-section strong {
+  font-weight: inherit;
+}
+
+.alc-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+/* ---------- Left column ---------- */
+.alc-intro {
+  padding-top: 20px;
+}
+.alc-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.33em;
+  color: var(--alc-blue);
+  text-transform: uppercase;
+}
+.alc-eyebrow::after {
+  content: "";
+  width: 32px;
+  height: 1.5px;
+  background: #b9c4e4;
+}
+.alc-section .alc-title {
+  margin-top: 12px !important;
+  font-size: clamp(26px, 2.5vw, 38px);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--alc-ink);
+  text-transform: none;
+}
+.alc-title span {
+  background: linear-gradient(90deg, #1552f2, #2d5bff 55%, #5848ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.alc-section .alc-lead {
+  margin-top: 12px !important;
+  font-size: clamp(13px, 1.05vw, 15px);
+  line-height: 1.45;
+  color: #565d72;
+  font-weight: 500;
+  max-width: 300px;
+}
+
+.alc-section .alc-btn {
+  margin-top: 18px;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 14px;
+  height: 46px;
+  padding: 0 8px 0 24px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1450f0, #1f5dff);
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 12px 26px -12px rgba(22, 82, 240, 0.6);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.alc-section .alc-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -12px rgba(22, 82, 240, 0.7);
+}
+.alc-btn span {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: grid;
+  place-items: center;
+}
+.alc-btn span svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.alc-section .alc-stats {
+  margin-top: 22px;
+  display: flex;
+}
+.alc-section .alc-stat {
+  padding-right: 18px;
+  margin-right: 18px;
+  border-right: 1px solid #d6dbea;
+}
+.alc-section .alc-stat:last-child {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.alc-section .alc-stat strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.alc-section .alc-stat span {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--alc-muted);
+  font-weight: 500;
+}
+
+.alc-script {
+  position: relative;
+  display: inline-block;
+  margin: 28px 0 0 24px;
+  font-family: var(--font-sacramento), cursive;
+  font-size: 36px;
+  line-height: 0.86;
+  color: #585c8e;
+  transform: rotate(-9deg);
+}
+.alc-script em {
+  display: block;
+  font-style: normal;
+  padding-left: 16px;
+}
+.alc-script svg {
+  position: absolute;
+  left: 54px;
+  bottom: -14px;
+  width: 100px;
+  height: 20px;
+}
+
+/* ---------- Right column : 3 progressive cards ---------- */
+.alc-steps {
+  position: relative;
+  padding-top: 48px;
+}
+.alc-cards {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+.alc-card {
+  position: relative;
+  flex: 1 1 0;
+  background: #fff;
+  border-radius: 18px;
+  padding: 88px 14px 14px 16px;
+  box-shadow:
+    0 16px 36px -22px rgba(40, 60, 120, 0.28),
+    0 2px 6px rgba(40, 60, 120, 0.05);
+}
+/* Progressive sizing: 01 < 02 < 03 */
+.alc-card--1 {
+  flex-grow: 1;
+  min-height: 360px;
+}
+.alc-card--2 {
+  flex-grow: 1.07;
+  min-height: 400px;
+  background: linear-gradient(180deg, #f6f1ff 0%, #fff 32%, #fbf9ff 100%);
+}
+.alc-card--3 {
+  flex-grow: 1.15;
+  min-height: 440px;
+  background: linear-gradient(180deg, #e9f9f0 0%, #fbfefc 38%, #f3fcf7 100%);
+}
+
+.alc-num {
+  position: absolute;
+  top: -16px;
+  left: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+.alc-card--1 .alc-num {
+  background: linear-gradient(135deg, #2266ff, #0c45de);
+  box-shadow: 0 8px 16px -8px rgba(22, 82, 240, 0.75);
+}
+.alc-card--2 .alc-num {
+  background: linear-gradient(135deg, #9d4fff, #6a2bd6);
+  box-shadow: 0 8px 16px -8px rgba(123, 63, 228, 0.75);
+}
+.alc-card--3 .alc-num {
+  background: linear-gradient(135deg, #27c370, #10944c);
+  box-shadow: 0 8px 16px -8px rgba(22, 168, 90, 0.75);
+}
+
+.alc-icon {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+}
+.alc-card--1 .alc-icon {
+  background: linear-gradient(145deg, #f4f7ff, #e2eaff);
+  box-shadow: 0 12px 24px -14px rgba(40, 80, 200, 0.35);
+}
+.alc-card--2 .alc-icon {
+  background: linear-gradient(145deg, #f8f3ff, #eadfff);
+  box-shadow: 0 12px 24px -14px rgba(110, 50, 200, 0.35);
+}
+.alc-card--3 .alc-icon {
+  background: linear-gradient(145deg, #f1fcf6, #daf5e7);
+  box-shadow: 0 12px 24px -14px rgba(20, 150, 80, 0.35);
+}
+.alc-icon svg {
+  transform: scale(0.68);
+  transform-origin: center;
+}
+
+.alc-section .alc-card h3 {
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--alc-ink);
+  line-height: 1.3;
+  text-transform: none;
+}
+.alc-section .alc-card p {
+  margin-top: 8px !important;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--alc-text);
+  font-weight: 500;
+}
+.alc-list {
+  margin-top: 10px !important;
+}
+.alc-section .alc-list li {
+  position: relative;
+  padding-left: 26px;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #4b5266;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.alc-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--chk)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E")
+    center / 9px no-repeat;
+}
+.alc-card--1 {
+  --chk: var(--alc-blue);
+}
+.alc-card--2 {
+  --chk: var(--alc-purple);
+}
+.alc-card--3 {
+  --chk: var(--alc-green);
+}
+
+.alc-note {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.alc-card--1 .alc-note {
+  background: var(--alc-blue-soft);
+  color: #1a4fd6;
+}
+.alc-card--2 .alc-note {
+  background: var(--alc-purple-soft);
+  color: #6b33cf;
+}
+.alc-card--3 .alc-note {
+  background: var(--alc-green-soft);
+  color: #138a4a;
+}
+.alc-note svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+/* decorative connectors + rocket */
+.alc-link {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+.alc-card--1 .alc-link {
+  right: -32px;
+  top: 6px;
+  width: 78px;
+  height: 50px;
+}
+.alc-card--2 .alc-link {
+  right: -36px;
+  top: -20px;
+  width: 86px;
+  height: 64px;
+}
+.alc-rocket {
+  position: absolute;
+  right: -4px;
+  top: -18px;
+  width: 150px;
+  height: 88px;
+  pointer-events: none;
+}
+
+/* ---------- Bottom timeline ---------- */
+.alc-section .alc-timeline {
+  position: relative;
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4% 0 6%;
+}
+.alc-timeline::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 2%;
+  top: 7px;
+  height: 2px;
+  background: linear-gradient(90deg, #2b6bff 0%, #8f50f0 45%, #1eb86a 85%, #2aa8d8 100%);
+}
+.alc-timeline::after {
+  content: "";
+  position: absolute;
+  right: 2%;
+  top: 2px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #2aa8d8;
+  border-right: 2px solid #2aa8d8;
+  transform: rotate(45deg);
+}
+.alc-section .alc-timeline li {
+  position: relative;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: #1d2133;
+  text-transform: uppercase;
+}
+.alc-timeline li::before {
+  content: "";
+  display: block;
+  margin: 0 auto 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--dot);
+}
+.alc-timeline li:nth-child(1) {
+  --dot: #2563ff;
+}
+.alc-timeline li:nth-child(2) {
+  --dot: #8a45ec;
+}
+.alc-timeline li:nth-child(3) {
+  --dot: #1db068;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1200px) {
+  .alc-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-width: 720px;
+  }
+  .alc-intro {
+    padding-top: 0;
+    max-width: 560px;
+  }
+  .alc-script {
+    display: none;
+  }
+}
+@media (max-width: 820px) {
+  .alc-section {
+    padding: 32px 16px 28px;
+  }
+  .alc-steps {
+    padding-top: 28px;
+  }
+  .alc-cards {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 36px;
+  }
+  .alc-card--1,
+  .alc-card--2,
+  .alc-card--3 {
+    flex: none;
+    min-height: 0;
+  }
+  .alc-section .alc-link,
+  .alc-section .alc-rocket {
+    display: none;
+  }
+  .alc-section .alc-timeline {
+    padding: 0;
+  }
+  .alc-timeline::before {
+    left: 10px;
+    right: 10px;
+  }
+  .alc-section .alc-timeline li {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .alc-section .alc-stats {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .alc-section .alc-stat {
+    padding-right: 14px;
+    margin-right: 0;
+  }
+}
