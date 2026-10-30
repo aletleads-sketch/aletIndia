@@ -108,9 +108,9 @@ export default function AboutPage() {
 
       <section className="bg-surface px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <div className="mx-auto w-full max-w-[92rem]">
-          <Reveal className="max-w-2xl">
+          <Reveal>
             <Eyebrow>Our story</Eyebrow>
-            <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h2 className="mt-4 text-[clamp(1.35rem,4.6vw,3rem)] font-extrabold tracking-tight whitespace-nowrap">
               A journey that began with <span className="text-gradient-dark">a vision.</span>
             </h2>
           </Reveal>

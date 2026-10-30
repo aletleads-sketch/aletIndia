@@ -2,57 +2,225 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Arrow, Eyebrow } from "@/components/ui";
-import { Breadcrumb, Wave } from "@/components/page-hero";
-import { Reveal } from "@/components/reveal";
-import { ContactSection } from "@/components/sections";
-import { caseStudyDetails, getCaseStudy } from "@/lib/case-study-data";
+import { CaseStudyScreens } from "@/components/case-study-demo";
+import { Wave } from "@/components/page-hero";
+import { Arrow } from "@/components/ui";
+import {
+  demoCaseStudiesResolved,
+  getCaseStudy,
+  getNextDemoStudy,
+} from "@/lib/case-study-data";
+import {
+  caseStudyFileNav,
+  type CaseStudyContentBlock,
+} from "@/lib/case-study-sections";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return caseStudyDetails.map(({ slug }) => ({ slug }));
+  return demoCaseStudiesResolved.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const caseStudy = getCaseStudy(slug);
-  return caseStudy ? { title: `${caseStudy.study.name} Case Study — Alet India`, description: caseStudy.study.summary } : {};
+  return caseStudy
+    ? {
+        title: `${caseStudy.client} case study — Alet India`,
+        description: caseStudy.summary,
+      }
+    : {};
 }
 
-function ProjectVisual({ src, alt, landscape }: { src: string; alt: string; landscape: boolean }) {
-  if (landscape) {
-    return <div className="absolute inset-0 flex items-center justify-center bg-[#17213f] p-5 sm:p-8"><div className="w-full overflow-hidden rounded-[1.6rem] border-[8px] border-[#151925] bg-[#151925] p-1.5 shadow-[0_26px_55px_-22px_rgb(0_0_0_/_0.8)]"><div className="relative aspect-video overflow-hidden rounded-[1rem] bg-slate-800"><Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" /></div></div></div>;
-  }
-  return <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 55vw" className="object-contain object-center p-5 sm:p-8" />;
+function NarrativeBlocks({ blocks }: { blocks: CaseStudyContentBlock[] }) {
+  return (
+    <div className="mt-5 space-y-4">
+      {blocks.map((block, index) => {
+        if (block.type === "p") {
+          return (
+            <p
+              key={`p-${index}-${block.text.slice(0, 24)}`}
+              className="text-[1.05rem] leading-8 text-[#10210a]/80"
+            >
+              {block.text}
+            </p>
+          );
+        }
+        if (block.type === "h3") {
+          return (
+            <h3
+              key={`h3-${index}-${block.text}`}
+              className="pt-2 text-xl font-extrabold tracking-tight text-[#10210a]"
+            >
+              {block.text}
+            </h3>
+          );
+        }
+        if (block.type === "image") {
+          return (
+            <figure
+              key={`img-${index}-${block.src}`}
+              className="my-2 w-full overflow-hidden rounded-[1.4rem] bg-white ring-1 ring-[#10210a]/10"
+            >
+              <Image
+                src={block.src}
+                alt={block.alt}
+                width={1800}
+                height={1400}
+                sizes="(max-width: 1024px) 100vw, min(70vw, 56rem)"
+                className="h-auto w-full object-contain"
+                priority={index < 2}
+              />
+            </figure>
+          );
+        }
+        return (
+          <ul
+            key={`ul-${index}`}
+            className="list-disc space-y-2 pl-5 text-[1.05rem] leading-8 text-[#10210a]/80"
+          >
+            {block.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        );
+      })}
+    </div>
+  );
 }
 
 export default async function CaseStudyDetailPage({ params }: Props) {
   const { slug } = await params;
-  const caseStudy = getCaseStudy(slug);
-  if (!caseStudy) notFound();
+  const study = getCaseStudy(slug);
+  if (!study) notFound();
 
-  const { study } = caseStudy;
-  const landscape = "landscape" in study && study.landscape;
+  const next = getNextDemoStudy(slug);
+  const sections = study.sections ?? [];
 
-  return <>
-    <section className="hero-mesh relative overflow-hidden text-white">
-      <div className="dot-grid pointer-events-none absolute inset-0" />
-      <div className={`pointer-events-none absolute -top-24 -right-20 h-[28rem] w-[28rem] rounded-full bg-gradient-to-br ${study.color} opacity-35 blur-3xl`} />
-      <div className="relative mx-auto grid min-h-[38rem] w-full max-w-[92rem] items-center gap-12 px-5 pt-36 pb-28 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:pt-40 xl:px-12">
-        <div><Breadcrumb crumb={study.name} className="rise" /><p className="rise d1 mt-7 text-xs font-bold tracking-[0.26em] text-brand-2 uppercase">Case study · {caseStudy.kicker}</p><h1 className="rise d1 mt-4 max-w-3xl text-5xl leading-[1.02] font-extrabold tracking-tight text-balance sm:text-6xl lg:text-7xl">{caseStudy.heroTitle} <span className="text-gradient">{caseStudy.heroAccent}</span></h1><p className="rise d2 mt-6 max-w-2xl text-base leading-7 text-white/72 sm:text-lg">{study.summary}</p><Link href="#story" className="rise d3 btn-sheen bg-brand-gradient mt-9 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_40px_-8px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5">Explore the story <Arrow /></Link></div>
-        <Reveal delay={140} className="relative mx-auto w-full max-w-2xl"><div className={`absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br ${study.color} opacity-40 blur-3xl`} aria-hidden="true" /><div className="relative h-[22rem] overflow-hidden rounded-[2rem] border border-white/15 bg-white/10 shadow-[0_32px_80px_-28px_rgb(0_0_0_/_0.7)] backdrop-blur sm:h-[27rem]"><ProjectVisual src={study.screens[0]} alt={`${study.name} product experience`} landscape={Boolean(landscape)} /></div><div className="glass absolute -bottom-6 -left-3 rounded-2xl px-5 py-4 text-white sm:-left-8"><p className="text-2xl font-extrabold">{study.name}</p><p className="mt-1 text-sm text-white/70">{study.category}</p></div></Reveal>
-      </div>
-      <Wave />
-    </section>
+  return (
+    <>
+      <article className="bg-[#e7f0e4] text-[#10210a]">
+        <header className="hero-mesh relative overflow-hidden text-white">
+          <div className="dot-grid pointer-events-none absolute inset-0" />
+          <div className="orb pointer-events-none absolute top-20 -right-24 h-96 w-96 rounded-full bg-brand/40 blur-3xl" />
+          <div className="orb orb-b pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />
+          <div className="relative mx-auto w-full max-w-[92rem] px-5 pt-36 pb-20 sm:px-8 lg:pt-40 xl:px-12">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-xs font-bold tracking-[0.16em] text-white/55 uppercase"
+            >
+              <Link href="/" className="hover:text-white">
+                Home
+              </Link>
+              <span className="px-2 text-white/30">/</span>
+              <Link href="/case-studies" className="hover:text-white">
+                Case Studies
+              </Link>
+            </nav>
+            <p className="mt-8 text-xs font-bold tracking-[0.28em] text-brand-2 uppercase">
+              {study.industry} · Case study
+            </p>
+            <h1 className="mt-4 max-w-4xl text-4xl leading-[1.02] font-extrabold tracking-tight text-balance sm:text-6xl">
+              {study.title}
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">{study.summary}</p>
+            <dl className="mt-10 grid gap-4 sm:grid-cols-3">
+              {study.facts.map((fact) => (
+                <div
+                  key={fact.label}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur"
+                >
+                  <dt className="text-xs font-bold tracking-[0.16em] text-white/45 uppercase">
+                    {fact.label}
+                  </dt>
+                  <dd className="mt-2 text-lg font-extrabold">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <Wave className="fill-[#e7f0e4]" />
+        </header>
 
-    <section id="story" className="scroll-mt-24 px-5 py-16 sm:px-8 md:py-24 xl:px-12"><div className="mx-auto grid w-full max-w-[92rem] gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center"><Reveal><Eyebrow>The opportunity</Eyebrow><h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">A better path through <span className="text-gradient-dark">every important moment.</span></h2><p className="mt-6 max-w-xl text-lg leading-8 text-ink/75">{caseStudy.challenge}</p><dl className="mt-9 grid grid-cols-3 gap-4 border-y border-line py-6">{caseStudy.metrics.map(([value, label]) => <div key={label}><dt className="text-gradient-dark text-3xl font-extrabold">{value}</dt><dd className="mt-1 text-xs font-semibold text-muted">{label}</dd></div>)}</dl></Reveal><Reveal delay={120} className="relative"><div className={`absolute inset-0 translate-x-4 translate-y-4 rounded-[2rem] bg-gradient-to-br ${study.color}`} aria-hidden="true" /><div className="relative h-80 overflow-hidden rounded-[2rem] bg-surface sm:h-[28rem]"><ProjectVisual src={study.screens[1] ?? study.screens[0]} alt={`${study.name} interface`} landscape={Boolean(landscape)} /></div></Reveal></div></section>
+        <div className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:py-16 xl:px-12">
+          <nav aria-label="On this page" className="lg:sticky lg:top-28 lg:self-start">
+            <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">
+              In this file
+            </p>
+            <ul className="mt-4 space-y-2 text-sm font-bold">
+              {caseStudyFileNav.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    className="block rounded-full px-3 py-2 hover:bg-[#10210a] hover:text-[#d6ff4a]"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-    <section className="bg-surface"><div className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12"><Reveal className="mx-auto max-w-2xl text-center"><Eyebrow>What changed</Eyebrow><h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">Built around people, <span className="text-gradient-dark">not product complexity.</span></h2></Reveal><ul className="mt-12 grid gap-6 md:grid-cols-3">{caseStudy.outcomes.map(([title, body], index) => <li key={title}><Reveal delay={index * 90} className="lift h-full rounded-[2rem] bg-white p-8 ring-1 ring-line shadow-[0_20px_50px_-35px_rgb(30_27_75_/_0.45)]"><span className="text-gradient-dark text-5xl font-extrabold">0{index + 1}</span><h3 className="mt-6 text-2xl font-extrabold tracking-tight">{title}</h3><p className="mt-4 text-[0.98rem] leading-7 text-muted">{body}</p></Reveal></li>)}</ul></div></section>
+          <div className="space-y-16">
+            <section className="scroll-mt-32">
+              <h2 className="text-3xl font-extrabold tracking-tight">Walk the screens</h2>
+              <p className="mt-3 max-w-2xl text-base leading-7 text-[#10210a]/70">
+                Tap a frame to bring that screen forward. These are the product views from the
+                build.
+              </p>
+              <CaseStudyScreens screens={study.screens} />
+            </section>
 
-    <section className="overflow-hidden bg-night py-16 text-white md:py-24"><div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] xl:px-12"><Reveal><Eyebrow light>How we approached it</Eyebrow><h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">From the first idea to <span className="text-gradient">a usable product.</span></h2><p className="mt-6 max-w-lg text-base leading-8 text-white/70">We shaped the work around the jobs people need to finish—not around complicated technology or unfamiliar workflows.</p></Reveal><ol className="space-y-6">{caseStudy.steps.map(([number, title, body]) => <li key={number} className="glass rounded-2xl p-6 sm:flex sm:gap-6"><span className="text-gradient text-3xl font-extrabold">{number}</span><div className="mt-3 sm:mt-0"><h3 className="text-xl font-extrabold">{title}</h3><p className="mt-2 leading-7 text-white/65">{body}</p></div></li>)}</ol></div></section>
+            {sections.map((section) => (
+              <section key={section.id} id={section.id} className="scroll-mt-32">
+                <h2 className="text-3xl font-extrabold tracking-tight">{section.title}</h2>
+                {section.subtitle ? (
+                  <p className="mt-3 max-w-3xl text-lg font-semibold leading-8 text-[#10210a]/85">
+                    {section.subtitle}
+                  </p>
+                ) : null}
+                <NarrativeBlocks blocks={section.blocks} />
+              </section>
+            ))}
 
-    <section className="px-5 py-16 sm:px-8 md:py-24 xl:px-12"><div className="mx-auto grid w-full max-w-[92rem] gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center"><Reveal className={`relative h-80 overflow-hidden rounded-[2rem] bg-gradient-to-br ${study.color} sm:h-[28rem]`}><ProjectVisual src={study.screens[0]} alt={`${study.name} final product`} landscape={Boolean(landscape)} /></Reveal><Reveal delay={120}><Eyebrow>The result</Eyebrow><h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">A digital experience people can <span className="text-gradient-dark">understand at a glance.</span></h2><p className="mt-6 text-lg leading-8 text-ink/75">{caseStudy.result}</p><Link href="/contact-us" className="mt-8 inline-flex items-center gap-2 text-sm font-extrabold text-brand">Discuss a similar project <Arrow /></Link></Reveal></div></section>
-    <ContactSection title="Have a project with a" accent="story to tell?" />
-  </>;
+            <section className="rounded-[2rem] bg-[#10210a] px-6 py-10 text-white sm:px-10 sm:py-12">
+              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+                Have a similar business idea?
+              </h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
+                Let&apos;s turn your vision into a connected digital experience.
+              </p>
+              <Link
+                href="/contact-us"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#d6ff4a] px-6 py-3 text-sm font-extrabold text-[#10210a] transition hover:-translate-y-0.5 hover:brightness-110"
+              >
+                Start your project <Arrow />
+              </Link>
+            </section>
+          </div>
+        </div>
+
+        {next ? (
+          <section className="border-t border-[#10210a]/10">
+            <div className="mx-auto flex w-full max-w-[92rem] flex-col gap-4 px-5 py-12 sm:px-8 sm:flex-row sm:items-end sm:justify-between xl:px-12">
+              <div>
+                <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">
+                  Next file
+                </p>
+                <p className="mt-3 text-3xl font-extrabold tracking-tight">{next.client}</p>
+                <p className="mt-3 max-w-xl text-base leading-7 text-[#10210a]/70">
+                  {next.summary}
+                </p>
+              </div>
+              <Link
+                href={`/case-studies/${next.slug}`}
+                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#10210a] px-7 py-3.5 text-sm font-extrabold text-[#d6ff4a] transition hover:-translate-y-0.5 hover:brightness-110"
+              >
+                Read {next.client} <Arrow />
+              </Link>
+            </div>
+          </section>
+        ) : null}
+      </article>
+    </>
+  );
 }
