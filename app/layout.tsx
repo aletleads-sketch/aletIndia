@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Montserrat, Plus_Jakarta_Sans, Sacramento, Space_Grotesk, Syne } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { InquireModalProvider } from "@/components/inquire-modal";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -54,9 +55,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${jakarta.variable} ${syne.variable} ${space.variable} ${archivo.variable} ${sacramento.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white font-sans text-ink">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <InquireModalProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </InquireModalProvider>
       </body>
     </html>
   );

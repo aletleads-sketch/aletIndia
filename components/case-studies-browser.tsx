@@ -8,41 +8,33 @@ import { caseStudyIndexEntries, caseStudyIndustries } from "@/lib/case-study-dat
 
 type IndexEntry = (typeof caseStudyIndexEntries)[number];
 
-const studyGreen = "#1a3314";
-const studyGreenDeep = "#12240e";
-
 function PreviewVisual({ entry }: { entry: IndexEntry }) {
   const src = entry.previewImage ?? entry.detail.study.screens[0];
 
   return (
-    <div
-      className="relative flex h-full min-h-[26rem] items-center justify-center overflow-hidden p-6 sm:min-h-[32rem] sm:p-8"
-      style={{ backgroundColor: studyGreen }}
-    >
-      <Image
-        src={src}
-        alt=""
-        width={380}
-        height={760}
-        sizes="(max-width: 768px) 60vw, 20rem"
-        className="h-auto max-h-[min(32rem,72vh)] w-auto max-w-[88%] object-contain drop-shadow-[0_28px_48px_rgb(0_0_0_/_0.5)]"
-      />
+    <div className="relative flex h-full min-h-[26rem] items-center justify-center overflow-hidden bg-[#0b1433] p-5 sm:min-h-[32rem] sm:p-7">
+      {/* Fixed frame so size is stable before/after image load (avoids small→large flash). */}
+      <div className="relative h-[min(30rem,68vh)] w-full max-w-[18rem]">
+        <Image
+          key={src}
+          src={src}
+          alt=""
+          fill
+          sizes="(max-width: 768px) 60vw, 18rem"
+          className="object-contain object-center drop-shadow-[0_28px_48px_rgb(0_0_0_/_0.5)]"
+          priority
+        />
+      </div>
     </div>
   );
 }
 
 function StudyPreview({ entry }: { entry: IndexEntry }) {
   return (
-    <article
-      className="grid overflow-hidden rounded-[1.75rem] border border-white/12 shadow-[0_28px_70px_-40px_rgb(0_0_0_/_0.75)] backdrop-blur lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]"
-      style={{ backgroundColor: `${studyGreenDeep}cc` }}
-    >
+    <article className="grid overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#0a122e]/80 shadow-[0_28px_70px_-40px_rgb(0_0_0_/_0.75)] backdrop-blur lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
       <PreviewVisual entry={entry} />
-      <div
-        className="flex flex-col justify-center px-6 py-8 sm:px-9 sm:py-10"
-        style={{ backgroundColor: `${studyGreenDeep}e6` }}
-      >
-        <p className="text-xs font-bold tracking-[0.18em] text-[#b6f26d] uppercase">
+      <div className="flex flex-col justify-center bg-[#080e24]/90 px-6 py-8 sm:px-9 sm:py-10">
+        <p className="text-xs font-bold tracking-[0.18em] text-brand-2 uppercase">
           {entry.detail.study.name} · {entry.industry}
         </p>
         <h2 className="mt-4 text-3xl leading-[1.05] font-extrabold tracking-tight text-balance text-white sm:text-4xl lg:text-[2.35rem]">
@@ -64,7 +56,7 @@ function StudyPreview({ entry }: { entry: IndexEntry }) {
         <div className="mt-8">
           <Link
             href={`/case-studies/${entry.slug}`}
-            className="btn-sheen inline-flex items-center gap-2 rounded-full bg-[#d6ff4a] px-6 py-3 text-sm font-extrabold text-[#10210a] shadow-[0_12px_40px_-8px_rgb(214_255_74_/_0.45)] transition hover:-translate-y-0.5 hover:brightness-110"
+            className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-extrabold text-white shadow-[0_12px_40px_-8px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
           >
             Open the full study <Arrow />
           </Link>
@@ -123,10 +115,9 @@ export function CaseStudiesBrowser({ embedded = false }: { embedded?: boolean })
                 onClick={() => selectIndustry(tab)}
                 className={`rounded-full px-4 py-2 text-sm font-bold transition ${
                   selected
-                    ? "text-white shadow-[0_10px_28px_-10px_rgb(26_51_20_/_0.85)]"
+                    ? "bg-brand-gradient text-white shadow-[0_10px_28px_-10px_rgb(79_70_229_/_0.85)]"
                     : "bg-white/10 text-white/80 hover:bg-white/15"
                 }`}
-                style={selected ? { backgroundColor: studyGreen } : undefined}
               >
                 {tab}
               </button>
@@ -147,10 +138,9 @@ export function CaseStudiesBrowser({ embedded = false }: { embedded?: boolean })
                       onClick={() => setActiveSlug(entry.slug)}
                       className={`flex w-full items-start gap-4 rounded-2xl border px-4 py-4 text-left transition ${
                         pressed
-                          ? "border-[#2f5a24] text-white shadow-[0_12px_32px_-14px_rgb(26_51_20_/_0.9)]"
+                          ? "border-brand/50 bg-brand-gradient text-white shadow-[0_12px_32px_-14px_rgb(79_70_229_/_0.9)]"
                           : "border-white/10 bg-white/5 text-white hover:bg-white/10"
                       }`}
-                      style={pressed ? { backgroundColor: studyGreen } : undefined}
                     >
                       <span className="text-2xl leading-none font-extrabold tabular-nums">
                         {String(index + 1).padStart(2, "0")}
@@ -177,7 +167,7 @@ export function CaseStudiesBrowser({ embedded = false }: { embedded?: boolean })
           Want something in this shape for your own product?{" "}
           <Link
             href="/contact-us"
-            className="font-extrabold text-[#b6f26d] transition hover:brightness-110"
+            className="font-extrabold text-brand-2 transition hover:brightness-110"
           >
             Start a conversation.
           </Link>

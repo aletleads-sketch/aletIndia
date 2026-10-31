@@ -138,9 +138,9 @@ export const demoCaseStudies: DemoCaseStudy[] = [
       { label: "Project Status", value: "Under Development" },
     ],
     screens: [
-      { src: "/images/all_deliveries_home.png", alt: "All Deliveries app home" },
+      { src: "/images/all-deliveries-login.png", alt: "All Deliveries login — get started" },
+      { src: "/images/all-deliveries-track.png", alt: "All Deliveries order status tracking" },
       { src: "/images/all-deliveries-app-menu.png", alt: "All Deliveries app menu" },
-      { src: "/images/all_deliveries_app1.jpeg", alt: "All Deliveries app screen" },
       { src: "/images/ALL-DEIVERIES.png", alt: "All Deliveries website" },
     ],
     sections: allDeliveriesSections,
@@ -454,7 +454,7 @@ export const caseStudyIndexEntries: (CaseStudyIndexEntry & { detail: CaseStudyDe
     previewSummary:
       "All Deliveries covers parcel delivery, shop-for-me orders, and vehicle hire with a driver, on the phone and on the web.",
     previewTags: ["Mobile app", "Web", "Operations panel"],
-    previewImage: "/images/all_deliveries_home.png",
+    previewImage: "/images/all-deliveries-login.png",
     detail: bySlug("all-deliveries"),
   },
   {

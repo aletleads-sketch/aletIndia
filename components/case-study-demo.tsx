@@ -24,51 +24,55 @@ export function CaseStudyScreens({ screens }: { screens: DemoCaseStudy["screens"
 
   return (
     <div className="mt-6">
-      {/* Outer darkest green — thumbs sit on this layer */}
-      <div className="rounded-[1.75rem] bg-[#0f2109] p-3 sm:p-4">
+      {/* Outer navy shell — thumbs sit on this layer */}
+      <div className="rounded-[1.75rem] bg-[#080e24] p-3 sm:p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-4">
-          {/* Big green layout — main preview only */}
-          <div className="min-w-0 flex-1 rounded-[1.35rem] bg-[#1a3315] p-[30px]">
+          {/* Big blue layout — main preview only */}
+          <div
+            className={`min-w-0 flex-1 rounded-[1.35rem] bg-[#0b1433] ${
+              wide ? "p-3 sm:p-4" : "p-5 sm:p-[30px]"
+            }`}
+          >
             <div
-              className={`mx-auto flex h-full min-h-[22rem] items-center justify-center ${
-                wide ? "max-w-xl" : "max-w-[13.5rem] sm:max-w-[14.5rem]"
+              className={`relative mx-auto w-full ${
+                wide
+                  ? "aspect-[16/10] min-h-[16rem] sm:min-h-[18rem]"
+                  : "aspect-[9/19] max-w-[13.5rem] sm:max-w-[14.5rem]"
               }`}
             >
               <Image
+                key={current.src}
                 src={current.src}
                 alt={current.alt}
-                width={wide ? 1400 : 820}
-                height={wide ? 900 : 1460}
-                sizes={wide ? "(max-width: 1024px) 70vw, 36rem" : "(max-width: 1024px) 40vw, 14.5rem"}
-                className="h-auto w-full rounded-[0.85rem] shadow-[0_18px_40px_-18px_rgb(0_0_0_/_0.55)]"
+                fill
+                sizes={wide ? "(max-width: 1024px) 100vw, 70vw" : "(max-width: 1024px) 45vw, 14.5rem"}
+                className="object-contain object-center drop-shadow-[0_18px_40px_-18px_rgb(0_0_0_/_0.55)]"
                 priority
               />
             </div>
           </div>
 
-          {/* Screenshots outside the big layout */}
-          <ul className="grid shrink-0 grid-cols-4 gap-2 self-center lg:w-[5rem] lg:grid-cols-1 lg:gap-3 lg:self-start lg:pt-1">
+          {/* Thumbnails: equal-size cells so mobile row stays aligned */}
+          <ul className="grid w-full shrink-0 grid-cols-4 items-stretch gap-2 lg:w-[5rem] lg:grid-cols-1 lg:gap-3 lg:self-start">
             {screens.map((screen, index) => {
               const selected = index === active;
-              const thumbWide = isWideScreen(screen.src);
               return (
-                <li key={screen.src}>
+                <li key={screen.src} className="min-w-0">
                   <button
                     type="button"
                     aria-pressed={selected}
                     aria-label={`Show ${screen.alt}`}
                     onClick={() => setActive(index)}
-                    className={`w-full overflow-hidden rounded-[0.7rem] bg-[#1a3315] ring-2 transition ${
-                      selected ? "ring-[#d6ff4a]" : "ring-transparent hover:ring-white/20"
+                    className={`relative aspect-[9/16] w-full overflow-hidden rounded-[0.7rem] bg-transparent ring-2 transition ${
+                      selected ? "ring-[#818cf8]" : "ring-white/15 hover:ring-white/35"
                     }`}
                   >
                     <Image
                       src={screen.src}
                       alt=""
-                      width={thumbWide ? 260 : 160}
-                      height={thumbWide ? 160 : 284}
-                      sizes="80px"
-                      className="h-auto w-full"
+                      fill
+                      sizes="(max-width: 1024px) 22vw, 80px"
+                      className="object-contain object-center p-0.5"
                     />
                   </button>
                 </li>

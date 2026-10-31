@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { InquireNowButton } from "@/components/inquire-modal";
 import { Logo } from "@/components/logo";
 import {
   company,
@@ -19,12 +20,9 @@ export function Footer() {
           <p className="max-w-2xl text-3xl font-extrabold tracking-tight sm:text-4xl">
             Have an idea? <span className="text-gradient">Let&apos;s turn it into reality.</span>
           </p>
-          <Link
-            href="/contact-us"
-            className="btn-sheen bg-brand-gradient inline-flex shrink-0 items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
-          >
+          <InquireNowButton className="btn-sheen bg-brand-gradient inline-flex shrink-0 items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5">
             Inquire Now
-          </Link>
+          </InquireNowButton>
         </div>
 
         <div className="grid gap-10 py-10 md:grid-cols-2 lg:grid-cols-12">

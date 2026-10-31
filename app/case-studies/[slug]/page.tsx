@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CaseStudyScreens } from "@/components/case-study-demo";
+import { CaseStudyFileNav } from "@/components/case-study-file-nav";
 import { Wave } from "@/components/page-hero";
 import { Arrow } from "@/components/ui";
 import {
@@ -10,10 +11,7 @@ import {
   getCaseStudy,
   getNextDemoStudy,
 } from "@/lib/case-study-data";
-import {
-  caseStudyFileNav,
-  type CaseStudyContentBlock,
-} from "@/lib/case-study-sections";
+import { type CaseStudyContentBlock } from "@/lib/case-study-sections";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -142,23 +140,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
         </header>
 
         <div className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:py-16 xl:px-12">
-          <nav aria-label="On this page" className="lg:sticky lg:top-28 lg:self-start">
-            <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">
-              In this file
-            </p>
-            <ul className="mt-4 space-y-2 text-sm font-bold">
-              {caseStudyFileNav.map((item) => (
-                <li key={item.id}>
-                  <a
-                    href={`#${item.id}`}
-                    className="block rounded-full px-3 py-2 hover:bg-[#10210a] hover:text-[#d6ff4a]"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <CaseStudyFileNav />
 
           <div className="space-y-16">
             <section className="scroll-mt-32">
@@ -172,7 +154,9 @@ export default async function CaseStudyDetailPage({ params }: Props) {
 
             {sections.map((section) => (
               <section key={section.id} id={section.id} className="scroll-mt-32">
-                <h2 className="text-3xl font-extrabold tracking-tight">{section.title}</h2>
+                <h2 className="text-3xl font-extrabold tracking-tight text-brand">
+                  {section.title}
+                </h2>
                 {section.subtitle ? (
                   <p className="mt-3 max-w-3xl text-lg font-semibold leading-8 text-[#10210a]/85">
                     {section.subtitle}
