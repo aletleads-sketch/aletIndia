@@ -74,7 +74,7 @@ export const guriHousesSections: CaseStudyNarrativeSection[] = [
     blocks: [
       { type: "p", text: "The development approach for Guri Houses focuses on delivering an integrated experience that connects property information, viewing arrangements, and customer-owner interactions across mobile, web, and backend services." },
       { type: "p", text: "The stack below outlines the platforms, architecture, integrations, quality practices, and cloud deployment used to support that journey." },
-      { type: "image", src: "/images/guri-houses-tech-stack.jpg", alt: "Guri Houses technology stack and implementation" },
+      { type: "image", src: "/images/guri-houses-tech-stack.png", alt: "Guri Houses technology stack and implementation" },
       { type: "h3", text: "Technology Stack" },
       { type: "ul", items: ["Flutter / Dart for the customer-facing mobile experience.", "Next.js / React / TypeScript for web applications and portals.", "Node.js / NestJS for backend APIs and business logic.", "PostgreSQL / PostGIS for property data and geospatial search.", "Redis for caching and session management.", "Firebase Authentication for secure sign-in.", "AWS, Amazon S3, and CloudFront for infrastructure, media storage, and content delivery.", "WebSocket / Socket.IO for real-time messaging and updates.", "GitHub Actions for CI/CD automation."] },
       { type: "h3", text: "Software Architecture" },
@@ -218,7 +218,7 @@ export const tajikaSections: CaseStudyNarrativeSection[] = [
     blocks: [
       { type: "p", text: "The development approach for Tajika focuses on delivering a cohesive application experience that connects service browsing, appointment scheduling, and booking across customer, partner, and admin surfaces." },
       { type: "p", text: "The stack below outlines the platforms, architecture, integrations, quality practices, and cloud deployment used to support that journey." },
-      { type: "image", src: "/images/tajika-tech-stack.jpg", alt: "Tajika technology stack and implementation" },
+      { type: "image", src: "/images/tajika-tech-stack.png", alt: "Tajika technology stack and implementation" },
       { type: "h3", text: "Technology Stack" },
       { type: "ul", items: ["Flutter for Customer and Service Partner mobile apps (iOS & Android).", "Next.js for the Admin Panel and web platform.", "Node.js / NestJS for backend APIs and business logic.", "PostgreSQL for database management.", "Redis for caching and session management.", "Firebase for authentication and push notifications.", "Amazon S3 for service images and media storage.", "AWS for cloud infrastructure, hosting, and deployment.", "Socket.IO for real-time bookings and messages.", "Mapbox / Google Maps for location and address services."] },
       { type: "h3", text: "System Architecture" },

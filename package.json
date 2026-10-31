@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy:dev": "cross-env NEXT_PUBLIC_BASE_PATH= next build && node -e \"require('fs').copyFileSync('vercel.static.json','out/vercel.json')\" && cd out && vercel --prod"
+    "deploy:dev": "cross-env NEXT_PUBLIC_BASE_PATH= next build && node -e \"require('fs').copyFileSync('vercel.static.json','out/vercel.json')\" && vercel link --yes --project aletindia-dev --cwd out && vercel deploy --prod --yes --cwd out"
   },
   "dependencies": {
     "next": "16.4.0",

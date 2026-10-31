@@ -13,6 +13,14 @@ import {
 } from "@/lib/case-study-data";
 import { type CaseStudyContentBlock } from "@/lib/case-study-sections";
 
+/** Intrinsic sizes for tech-stack diagrams (avoids stretch from a shared wrong ratio). */
+const NARRATIVE_IMAGE_SIZE: Record<string, { width: number; height: number }> = {
+  "/images/all-deliveries-tech-stack.png": { width: 2560, height: 1705 },
+  "/images/guri-houses-tech-stack.png": { width: 2560, height: 1440 },
+  "/images/tajika-tech-stack.png": { width: 2560, height: 1705 },
+  "/images/quick-savaari-tech-stack.png": { width: 2560, height: 1440 },
+};
+
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
@@ -55,6 +63,7 @@ function NarrativeBlocks({ blocks }: { blocks: CaseStudyContentBlock[] }) {
           );
         }
         if (block.type === "image") {
+          const size = NARRATIVE_IMAGE_SIZE[block.src] ?? { width: 2560, height: 1440 };
           return (
             <figure
               key={`img-${index}-${block.src}`}
@@ -63,10 +72,12 @@ function NarrativeBlocks({ blocks }: { blocks: CaseStudyContentBlock[] }) {
               <Image
                 src={block.src}
                 alt={block.alt}
-                width={1800}
-                height={1400}
-                sizes="(max-width: 1024px) 100vw, min(70vw, 56rem)"
-                className="h-auto w-full object-contain"
+                width={size.width}
+                height={size.height}
+                sizes="(max-width: 1024px) 100vw, min(100vw, 72rem)"
+                quality={100}
+                className="h-auto w-full object-contain object-center"
+                style={{ width: "100%", height: "auto" }}
                 priority={index < 2}
               />
             </figure>

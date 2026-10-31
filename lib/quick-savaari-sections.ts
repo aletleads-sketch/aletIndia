@@ -75,7 +75,7 @@ export const quickSavaariSections: CaseStudyNarrativeSection[] = [
     blocks: [
       { type: "p", text: "Developing an effective ride-booking platform requires careful consideration of usability, booking workflows, pricing transparency, and application responsiveness." },
       { type: "p", text: "The product approach for Quick Savaari focuses on integrating these essential capabilities into a cohesive digital experience — enabling seamless ride booking, real-time tracking, transparent fares, and reliable operations." },
-      { type: "image", src: "/images/quick-savaari-tech-stack.jpg", alt: "Quick Savaari technology stack and implementation" },
+      { type: "image", src: "/images/quick-savaari-tech-stack.png", alt: "Quick Savaari technology stack and implementation" },
       { type: "h3", text: "Technology Stack" },
       { type: "ul", items: ["Flutter for User and Driver mobile apps.", "Next.js for Admin Panel and web platform.", "Node.js for backend APIs and business logic.", "PostgreSQL for persistent data storage.", "Redis for session management, real-time data, and caching.", "Firebase for push notifications and realtime features.", "AWS for cloud infrastructure.", "Google Maps for maps and routing.", "Socket.IO for live tracking and driver-user communication."] },
       { type: "h3", text: "System Architecture" },

@@ -210,7 +210,7 @@ export const allDeliveriesSections: CaseStudyNarrativeSection[] = [
       },
       {
         type: "image",
-        src: "/images/all-deliveries-tech-stack.jpg",
+        src: "/images/all-deliveries-tech-stack.png",
         alt: "All Deliveries technology stack and implementation",
       },
       { type: "h3", text: "Technology Stack" },
