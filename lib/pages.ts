@@ -347,6 +347,8 @@ export type ServiceVisual = {
   gallery: [string, string, string];
   /** Use contain for illustration assets that include important copy near their edges. */
   galleryFit?: ["cover" | "contain", "cover" | "contain", "cover" | "contain"];
+  /** Fit for the sticky “What we deliver” image (editorial). Defaults to galleryFit[0]. */
+  deliverFit?: "cover" | "contain";
   screens?: string[];
   /** Screen assets that already include a device mockup — don't wrap them in extra chrome. */
   screensMockup?: boolean;
@@ -380,8 +382,9 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "editorial",
     theme: ["#2563eb", "#7c3aed"],
     gallery: ["/images/pages/web-app-development-2.jpeg", "/images/pages/web-app-development-3.jpeg", "/images/pages/web-app-development.jpeg"],
-    // Match gaming / editorial default: cover fills the hero frames (contain left letterbox gaps).
+    // Hero trio stays filled; deliver section shows the full illustration without edge crop.
     galleryFit: ["cover", "cover", "cover"],
+    deliverFit: "contain",
     screens: ["/images/all-deliveries-web-live.png"],
     screensMockup: true,
     stat: { value: "100%", label: "Responsive builds" },

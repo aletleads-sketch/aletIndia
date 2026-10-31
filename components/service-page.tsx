@@ -456,6 +456,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
 function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
   const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
+  const deliverFit = visual.deliverFit ?? galleryFit[0];
   const browserShot = visual.screens?.[0];
   const screensMockup = visual.screensMockup;
   return (
@@ -514,19 +515,25 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
             <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
               What we <span className="theme-text">deliver</span>
             </h2>
-            {galleryFit[0] === "contain" ? (
-              <div className="mt-8 overflow-hidden rounded-[2rem] bg-white ring-1 ring-line">
-                <Image
-                  src={main}
-                  alt=""
-                  width={1200}
-                  height={900}
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="h-auto w-full"
+            {deliverFit === "contain" ? (
+              <div className="relative mt-8 pb-4 sm:pr-4">
+                <div
+                  className="theme-gradient absolute inset-0 translate-x-3 translate-y-3 rounded-[2rem] sm:translate-x-4 sm:translate-y-4"
+                  aria-hidden="true"
                 />
+                <div className="relative z-10 overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_50px_-28px_rgb(30_27_75_/_0.35)]">
+                  <Image
+                    src={main}
+                    alt=""
+                    width={1200}
+                    height={900}
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    className="h-auto w-full"
+                  />
+                </div>
               </div>
             ) : (
-              <Photo src={main} fit={galleryFit[0]} className="mt-8 h-72 rounded-[2rem] bg-[#f4f7fb] sm:h-80" />
+              <Photo src={main} fit={deliverFit} className="mt-8 h-72 rounded-[2rem] bg-[#f4f7fb] sm:h-80" />
             )}
             <ul className="mt-6 flex flex-wrap gap-2">
               {detail.stack.map((tech) => (

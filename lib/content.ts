@@ -305,6 +305,11 @@ export const showcase = [
     alt: "Ramba clothing shopping app",
   },
   {
+    name: "Ramba",
+    src: "/images/ROMBA-MOBILE-PRODUCT-DETAIL.png",
+    alt: "Ramba product detail shopping screen",
+  },
+  {
     name: "Refult",
     src: "/images/Refult.png",
     alt: "Refult fashion shopping app",
@@ -400,7 +405,10 @@ export const caseStudies = [
     tags: ["E-Commerce", "Android", "iOS"],
     color: "from-[#be185d] to-[#f472b6]",
     logo: "/images/clients/ramba.png",
-    screens: ["/images/ROMBA-MOBILE-SHOPPING-APP.png"],
+    screens: [
+      "/images/ROMBA-MOBILE-SHOPPING-APP.png",
+      "/images/ROMBA-MOBILE-PRODUCT-DETAIL.png",
+    ],
   },
   {
     name: "Refult",
