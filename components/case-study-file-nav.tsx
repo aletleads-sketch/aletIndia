@@ -3,8 +3,14 @@
 import { useEffect, useState } from "react";
 import { caseStudyFileNav } from "@/lib/case-study-sections";
 
+type FileNavId = (typeof caseStudyFileNav)[number]["id"];
+
+function asFileNavId(id: string): FileNavId | undefined {
+  return caseStudyFileNav.find((item) => item.id === id)?.id;
+}
+
 export function CaseStudyFileNav() {
-  const [activeId, setActiveId] = useState<string>(caseStudyFileNav[0]?.id ?? "challenge");
+  const [activeId, setActiveId] = useState<FileNavId>(caseStudyFileNav[0]?.id ?? "challenge");
 
   useEffect(() => {
     const ids = caseStudyFileNav.map((item) => item.id);
@@ -20,16 +26,18 @@ export function CaseStudyFileNav() {
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
-        if (visible[0]?.target.id) {
-          setActiveId(visible[0].target.id);
+        const fromVisible = visible[0]?.target.id ? asFileNavId(visible[0].target.id) : undefined;
+        if (fromVisible) {
+          setActiveId(fromVisible);
           return;
         }
 
         // Fallback: nearest section above the viewport midpoint
         const mid = window.scrollY + window.innerHeight * 0.35;
-        let current = ids[0];
+        let current: FileNavId = ids[0];
         for (const el of elements) {
-          if (el.offsetTop <= mid) current = el.id;
+          const matched = asFileNavId(el.id);
+          if (matched && el.offsetTop <= mid) current = matched;
         }
         setActiveId(current);
       },
