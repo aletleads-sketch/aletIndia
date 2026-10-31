@@ -23,20 +23,20 @@ export function CaseStudyScreens({ screens }: { screens: DemoCaseStudy["screens"
   const wide = isWideScreen(current.src);
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 w-full max-w-full min-w-0">
       {/* Outer navy shell — thumbs sit on this layer */}
-      <div className="rounded-[1.75rem] bg-[#080e24] p-3 sm:p-4">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-4">
+      <div className="overflow-hidden rounded-[1.75rem] bg-[#080e24] p-3 sm:p-4">
+        <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-4">
           {/* Big blue layout — main preview only */}
           <div
-            className={`min-w-0 flex-1 rounded-[1.35rem] bg-[#0b1433] ${
+            className={`min-w-0 flex-1 overflow-hidden rounded-[1.35rem] bg-[#0b1433] ${
               wide ? "p-3 sm:p-4" : "p-5 sm:p-[30px]"
             }`}
           >
             <div
-              className={`relative mx-auto w-full ${
+              className={`relative mx-auto w-full max-w-full ${
                 wide
-                  ? "aspect-[16/10] min-h-[16rem] sm:min-h-[18rem]"
+                  ? "aspect-[16/10]"
                   : "aspect-[9/19] max-w-[13.5rem] sm:max-w-[14.5rem]"
               }`}
             >
@@ -53,7 +53,7 @@ export function CaseStudyScreens({ screens }: { screens: DemoCaseStudy["screens"
           </div>
 
           {/* Thumbnails: equal-size cells so mobile row stays aligned */}
-          <ul className="grid w-full shrink-0 grid-cols-4 items-stretch gap-2 lg:w-[5rem] lg:grid-cols-1 lg:gap-3 lg:self-start">
+          <ul className="grid w-full min-w-0 shrink-0 grid-cols-4 items-stretch gap-2 lg:w-[5rem] lg:grid-cols-1 lg:gap-3 lg:self-start">
             {screens.map((screen, index) => {
               const selected = index === active;
               return (

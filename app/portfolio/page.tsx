@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const wall = [
   ["/images/work/tajika-1.png", "/images/QUICK-SAWARI.png", "/images/GURI-HOUSES.png"],
-  ["/images/all_deliveries_home.png", "/images/Refult.png", "/images/work/app-1.png"],
+  ["/images/all_deliveries_home.png", "/images/Refult.png", "/images/cricket-fantasybuzz-1.png"],
   ["/images/QUICK-SAWARI-2.png", "/images/work/tajika-2.png", "/images/REFULT-2.png"],
 ];
 

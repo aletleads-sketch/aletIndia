@@ -34,8 +34,11 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
   return (
     <article className="bg-[#f6f1e8] text-ink">
-      <header className="bg-[#1c140c] text-[#f6f1e8]">
-        <div className="mx-auto w-full max-w-3xl px-5 pt-36 pb-12 sm:px-8 lg:pt-40">
+      <header className="hero-mesh relative overflow-hidden text-white">
+        <div className="dot-grid pointer-events-none absolute inset-0" />
+        <div className="orb pointer-events-none absolute top-20 -right-24 h-96 w-96 rounded-full bg-brand/40 blur-3xl" />
+        <div className="orb orb-b pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />
+        <div className="relative mx-auto w-full max-w-3xl px-5 pt-36 pb-12 sm:px-8 lg:pt-40">
           <nav aria-label="Breadcrumb" className="text-xs font-bold tracking-[0.16em] text-white/60 uppercase">
             <Link href="/" className="hover:text-white">
               Home
@@ -45,7 +48,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               Blogs
             </Link>
           </nav>
-          <p className="mt-8 text-xs font-bold tracking-[0.22em] text-amber-200 uppercase">{post.tag}</p>
+          <p className="mt-8 text-xs font-bold tracking-[0.22em] text-brand-2 uppercase">{post.tag}</p>
           <h1 className="mt-4 text-4xl leading-[1.05] font-extrabold tracking-tight text-balance sm:text-6xl">
             {post.title}
           </h1>

@@ -380,7 +380,8 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "editorial",
     theme: ["#2563eb", "#7c3aed"],
     gallery: ["/images/pages/web-app-development-2.jpeg", "/images/pages/web-app-development-3.jpeg", "/images/pages/web-app-development.jpeg"],
-    galleryFit: ["contain", "contain", "contain"],
+    // Match gaming / editorial default: cover fills the hero frames (contain left letterbox gaps).
+    galleryFit: ["cover", "cover", "cover"],
     screens: ["/images/all-deliveries-web-live.png"],
     screensMockup: true,
     stat: { value: "100%", label: "Responsive builds" },

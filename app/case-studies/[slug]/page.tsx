@@ -67,7 +67,7 @@ function NarrativeBlocks({ blocks }: { blocks: CaseStudyContentBlock[] }) {
           return (
             <figure
               key={`img-${index}-${block.src}`}
-              className="my-2 w-full overflow-hidden rounded-[1.4rem] bg-white ring-1 ring-[#10210a]/10"
+              className="my-2 w-full max-w-full min-w-0 overflow-hidden rounded-[1.4rem] bg-white ring-1 ring-[#10210a]/10"
             >
               <Image
                 src={block.src}
@@ -108,7 +108,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
 
   return (
     <>
-      <article className="bg-[#e7f0e4] text-[#10210a]">
+      <article className="overflow-x-clip bg-[#e7f0e4] text-[#10210a]">
         <header className="hero-mesh relative overflow-hidden text-white">
           <div className="dot-grid pointer-events-none absolute inset-0" />
           <div className="orb pointer-events-none absolute top-20 -right-24 h-96 w-96 rounded-full bg-brand/40 blur-3xl" />
@@ -129,10 +129,10 @@ export default async function CaseStudyDetailPage({ params }: Props) {
             <p className="mt-8 text-xs font-bold tracking-[0.28em] text-brand-2 uppercase">
               {study.industry} · Case study
             </p>
-            <h1 className="mt-4 max-w-4xl text-4xl leading-[1.02] font-extrabold tracking-tight text-balance sm:text-6xl">
+            <h1 className="mt-4 max-w-4xl text-4xl leading-[1.02] font-extrabold tracking-tight text-balance break-words sm:text-6xl">
               {study.title}
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">{study.summary}</p>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-pretty text-white/70">{study.summary}</p>
             <dl className="mt-10 grid gap-4 sm:grid-cols-3">
               {study.facts.map((fact) => (
                 <div
@@ -142,7 +142,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
                   <dt className="text-xs font-bold tracking-[0.16em] text-white/45 uppercase">
                     {fact.label}
                   </dt>
-                  <dd className="mt-2 text-lg font-extrabold">{fact.value}</dd>
+                  <dd className="mt-2 text-lg font-extrabold break-words">{fact.value}</dd>
                 </div>
               ))}
             </dl>
@@ -153,10 +153,12 @@ export default async function CaseStudyDetailPage({ params }: Props) {
         <div className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:py-16 xl:px-12">
           <CaseStudyFileNav />
 
-          <div className="space-y-16">
+          <div className="min-w-0 max-w-full space-y-16">
             <section className="scroll-mt-32">
-              <h2 className="text-3xl font-extrabold tracking-tight">Walk the screens</h2>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-[#10210a]/70">
+              <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words text-[#1a3314]">
+                Walk the screens
+              </h2>
+              <p className="mt-3 max-w-2xl text-base leading-7 text-pretty text-[#10210a]/70">
                 Tap a frame to bring that screen forward. These are the product views from the
                 build.
               </p>
@@ -165,11 +167,11 @@ export default async function CaseStudyDetailPage({ params }: Props) {
 
             {sections.map((section) => (
               <section key={section.id} id={section.id} className="scroll-mt-32">
-                <h2 className="text-3xl font-extrabold tracking-tight text-brand">
+                <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words text-[#1a3314]">
                   {section.title}
                 </h2>
                 {section.subtitle ? (
-                  <p className="mt-3 max-w-3xl text-lg font-semibold leading-8 text-[#10210a]/85">
+                  <p className="mt-3 max-w-3xl text-lg font-semibold leading-8 text-pretty text-[#10210a]/85">
                     {section.subtitle}
                   </p>
                 ) : null}
@@ -177,8 +179,8 @@ export default async function CaseStudyDetailPage({ params }: Props) {
               </section>
             ))}
 
-            <section className="rounded-[2rem] bg-[#10210a] px-6 py-10 text-white sm:px-10 sm:py-12">
-              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <section className="rounded-[2rem] bg-[#10210a] px-5 py-10 text-white sm:px-10 sm:py-12">
+              <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words sm:text-4xl">
                 Have a similar business idea?
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
@@ -186,7 +188,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
               </p>
               <Link
                 href="/contact-us"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#d6ff4a] px-6 py-3 text-sm font-extrabold text-[#10210a] transition hover:-translate-y-0.5 hover:brightness-110"
+                className="mt-8 inline-flex max-w-full items-center gap-2 rounded-full bg-[#d6ff4a] px-6 py-3 text-sm font-extrabold whitespace-nowrap text-[#10210a] transition hover:-translate-y-0.5 hover:brightness-110"
               >
                 Start your project <Arrow />
               </Link>

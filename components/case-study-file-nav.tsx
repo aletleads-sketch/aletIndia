@@ -53,17 +53,17 @@ export function CaseStudyFileNav() {
   }, []);
 
   return (
-    <nav aria-label="On this page" className="lg:sticky lg:top-28 lg:self-start">
+    <nav aria-label="On this page" className="min-w-0 max-w-full lg:sticky lg:top-28 lg:self-start">
       <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">In this file</p>
-      <ul className="mt-4 space-y-2 text-sm font-bold">
+      <ul className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 text-sm font-bold [scrollbar-width:none] lg:mx-0 lg:flex-col lg:gap-2 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden">
         {caseStudyFileNav.map((item) => {
           const active = activeId === item.id;
           return (
-            <li key={item.id}>
+            <li key={item.id} className="shrink-0 lg:min-w-0 lg:shrink">
               <a
                 href={`#${item.id}`}
                 aria-current={active ? "true" : undefined}
-                className={`block rounded-full px-3 py-2 transition ${
+                className={`block whitespace-nowrap rounded-full px-3 py-2 transition lg:whitespace-normal ${
                   active
                     ? "bg-[#10210a] text-[#d6ff4a]"
                     : "text-[#10210a] hover:bg-[#10210a] hover:text-[#d6ff4a]"

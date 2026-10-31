@@ -260,13 +260,13 @@ export const showcase = [
   },
   {
     name: "Cricket FantasyBuzz",
-    src: "/images/work/app-1.png",
-    alt: "Cricket FantasyBuzz mobile app",
+    src: "/images/cricket-fantasybuzz-1.png",
+    alt: "Cricket FantasyBuzz mobile app splash",
   },
   {
     name: "Cricket FantasyBuzz",
-    src: "/images/work/app-3.png",
-    alt: "Cricket FantasyBuzz app screen",
+    src: "/images/cricket-fantasybuzz-2.png",
+    alt: "Cricket FantasyBuzz app menu",
   },
 ];
 
@@ -384,7 +384,7 @@ export const caseStudies = [
     tags: ["Cross-platform", "Real-time", "Payments"],
     color: "from-[#0e7490] to-[#06b6d4]",
     logo: "/images/clients/cfb.png",
-    screens: ["/images/work/app-1.png", "/images/work/app-3.png"],
+    screens: ["/images/cricket-fantasybuzz-1.png", "/images/cricket-fantasybuzz-2.png"],
   },
 ];
 
