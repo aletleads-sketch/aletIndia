@@ -42,7 +42,7 @@ export default function BlogsPage() {
         <Reveal>
           <Link
             href={`/blogs/${featured.slug}`}
-            className="group grid overflow-hidden rounded-[2rem] bg-[#1c140c] text-[#f6f1e8] lg:grid-cols-[1.15fr_0.85fr]"
+            className="group grid overflow-hidden rounded-[2rem] bg-night text-white lg:grid-cols-[1.15fr_0.85fr]"
           >
             <div className="relative min-h-[18rem] overflow-hidden lg:min-h-[32rem]">
               <div className="zoom-img absolute inset-0">
@@ -57,7 +57,7 @@ export default function BlogsPage() {
             </div>
             <div className="flex flex-col justify-between p-8 sm:p-12">
               <div>
-                <p className="text-xs font-bold tracking-[0.22em] text-amber-200 uppercase">
+                <p className="text-xs font-bold tracking-[0.22em] text-brand-2 uppercase">
                   Featured · {featured.tag}
                 </p>
                 <h2 className="mt-5 text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-5xl">
@@ -69,7 +69,7 @@ export default function BlogsPage() {
                 <span>
                   {featured.date} · {readingMinutes(featured)} min
                 </span>
-                <span className="inline-flex items-center gap-2 font-extrabold text-amber-200">
+                <span className="inline-flex items-center gap-2 font-extrabold text-brand-2">
                   Read
                   <span className="transition group-hover:translate-x-1.5">
                     <Arrow />
@@ -80,7 +80,7 @@ export default function BlogsPage() {
           </Link>
         </Reveal>
 
-        <ol className="mt-6 divide-y divide-[#1c140c]/15 border-y border-[#1c140c]/15">
+        <ol className="mt-6 divide-y divide-night/15 border-y border-night/15">
           {posts.map((post, index) => (
             <li key={post.slug}>
               <Reveal>
@@ -88,7 +88,7 @@ export default function BlogsPage() {
                   href={`/blogs/${post.slug}`}
                   className="group grid items-center gap-5 py-6 sm:grid-cols-[4rem_1fr_auto] sm:py-7"
                 >
-                  <span className="text-3xl font-extrabold tracking-tight text-[#1c140c]/25">
+                  <span className="text-3xl font-extrabold tracking-tight text-night/25">
                     {String(index + 2).padStart(2, "0")}
                   </span>
                   <span>

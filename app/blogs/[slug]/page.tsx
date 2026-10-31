@@ -94,21 +94,21 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             </section>
           ))}
 
-          <div className="rounded-[1.8rem] bg-[#1c140c] px-7 py-8 text-[#f6f1e8] sm:px-10">
-            <p className="text-xs font-bold tracking-[0.2em] text-amber-200 uppercase">Build it</p>
+          <div className="rounded-[1.8rem] bg-night px-7 py-8 text-white sm:px-10">
+            <p className="text-xs font-bold tracking-[0.2em] text-brand-2 uppercase">Build it</p>
             <p className="mt-3 text-2xl font-extrabold tracking-tight">
               Want this thinking applied to your product?
             </p>
             <Link
               href="/contact-us"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-bold text-night"
+              className="btn-sheen bg-brand-gradient mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
             >
               Talk to ALET
               <Arrow />
             </Link>
           </div>
 
-          <nav className="grid gap-4 border-t border-[#1c140c]/15 pt-8 sm:grid-cols-2">
+          <nav className="grid gap-4 border-t border-night/15 pt-8 sm:grid-cols-2">
             {previous ? (
               <Link href={`/blogs/${previous.slug}`} className="group">
                 <span className="text-xs font-bold tracking-[0.16em] text-muted uppercase">Previous</span>

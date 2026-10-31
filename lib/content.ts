@@ -170,8 +170,69 @@ export const ideology = [
 export const about = {
   title: "About ALET India",
   paragraphs: [
-    "Alet India is one of the leading worldwide information technology, counseling and business process administrations organization. We bridle the power of cognitive computing, cloud, analytics and developing advancements to enable our customers to adjust to the computerized world and make them effective. An organization perceived all around for its complete arrangement of administrations, solid responsibility to supportability and great corporate citizenship, Established in the year 2017, Alet India has got one of the all inclusive remembered IT counseling organization that as of now offers their administrations in 10+ various nations. In our excursion of more than 3 years, we have catalyzed a portion of the significant changes that have prompted India’s rise as the worldwide goal for programming administrations ability. We spearheaded the Global Delivery Model and turned into the first IT Company from India.",
-    "Stay competitive & let Dramatics Digital transform your business application requirements. ALET India’s award-winning software development service, offers custom Mobile & Web apps development services for entrepreneurs & small businesses. From design to development to testing and support, we provide end-to-end software development services to help in building apps with trusted frameworks. Our senior Android developers prefer frameworks like React Native, Flutter, Ionic (LEss), Phonegap (Old), Xemrin (Old) to develop Native and cross-platform based apps. If you are looking to hire Android app developer, we have a team of full-stack Android developers, having a strong command on programming languages like Kotlin, Java, C, C + +, HTML, and CSS to develop high-end apps for mobiles, tablets, wearable devices, and Android TVs. Our Android programmers develop an app for almost all the categories of App Store, including Photo & Video, Health & Fitness, Education & Learning, and Travel & Tourism etc.",
+    "Established in 2017, Alet India Softwares is a technology-driven software development and IT consulting company delivering innovative digital solutions to businesses across the globe. With a growing international presence spanning more than 10 countries, we help startups, emerging businesses, and enterprises transform ideas into scalable, secure, and high-performing digital products.",
+    "Our expertise spans Custom Software Development, Mobile & Web Application Development, AI & Data Solutions, Salesforce Solutions, Game Development, Cloud Computing, and IT Consulting. By combining technical expertise with a business-first approach, we develop solutions that address real-world challenges, streamline operations, enhance customer experiences, and support long-term business growth.",
+    "At Alet India, we embrace emerging technologies and modern engineering practices, including Generative AI, Machine Learning, Intelligent Automation, Cloud-Native Architecture, Microservices, API-First Development, DevSecOps, and CI/CD Automation. Our approach emphasizes performance, security, scalability, and maintainability, ensuring that the solutions we build are prepared for evolving business requirements and technological advancements.",
+    "We specialize in building customized mobile, web, and enterprise applications using modern technologies and development frameworks such as Flutter, React Native, Kotlin, Java, React.js, Next.js, and Node.js. From product discovery and UI/UX design to development, quality assurance, deployment, and ongoing enhancement, we provide end-to-end software development services tailored to each client's business objectives.",
+    "As part of our expanding capabilities, we are extending our expertise into AI-powered applications, data engineering, advanced analytics, Salesforce CRM implementation and customization, and interactive game development. These services are designed to help organizations make informed decisions, automate business processes, strengthen customer relationships, and explore new opportunities through digital innovation.",
+    "Our development approach incorporates Agile methodologies, modern software architecture, automated testing, and continuous integration and delivery practices. By integrating innovation with structured project execution, we aim to deliver reliable, adaptable solutions that create measurable business value.",
+    "At Alet India, we believe successful digital transformation extends beyond software development. It requires understanding business challenges, identifying opportunities, and building technology that delivers sustained value.",
+    "Whether it's launching a new mobile application, modernizing an enterprise platform, implementing AI-driven solutions, optimizing Salesforce operations, or developing an engaging digital gaming experience, we work collaboratively with our clients throughout their technology journey.",
+    "Since 2017, our commitment has remained the same: transforming business possibilities into meaningful digital progress through innovation, collaboration, and technology.",
+  ],
+  story: [
+    {
+      type: "title" as const,
+      text: "Empowering Businesses Through Technology, Innovation & Digital Transformation",
+    },
+    {
+      type: "p" as const,
+      text: "Established in 2017, Alet India Softwares is a technology-driven software development and IT consulting company delivering innovative digital solutions to businesses across the globe. With a growing international presence spanning more than 10 countries, we help startups, emerging businesses, and enterprises transform ideas into scalable, secure, and high-performing digital products.",
+    },
+    {
+      type: "p" as const,
+      text: "Our expertise spans Custom Software Development, Mobile & Web Application Development, AI & Data Solutions, Salesforce Solutions, Game Development, Cloud Computing, and IT Consulting. By combining technical expertise with a business-first approach, we develop solutions that address real-world challenges, streamline operations, enhance customer experiences, and support long-term business growth.",
+    },
+    {
+      type: "p" as const,
+      text: "At Alet India, we embrace emerging technologies and modern engineering practices, including Generative AI, Machine Learning, Intelligent Automation, Cloud-Native Architecture, Microservices, API-First Development, DevSecOps, and CI/CD Automation. Our approach emphasizes performance, security, scalability, and maintainability, ensuring that the solutions we build are prepared for evolving business requirements and technological advancements.",
+    },
+    {
+      type: "h3" as const,
+      text: "Modern Application Development & Engineering Excellence",
+    },
+    {
+      type: "p" as const,
+      text: "We specialize in building customized mobile, web, and enterprise applications using modern technologies and development frameworks such as Flutter, React Native, Kotlin, Java, React.js, Next.js, and Node.js. From product discovery and UI/UX design to development, quality assurance, deployment, and ongoing enhancement, we provide end-to-end software development services tailored to each client's business objectives.",
+    },
+    {
+      type: "p" as const,
+      text: "As part of our expanding capabilities, we are extending our expertise into AI-powered applications, data engineering, advanced analytics, Salesforce CRM implementation and customization, and interactive game development. These services are designed to help organizations make informed decisions, automate business processes, strengthen customer relationships, and explore new opportunities through digital innovation.",
+    },
+    {
+      type: "p" as const,
+      text: "Our development approach incorporates Agile methodologies, modern software architecture, automated testing, and continuous integration and delivery practices. By integrating innovation with structured project execution, we aim to deliver reliable, adaptable solutions that create measurable business value.",
+    },
+    {
+      type: "h3" as const,
+      text: "Building Technology That Evolves With Your Business",
+    },
+    {
+      type: "p" as const,
+      text: "At Alet India, we believe successful digital transformation extends beyond software development. It requires understanding business challenges, identifying opportunities, and building technology that delivers sustained value.",
+    },
+    {
+      type: "p" as const,
+      text: "Whether it's launching a new mobile application, modernizing an enterprise platform, implementing AI-driven solutions, optimizing Salesforce operations, or developing an engaging digital gaming experience, we work collaboratively with our clients throughout their technology journey.",
+    },
+    {
+      type: "p" as const,
+      text: "Since 2017, our commitment has remained the same: transforming business possibilities into meaningful digital progress through innovation, collaboration, and technology.",
+    },
+    {
+      type: "closing" as const,
+      text: "Your Vision. Our Expertise. A Future Built Together.",
+    },
   ],
 };
 
@@ -592,6 +653,7 @@ export const legalLinks = [
 export const companyLinks = [
   { label: "About Us", href: "/about-us" },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Case Studies", href: "/case-studies" },
   { label: "Career", href: "/career" },
   { label: "Blogs", href: "/blogs" },
   { label: "Contact Us", href: "/contact-us" },

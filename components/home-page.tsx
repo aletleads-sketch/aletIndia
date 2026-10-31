@@ -376,11 +376,34 @@ function About() {
               <span className="faq-icon text-lg leading-none transition duration-300">+</span>
             </summary>
             <div className="mt-6 space-y-5">
-              {about.paragraphs.map((paragraph) => (
-                <p key={paragraph.slice(0, 24)} className="text-base leading-8 text-muted">
-                  {paragraph}
-                </p>
-              ))}
+              {about.story.map((block) => {
+                if (block.type === "title") {
+                  return (
+                    <p key={block.text} className="text-lg leading-8 font-extrabold tracking-tight text-ink">
+                      {block.text}
+                    </p>
+                  );
+                }
+                if (block.type === "h3") {
+                  return (
+                    <h3 key={block.text} className="pt-2 text-xl font-extrabold tracking-tight text-ink">
+                      {block.text}
+                    </h3>
+                  );
+                }
+                if (block.type === "closing") {
+                  return (
+                    <p key={block.text} className="pt-1 text-base leading-8 font-extrabold text-ink">
+                      {block.text}
+                    </p>
+                  );
+                }
+                return (
+                  <p key={block.text.slice(0, 48)} className="text-base leading-8 text-muted">
+                    {block.text}
+                  </p>
+                );
+              })}
             </div>
           </details>
           <Link
