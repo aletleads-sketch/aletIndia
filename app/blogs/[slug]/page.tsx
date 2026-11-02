@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BlogSections } from "@/components/blog-blocks";
 import { Arrow, Photo } from "@/components/ui";
-import { blogPosts, getBlogPost, readingMinutes, relatedPosts } from "@/lib/blogs";
+import {
+  blogPosts,
+  formatBlogDate,
+  getBlogPost,
+  readingMinutes,
+  relatedPosts,
+} from "@/lib/blogs";
+import { assetPath, BASE_PATH } from "@/lib/site-path";
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -16,9 +24,22 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) return { title: "Article — Alet India" };
+
+  const canonicalPath = `${BASE_PATH}/blogs/${post.slug}`.replace(/\/{2,}/g, "/") || `/blogs/${post.slug}`;
+
   return {
     title: `${post.title} — Alet India`,
     description: post.excerpt,
+    alternates: {
+      canonical: `/blogs/${post.slug}`,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      url: canonicalPath,
+      images: [{ url: assetPath(post.image) }],
+    },
   };
 }
 
@@ -31,14 +52,40 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   const previous = blogPosts[index - 1];
   const next = blogPosts[index + 1];
   const related = relatedPosts(post.slug);
+  const minutes = readingMinutes(post);
+  const cover = assetPath(post.image);
+  const pageUrl = `https://aletindia.com${`${BASE_PATH}/blogs/${post.slug}`.replace(/\/{2,}/g, "/")}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    datePublished: post.date,
+    description: post.excerpt,
+    image: cover.startsWith("http") ? cover : `https://aletindia.com${cover}`,
+    author: {
+      "@type": "Person",
+      name: post.author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Alet India",
+    },
+    mainEntityOfPage: pageUrl,
+  };
 
   return (
     <article className="bg-[#f6f1e8] text-ink">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <header className="hero-mesh relative overflow-hidden text-white">
         <div className="dot-grid pointer-events-none absolute inset-0" />
         <div className="orb pointer-events-none absolute top-20 -right-24 h-96 w-96 rounded-full bg-brand/40 blur-3xl" />
         <div className="orb orb-b pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />
-        <div className="relative mx-auto w-full max-w-3xl px-5 pt-36 pb-12 sm:px-8 lg:pt-40">
+        <div className="relative mx-auto w-full max-w-3xl px-5 pt-28 pb-10 sm:px-8 sm:pt-36 sm:pb-12 lg:pt-40 lg:pb-14">
           <nav aria-label="Breadcrumb" className="text-xs font-bold tracking-[0.16em] text-white/60 uppercase">
             <Link href="/" className="hover:text-white">
               Home
@@ -48,51 +95,43 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               Blogs
             </Link>
           </nav>
-          <p className="mt-8 text-xs font-bold tracking-[0.22em] text-brand-2 uppercase">{post.tag}</p>
-          <h1 className="mt-4 text-4xl leading-[1.05] font-extrabold tracking-tight text-balance sm:text-6xl">
+
+          <ul className="mt-6 flex flex-wrap gap-2 sm:mt-8">
+            {(post.categories.length > 0 ? post.categories : [post.tag]).map((category) => (
+              <li
+                key={category}
+                className="rounded-full bg-white/10 px-3.5 py-1.5 text-[0.7rem] font-bold tracking-[0.14em] text-brand-2 uppercase ring-1 ring-white/15"
+              >
+                {category}
+              </li>
+            ))}
+          </ul>
+
+          <h1 className="mt-4 text-3xl leading-[1.1] font-extrabold tracking-tight text-balance sm:mt-5 sm:text-6xl">
             {post.title}
           </h1>
-          <p className="mt-6 text-lg leading-8 text-white/70">{post.excerpt}</p>
-          <p className="mt-8 text-sm font-semibold text-white/55">
-            {post.author} · {post.date} · {readingMinutes(post)} min read
+          <p className="mt-4 text-base leading-7 text-white/70 sm:mt-6 sm:text-lg sm:leading-8">
+            {post.excerpt}
+          </p>
+          <p className="mt-6 text-sm font-semibold text-white/55 sm:mt-8">
+            {post.author} · {formatBlogDate(post.date)} · {minutes} min read
           </p>
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-5xl px-5 sm:px-8">
+      <div className="mx-auto w-full max-w-5xl px-4 pt-6 sm:px-8 sm:pt-8">
         <Photo
           src={post.image}
           alt=""
           priority
-          className="-mt-2 h-72 rounded-[2rem] border-4 border-[#f6f1e8] shadow-xl sm:h-[28rem]"
+          className="h-48 rounded-[1.4rem] border-4 border-white shadow-xl sm:h-72 sm:rounded-[2rem] lg:h-[28rem]"
           sizes="(max-width: 1024px) 100vw, 64rem"
         />
       </div>
 
       <div className="mx-auto grid w-full max-w-5xl gap-14 px-5 py-14 sm:px-8 lg:grid-cols-[minmax(0,42rem)_16rem]">
         <div className="space-y-12">
-          {post.sections.map((section) => (
-            <section key={section.heading}>
-              <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{section.heading}</h2>
-              <div className="mt-4 space-y-4">
-                {section.paragraphs.map((paragraph) => (
-                  <p key={paragraph.slice(0, 48)} className="text-[1.05rem] leading-8 text-ink/80">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-              {section.list ? (
-                <ul className="mt-5 space-y-3">
-                  {section.list.map((item) => (
-                    <li key={item} className="flex gap-3 text-[1.02rem] leading-7 text-ink/80">
-                      <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </section>
-          ))}
+          <BlogSections sections={post.sections} />
 
           <div className="rounded-[1.8rem] bg-night px-7 py-8 text-white sm:px-10">
             <p className="text-xs font-bold tracking-[0.2em] text-brand-2 uppercase">Build it</p>

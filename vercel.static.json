@@ -1,4 +1,206 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/aletindia/why-user-centric-design-is-key-to-app-success",
+      "destination": "/aletindia/blogs/why-user-centric-design-is-key-to-app-success",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-user-centric-design-is-key-to-app-success/",
+      "destination": "/aletindia/blogs/why-user-centric-design-is-key-to-app-success",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/latest-ui-ux-trends-for-mobile-apps-in-2025",
+      "destination": "/aletindia/blogs/latest-ui-ux-trends-for-mobile-apps-in-2025",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/latest-ui-ux-trends-for-mobile-apps-in-2025/",
+      "destination": "/aletindia/blogs/latest-ui-ux-trends-for-mobile-apps-in-2025",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/startup-app-development-a-step-by-step-guide-to-launching-your-idea",
+      "destination": "/aletindia/blogs/startup-app-development-a-step-by-step-guide-to-launching-your-idea",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/startup-app-development-a-step-by-step-guide-to-launching-your-idea/",
+      "destination": "/aletindia/blogs/startup-app-development-a-step-by-step-guide-to-launching-your-idea",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-mobile-apps-are-revolutionizing-industries-healthcare-retail-and-education",
+      "destination": "/aletindia/blogs/how-mobile-apps-are-revolutionizing-industries-healthcare-retail-and-education",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-mobile-apps-are-revolutionizing-industries-healthcare-retail-and-education/",
+      "destination": "/aletindia/blogs/how-mobile-apps-are-revolutionizing-industries-healthcare-retail-and-education",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-your-business-needs-a-mobile-app-with-real-case-studies",
+      "destination": "/aletindia/blogs/why-your-business-needs-a-mobile-app-with-real-case-studies",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-your-business-needs-a-mobile-app-with-real-case-studies/",
+      "destination": "/aletindia/blogs/why-your-business-needs-a-mobile-app-with-real-case-studies",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/app-development-costs-in-2025-what-to-expect",
+      "destination": "/aletindia/blogs/app-development-costs-in-2025-what-to-expect",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/app-development-costs-in-2025-what-to-expect/",
+      "destination": "/aletindia/blogs/app-development-costs-in-2025-what-to-expect",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-mobile-apps-help-boost-business-roi-in-2025",
+      "destination": "/aletindia/blogs/how-mobile-apps-help-boost-business-roi-in-2025",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-mobile-apps-help-boost-business-roi-in-2025/",
+      "destination": "/aletindia/blogs/how-mobile-apps-help-boost-business-roi-in-2025",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-your-startup-needs-a-cross-platform-mobile-app",
+      "destination": "/aletindia/blogs/why-your-startup-needs-a-cross-platform-mobile-app",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-your-startup-needs-a-cross-platform-mobile-app/",
+      "destination": "/aletindia/blogs/why-your-startup-needs-a-cross-platform-mobile-app",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/the-role-of-5g-in-shaping-the-future-of-mobile-apps",
+      "destination": "/aletindia/blogs/the-role-of-5g-in-shaping-the-future-of-mobile-apps",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/the-role-of-5g-in-shaping-the-future-of-mobile-apps/",
+      "destination": "/aletindia/blogs/the-role-of-5g-in-shaping-the-future-of-mobile-apps",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/progressive-web-apps-vs-native-apps-which-is-better-for-your-business",
+      "destination": "/aletindia/blogs/progressive-web-apps-vs-native-apps-which-is-better-for-your-business",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/progressive-web-apps-vs-native-apps-which-is-better-for-your-business/",
+      "destination": "/aletindia/blogs/progressive-web-apps-vs-native-apps-which-is-better-for-your-business",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-to-choose-the-right-tech-stack-for-your-mobile-app",
+      "destination": "/aletindia/blogs/how-to-choose-the-right-tech-stack-for-your-mobile-app",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-to-choose-the-right-tech-stack-for-your-mobile-app/",
+      "destination": "/aletindia/blogs/how-to-choose-the-right-tech-stack-for-your-mobile-app",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-ai-ml-are-transforming-mobile-apps-3-game-changing-innovations",
+      "destination": "/aletindia/blogs/how-ai-ml-are-transforming-mobile-apps-3-game-changing-innovations",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-ai-ml-are-transforming-mobile-apps-3-game-changing-innovations/",
+      "destination": "/aletindia/blogs/how-ai-ml-are-transforming-mobile-apps-3-game-changing-innovations",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/flutter-vs-react-native-which-framework-to-choose",
+      "destination": "/aletindia/blogs/flutter-vs-react-native-which-framework-to-choose",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/flutter-vs-react-native-which-framework-to-choose/",
+      "destination": "/aletindia/blogs/flutter-vs-react-native-which-framework-to-choose",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/top-mobile-app-development-trends",
+      "destination": "/aletindia/blogs/top-mobile-app-development-trends",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/top-mobile-app-development-trends/",
+      "destination": "/aletindia/blogs/top-mobile-app-development-trends",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-augmented-reality-ar-is-highly-important-for-businesses",
+      "destination": "/aletindia/blogs/why-augmented-reality-ar-is-highly-important-for-businesses",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-augmented-reality-ar-is-highly-important-for-businesses/",
+      "destination": "/aletindia/blogs/why-augmented-reality-ar-is-highly-important-for-businesses",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-is-online-ticketing-system-highly-beneficial-for-event-organization",
+      "destination": "/aletindia/blogs/why-is-online-ticketing-system-highly-beneficial-for-event-organization",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/why-is-online-ticketing-system-highly-beneficial-for-event-organization/",
+      "destination": "/aletindia/blogs/why-is-online-ticketing-system-highly-beneficial-for-event-organization",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-mobile-applications-are-beneficial-for-the-growth-of-business",
+      "destination": "/aletindia/blogs/how-mobile-applications-are-beneficial-for-the-growth-of-business",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-mobile-applications-are-beneficial-for-the-growth-of-business/",
+      "destination": "/aletindia/blogs/how-mobile-applications-are-beneficial-for-the-growth-of-business",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-artificial-intelligence-is-boosting-growth-of-organizations-in-the-digital-era",
+      "destination": "/aletindia/blogs/how-artificial-intelligence-is-boosting-growth-of-organizations-in-the-digital-era",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/how-artificial-intelligence-is-boosting-growth-of-organizations-in-the-digital-era/",
+      "destination": "/aletindia/blogs/how-artificial-intelligence-is-boosting-growth-of-organizations-in-the-digital-era",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/an-insight-into-software-developments-in-india",
+      "destination": "/aletindia/blogs/an-insight-into-software-developments-in-india",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/an-insight-into-software-developments-in-india/",
+      "destination": "/aletindia/blogs/an-insight-into-software-developments-in-india",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/blogs/page/:n",
+      "destination": "/aletindia/blogs",
+      "permanent": true
+    },
+    {
+      "source": "/aletindia/blogs/page/:n/",
+      "destination": "/aletindia/blogs",
+      "permanent": true
+    }
+  ]
 }

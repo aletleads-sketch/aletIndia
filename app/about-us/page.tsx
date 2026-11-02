@@ -110,7 +110,7 @@ export default function AboutPage() {
         <div className="mx-auto w-full max-w-[92rem]">
           <Reveal>
             <Eyebrow>Our story</Eyebrow>
-            <h2 className="mt-4 text-[clamp(1.35rem,4.6vw,3rem)] font-extrabold tracking-tight whitespace-nowrap">
+            <h2 className="mt-4 max-w-full text-[clamp(1.35rem,4.6vw,3rem)] font-extrabold tracking-tight text-balance">
               A journey that began with <span className="text-gradient-dark">a vision.</span>
             </h2>
           </Reveal>

@@ -108,7 +108,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
 
   return (
     <>
-      <article className="overflow-x-clip bg-[#e7f0e4] text-[#10210a]">
+      <article className="overflow-x-clip bg-white text-[#10210a]">
         <header className="hero-mesh relative overflow-hidden text-white">
           <div className="dot-grid pointer-events-none absolute inset-0" />
           <div className="orb pointer-events-none absolute top-20 -right-24 h-96 w-96 rounded-full bg-brand/40 blur-3xl" />
@@ -147,7 +147,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
               ))}
             </dl>
           </div>
-          <Wave className="fill-[#e7f0e4]" />
+          <Wave className="fill-white" />
         </header>
 
         <div className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:py-16 xl:px-12">

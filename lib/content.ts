@@ -667,6 +667,6 @@ export const companyLinks = [
   { label: "Contact Us", href: "/contact-us" },
   {
     label: "Brochure",
-    href: "/Alet_Broucher.pdf",
+    href: "/Alet_Brochure.pdf",
   },
 ];

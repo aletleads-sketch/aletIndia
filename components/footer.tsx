@@ -8,6 +8,7 @@ import {
   legalLinks,
   services,
 } from "@/lib/content";
+import { assetPath } from "@/lib/site-path";
 
 const socialLinks = [
   {
@@ -159,10 +160,17 @@ function FooterLink({
   children: ReactNode;
 }) {
   const className = "text-sm text-white/60 transition hover:translate-x-0.5 hover:text-white";
+  const isHttp = href.startsWith("http");
+  const isPdf = href.toLowerCase().endsWith(".pdf");
   return (
     <li>
-      {href.startsWith("http") ? (
-        <a href={href} target="_blank" rel="noreferrer" className={className}>
+      {isHttp || isPdf ? (
+        <a
+          href={isPdf ? assetPath(href) : href}
+          target="_blank"
+          rel="noreferrer"
+          className={className}
+        >
           {children}
         </a>
       ) : (

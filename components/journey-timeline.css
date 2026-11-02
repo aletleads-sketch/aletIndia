@@ -248,7 +248,7 @@
   }
   .ajr-step {
     flex: 1 1 calc(50% - 28px);
-    max-width: 320px;
+    max-width: none;
   }
   .ajr-section .ajr-step--down {
     margin-top: 0;
@@ -271,7 +271,7 @@
   }
   .ajr-step {
     width: 100%;
-    max-width: 280px;
+    max-width: none;
     flex: none;
   }
   .ajr-map {

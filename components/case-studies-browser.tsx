@@ -163,7 +163,7 @@ export function CaseStudiesBrowser({ embedded = false }: { embedded?: boolean })
           {active ? <StudyPreview entry={active} /> : null}
         </div>
 
-        <p className="mt-8 whitespace-nowrap text-sm leading-7 text-white/55 sm:text-[0.95rem]">
+        <p className="mt-8 text-sm leading-7 text-white/55 sm:text-[0.95rem]">
           Want something in this shape for your own product?{" "}
           <Link
             href="/contact-us"

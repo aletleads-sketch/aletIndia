@@ -29,7 +29,7 @@
 
   /* ================= HERO ================= */
   .hero{position:relative;min-height:290px;padding-top:34px}
-  .hero-text{position:relative;z-index:3;max-width:680px}
+  .hero-text{position:relative;z-index:3;max-width:min(680px,100%);width:100%}
   .eyebrow{display:flex;align-items:center;gap:18px;font-size:13px;font-weight:700;letter-spacing:.42em;color:var(--blue)}
   .eyebrow::after{content:"";width:90px;height:1.5px;background:#8fb0f2}
   .hero h1{margin-top:20px;font-size:56px;line-height:1.02;font-weight:800;letter-spacing:-.035em}
@@ -80,6 +80,7 @@
   }
   @media (max-width:640px){
     .wrap{padding:0 16px}
+    .hero-text,.hero p{max-width:none;width:100%}
     .hero h1{font-size:38px}
     .hero p{font-size:15px}
     .card{grid-template-columns:1fr}

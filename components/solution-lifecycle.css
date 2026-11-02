@@ -118,7 +118,7 @@
   line-height: 1.45;
   color: #565d72;
   font-weight: 500;
-  max-width: 300px;
+  max-width: min(36rem, 100%);
 }
 
 .alc-section .alc-btn {
@@ -469,11 +469,15 @@
   .alc-container {
     grid-template-columns: 1fr;
     gap: 16px;
-    max-width: 720px;
+    max-width: min(720px, 100%);
   }
   .alc-intro {
     padding-top: 0;
-    max-width: 560px;
+    max-width: none;
+    width: 100%;
+  }
+  .alc-section .alc-lead {
+    max-width: none;
   }
   .alc-script {
     display: none;
@@ -482,6 +486,9 @@
 @media (max-width: 820px) {
   .alc-section {
     padding: 32px 16px 28px;
+  }
+  .alc-container {
+    max-width: none;
   }
   .alc-steps {
     padding-top: 28px;

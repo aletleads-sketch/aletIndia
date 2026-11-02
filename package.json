@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy:dev": "cross-env NEXT_PUBLIC_BASE_PATH= next build && node -e \"require('fs').copyFileSync('vercel.static.json','out/vercel.json')\" && vercel link --yes --project aletindia-dev --cwd out && vercel deploy --prod --yes --cwd out"
+    "import:blogs": "node scripts/import-wp-blogs.mjs",
+    "sync:blog-redirects": "node scripts/sync-blog-redirects.mjs",
+    "deploy:dev": "cross-env NEXT_PUBLIC_BASE_PATH= node scripts/sync-blog-redirects.mjs && cross-env NEXT_PUBLIC_BASE_PATH= next build && node -e \"require('fs').copyFileSync('vercel.static.json','out/vercel.json')\" && vercel link --yes --project aletindia-dev --cwd out && vercel deploy --prod --yes --cwd out"
   },
   "dependencies": {
     "next": "16.4.0",
@@ -20,6 +22,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cheerio": "^1.2.0",
     "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
