@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy the ALET India Next.js app to https://all-deliveries.com/aletindia
+# Deploy the ALET India Next.js app to https://aletindia.com/aletindia
 # This script only updates /var/www/aletindia and restarts the aletindia service.
 # It does not change the Laravel app in /var/www/all-deliveries.
 set -euo pipefail
@@ -33,4 +33,4 @@ rsync -az --delete \
 echo "Installing dependencies and building on the server"
 "${SSH[@]}" "$HOST" "cd '$REMOTE_DIR' && npm ci && NODE_OPTIONS='--max-old-space-size=1536' npm run build && sudo systemctl restart '$SERVICE' && sudo systemctl is-active '$SERVICE'"
 
-echo "Deployed. Check https://all-deliveries.com/aletindia"
+echo "Deployed. Check https://aletindia.com/aletindia"

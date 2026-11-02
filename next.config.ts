@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   experimental: {
     agentUpgrade: "security",
   },
-  // Served beside the Laravel site at https://all-deliveries.com/aletindia
+  // Served at https://aletindia.com/aletindia
   basePath: "/aletindia",
   // Serve public images from /aletindia/images so they stay off the Laravel site.
   images: {
