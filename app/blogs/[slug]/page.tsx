@@ -122,7 +122,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       <div className="mx-auto w-full max-w-5xl px-4 pt-6 sm:px-8 sm:pt-8">
         <Photo
           src={post.image}
-          alt=""
+          alt={post.imageAlt ?? ""}
           priority
           className="h-48 rounded-[1.4rem] border-4 border-white shadow-xl sm:h-72 sm:rounded-[2rem] lg:h-[28rem]"
           sizes="(max-width: 1024px) 100vw, 64rem"

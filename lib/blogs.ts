@@ -1,11 +1,30 @@
 import type { BlogBlock, BlogPost } from "@/lib/blog-types";
+import { blogImages } from "@/lib/blog-images";
 import { blogPosts as importedPosts } from "@/lib/blogs-data";
 
 export type { BlogBlock, BlogPost, BlogSection } from "@/lib/blog-types";
 
-export const blogPosts: BlogPost[] = [...importedPosts].sort((a, b) =>
-  b.date.localeCompare(a.date),
-);
+/** Swap the low-res WordPress images for the 4K set in `blog-images.ts`. */
+function withHdImages(post: BlogPost): BlogPost {
+  const images = blogImages[post.slug];
+  if (!images) return post;
+  const { cover, inline = cover } = images;
+  return {
+    ...post,
+    image: cover.src,
+    imageAlt: cover.alt,
+    sections: post.sections.map((section) => ({
+      ...section,
+      blocks: section.blocks.map((block) =>
+        block.type === "img" ? { ...block, src: inline.src, alt: inline.alt } : block,
+      ),
+    })),
+  };
+}
+
+export const blogPosts: BlogPost[] = importedPosts
+  .map(withHdImages)
+  .sort((a, b) => b.date.localeCompare(a.date));
 
 function blockPlainText(block: BlogBlock): string {
   switch (block.type) {

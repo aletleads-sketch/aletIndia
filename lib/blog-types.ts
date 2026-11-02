@@ -17,6 +17,7 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   image: string;
+  imageAlt?: string;
   tag: string;
   categories: string[];
   author: string;
