@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getBlogPosts } from "@/lib/blogs";
+import { blogPosts } from "@/lib/blogs";
 import { BASE_PATH } from "@/lib/site-path";
 
 export const dynamic = "force-static";
@@ -15,8 +15,7 @@ function absoluteUrl(routePath: string) {
   return `${SITE}${withBase}`;
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const blogPosts = await getBlogPosts();
+export default function sitemap(): MetadataRoute.Sitemap {
   const latestBlog = blogPosts[0]?.date;
 
   return [

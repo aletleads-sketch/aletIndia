@@ -49,7 +49,7 @@ export function SolutionLifecycle() {
               </span>
             </li>
             <li className="alc-stat">
-              <strong>200+</strong>
+              <strong>500+</strong>
               <span>
                 Projects
                 <br />

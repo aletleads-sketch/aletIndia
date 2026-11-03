@@ -638,7 +638,7 @@ export const privacyPolicy: LegalSection[] = [
   {
     heading: "Anti-spam policy",
     paragraphs: [
-      "Alet India treats the receipt, transmission, or distribution of spam (unsolicited bulk email) as a significant concern and has taken reasonable measures to limit spam in our computing environment. All email received by Alet India is subject to spam checks. Email identified as spam is rejected with sufficient information to the sender. Alet India reserves the right to reject and report suspicious spam to the relevant authorities.",
+      "Alet India treats the receipt, transmission, or distribution of spam (unsolicited bulk email) as a significant concern and has taken reasonable measures to limit spam in our computing environment. All email received by Alet India is subject to spam checks. Email identified as spam is rejected, and the sender is given sufficient information. Alet India reserves the right to reject and report suspicious spam to the relevant authorities.",
     ],
   },
   {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { AboutDifference } from "@/components/about-difference";
 import { AboutJourney } from "@/components/about-journey";
 import { AboutSolutionsJourney } from "@/components/about-solutions-journey";
@@ -8,7 +9,7 @@ import { HeroActions, HeroTitle, PhotoHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { YearsSinceFounding } from "@/components/count-up";
 import { StatsBar, TestimonialsSection } from "@/components/sections";
-import { Eyebrow, Photo } from "@/components/ui";
+import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { achievements, clients, company } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -120,6 +121,43 @@ export default function AboutPage() {
       <AboutJourney />
       <AboutStoryJourney />
       <AboutDifference />
+
+      <section className="relative mt-12 overflow-hidden text-white md:mt-16">
+        <Image
+          src="/images/pages/presentation.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-brand/60" />
+        <div className="relative mx-auto grid w-full max-w-[92rem] items-start gap-10 px-5 py-12 sm:px-8 md:py-14 lg:grid-cols-[1.2fr_0.8fr] xl:px-12">
+          <Reveal>
+            <Eyebrow light>Our mission</Eyebrow>
+            <h2 className="mt-5 max-w-3xl text-4xl leading-[1.12] font-extrabold tracking-tight text-balance sm:text-5xl">
+              Turn every idea into a product that is{" "}
+              <span className="text-gradient">fast, beautiful, and built to last.</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={120} className="max-w-md space-y-6 lg:pt-1">
+            <p className="text-sm leading-7 text-white/75">
+              Stay competitive and let ALET India transform your business application requirements.
+              Our award-winning software development service offers custom mobile and web app
+              development for entrepreneurs and small businesses. From design to development,
+              testing, and support, we provide end-to-end software development services and build
+              your apps with trusted frameworks.
+            </p>
+            <Link
+              href="/contact-us"
+              className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold"
+            >
+              Start a project
+              <Arrow />
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
       <AboutSolutionsJourney />
 
       <section className="px-5 pt-2 sm:px-8">

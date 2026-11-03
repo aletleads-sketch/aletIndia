@@ -33,7 +33,7 @@ export const guriHousesSections: CaseStudyNarrativeSection[] = [
       { type: "h3", text: "Direct Owner Connectivity" },
       { type: "p", text: "Reducing communication barriers by enabling interested customers to reach property owners without navigating unnecessary chains of intermediaries." },
       { type: "h3", text: "Scalable Product Thinking" },
-      { type: "p", text: "Considering how the core property discovery and appointment booking experience could support additional functionalities and changing real estate business requirements." },
+      { type: "p", text: "Considering how the core property discovery and appointment booking experience could support additional functionality and changing real estate business requirements." },
       { type: "p", text: "By prioritizing simplicity, accessibility, and direct communication, the approach aimed to make property discovery a more convenient digital experience." },
     ],
   },

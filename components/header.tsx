@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { InquireNowButton } from "@/components/inquire-modal";
 import { Logo } from "@/components/logo";
-import { getPublishedMenu, type CmsMenuItem } from "@/lib/cms-client";
+import type { CmsMenuItem } from "@/lib/cms-client";
 
 type NavigationItem = CmsMenuItem & { children: CmsMenuItem[] };
 
-const fallbackMenu: NavigationItem[] = [
+const navigation: NavigationItem[] = [
   { id: "home", label: "Home", href: "/", parent_id: null, sort_order: 10, visible: true, children: [] },
   { id: "services", label: "Services", href: "/services", parent_id: null, sort_order: 20, visible: true, children: [
     { id: "mobile", label: "Mobile Application Development", href: "/mobile-app-development", parent_id: "services", sort_order: 10, visible: true },
@@ -28,31 +28,6 @@ const fallbackMenu: NavigationItem[] = [
   { id: "blogs", label: "Blogs", href: "/blogs", parent_id: null, sort_order: 60, visible: true, children: [] },
   { id: "contact", label: "Contact Us", href: "/contact-us", parent_id: null, sort_order: 70, visible: true, children: [] },
 ];
-
-function makeNavigation(items: CmsMenuItem[]): NavigationItem[] {
-  const navigation = items
-    .filter((item) => !item.parent_id)
-    .sort((a, b) => a.sort_order - b.sort_order)
-    .map((item) => ({
-      ...item,
-      children: items.filter((child) => child.parent_id === item.id).sort((a, b) => a.sort_order - b.sort_order),
-    }));
-
-  if (!navigation.some((item) => item.href === "/case-studies")) {
-    const portfolioIndex = navigation.findIndex((item) => item.href === "/portfolio");
-    navigation.splice(portfolioIndex >= 0 ? portfolioIndex + 1 : navigation.length, 0, {
-      id: "case-studies",
-      label: "Case Studies",
-      href: "/case-studies",
-      parent_id: null,
-      sort_order: 45,
-      visible: true,
-      children: [],
-    });
-  }
-
-  return navigation;
-}
 
 function groupServiceLinks(children: CmsMenuItem[]) {
   const groups = new Map<string, CmsMenuItem[]>([
@@ -97,10 +72,8 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openItemId, setOpenItemId] = useState<string | null>(null);
-  const [navigation, setNavigation] = useState<NavigationItem[]>(fallbackMenu);
   const dropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 12); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
-  useEffect(() => { let cancelled = false; getPublishedMenu().then((items) => { if (!cancelled && items.length) setNavigation(makeNavigation(items)); }).catch(() => undefined); return () => { cancelled = true; }; }, []);
   useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
   useEffect(() => { const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") { setMenuOpen(false); setOpenItemId(null); } }; window.addEventListener("keydown", onKey); return () => window.removeEventListener("keydown", onKey); }, []);
   useEffect(() => { if (!openItemId) return; const onPointerDown = (event: PointerEvent) => { if (!dropdownRef.current?.contains(event.target as Node)) setOpenItemId(null); }; document.addEventListener("pointerdown", onPointerDown); return () => document.removeEventListener("pointerdown", onPointerDown); }, [openItemId]);

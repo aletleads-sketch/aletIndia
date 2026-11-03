@@ -9,11 +9,11 @@ import { formatBlogDate, readingMinutes } from "@/lib/blogs";
 
 export const BLOG_FILTER_CATEGORIES = [
   "All",
-  "Mobile Application development",
+  "Mobile Application Development",
   "Software Development",
   "Web Application",
   "Augmented Reality",
-  "Online Ticketing system",
+  "Online Ticketing System",
 ] as const;
 
 const PAGE_SIZE = 9;

@@ -7,12 +7,12 @@ import {
   clients,
   company,
   coreSolutions,
+  faqs,
   process,
   services,
   stats,
   testimonials,
 } from "@/lib/content";
-import { getFaqs } from "@/lib/faqs";
 
 const bentoColors = [
   "bg-[#ff4d00] text-white",
@@ -24,8 +24,7 @@ const bentoColors = [
 ];
 
 /** Sample 3 — Kinetic bento: orange + charcoal + mint, wide playful grid */
-export async function Home3Page() {
-  const faqs = await getFaqs("home");
+export function Home3Page() {
   return (
     <div id="top" className="font-archivo bg-[#faf7f2] text-[#141414]">
       <section className="h3-checker relative overflow-hidden">

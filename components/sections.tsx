@@ -110,7 +110,7 @@ export function ProcessSection({
             {title} <span className="text-gradient">{accent}</span>
           </h2>
           <p className="mt-4 text-base text-white/65">
-            That makes us top performer in the industry
+            That makes us a top performer in the industry.
           </p>
         </Reveal>
 

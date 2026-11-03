@@ -4,16 +4,16 @@ import { notFound } from "next/navigation";
 import { BlogSections } from "@/components/blog-blocks";
 import { Arrow, Photo } from "@/components/ui";
 import {
+  blogPosts,
   formatBlogDate,
-  getBlogPosts,
   getBlogPost,
   readingMinutes,
   relatedPosts,
 } from "@/lib/blogs";
 import { assetPath, BASE_PATH } from "@/lib/site-path";
 
-export async function generateStaticParams() {
-  return (await getBlogPosts()).map((post) => ({ slug: post.slug }));
+export function generateStaticParams() {
+  return blogPosts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({
@@ -22,7 +22,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getBlogPost(slug);
+  const post = getBlogPost(slug);
   if (!post) return { title: "Article — Alet India" };
 
   const canonicalPath = `${BASE_PATH}/blogs/${post.slug}`.replace(/\/{2,}/g, "/") || `/blogs/${post.slug}`;
@@ -45,14 +45,13 @@ export async function generateMetadata({
 
 export default async function BlogArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await getBlogPost(slug);
+  const post = getBlogPost(slug);
   if (!post) notFound();
 
-  const blogPosts = await getBlogPosts();
   const index = blogPosts.findIndex((item) => item.slug === post.slug);
   const previous = blogPosts[index - 1];
   const next = blogPosts[index + 1];
-  const related = await relatedPosts(post.slug);
+  const related = relatedPosts(post.slug);
   const minutes = readingMinutes(post);
   const cover = assetPath(post.image);
   const pageUrl = `https://aletindia.com${`${BASE_PATH}/blogs/${post.slug}`.replace(/\/{2,}/g, "/")}`;

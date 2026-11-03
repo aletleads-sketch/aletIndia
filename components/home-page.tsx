@@ -12,8 +12,7 @@ import {
 } from "@/components/sections";
 import { Arrow, Eyebrow } from "@/components/ui";
 import { WordRotator } from "@/components/word-rotator";
-import { about, achievements, clients, company, hero, industries, services } from "@/lib/content";
-import { getFaqs } from "@/lib/faqs";
+import { about, achievements, clients, company, faqs, hero, industries, services } from "@/lib/content";
 
 export function HomePage() {
   return (
@@ -364,12 +363,12 @@ function About() {
             You can be <span className="text-gradient-dark">bigger</span> with ALET INDIA
           </h2>
           <p className="mt-5 text-sm font-semibold tracking-wide text-accent uppercase">
-            Take first step towards your success.
+            Take the first step towards your success.
           </p>
         </Reveal>
         <Reveal delay={120}>
           <p className="text-lg leading-8 text-ink/80">
-            {about.paragraphs[0].split(". ").slice(0, 2).join(". ")}.
+            {about.paragraphs[0].split(". ").slice(0, 2).join(". ").replace(/\.$/, "")}.
           </p>
           <details className="group mt-6">
             <summary className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-brand">
@@ -420,8 +419,7 @@ function About() {
   );
 }
 
-async function Faq() {
-  const faqs = await getFaqs("home");
+function Faq() {
   return (
     <section className="bg-surface">
       <div className="mx-auto grid w-full max-w-[92rem] items-stretch gap-8 px-5 py-14 sm:px-8 md:py-20 xl:px-12 lg:grid-cols-2 lg:gap-10">
