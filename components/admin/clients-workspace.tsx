@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "re
 import { Avatar, canManageLeads, UserMenu, useAdmin } from "@/components/admin/admin-shell";
 import { ArrowLeftIcon, MailIcon, PhoneIcon, PlusIcon, SearchIcon, XIcon } from "@/components/admin/icons";
 import { CLIENT_COLUMNS, matchesClientSearch, type Client } from "@/lib/clients";
-import { fullDateTime, phoneHref } from "@/lib/leads";
+import { fullDateTime, memberName, phoneHref } from "@/lib/leads";
 import { getSupabase } from "@/lib/supabase-browser";
 
 const input = "w-full rounded-lg border border-[#d4dbe7] px-3 py-2.5 text-sm outline-none focus:border-[#1a63e8] focus:ring-2 focus:ring-[#1a63e8]/20";
@@ -221,7 +221,7 @@ function ClientDetail({ client, onBack, onSaved, onDeleted }: { client: Client; 
           </div>
           <p className="mt-2 text-xs text-[#5b6b85]">
             Client since {fullDateTime(client.created_at)}
-            {owner ? ` · Managed by ${owner.full_name || owner.email}` : ""}
+            {owner ? ` · Managed by ${memberName(owner)}` : ""}
             {client.lead_id ? (
               <>
                 {" · "}
@@ -302,7 +302,7 @@ function ClientForm({ client, onSaved, onCancel }: { client: Client | null; onSa
           <option value="">Nobody yet</option>
           {assignable.map((member) => (
             <option key={member.id} value={member.id}>
-              {member.full_name || member.email}
+              {memberName(member)}
             </option>
           ))}
         </select>

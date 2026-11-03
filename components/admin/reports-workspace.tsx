@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { canManageLeads, UserMenu, useAdmin } from "@/components/admin/admin-shell";
-import { followUpState, leadTab, STATUS_LABELS, type Lead, type LeadStatus } from "@/lib/leads";
+import { followUpState, leadTab, memberName, STATUS_LABELS, type Lead, type LeadStatus } from "@/lib/leads";
 import { getSupabase } from "@/lib/supabase-browser";
 
 type ReportLead = Pick<
@@ -115,7 +115,7 @@ export function ReportsWorkspace() {
       }
       return [...rows.values()].sort((a, b) => b.total - a.total);
     };
-    const names = new Map(team.map((member) => [member.id, member.full_name || member.email]));
+    const names = new Map(team.map((member) => [member.id, memberName(member)]));
 
     const lostReasons = new Map<string, number>();
     for (const lead of lost) {

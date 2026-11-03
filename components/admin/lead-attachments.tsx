@@ -10,6 +10,7 @@ import {
   fullDateTime,
   LEAD_FILES_BUCKET,
   MAX_ATTACHMENT_BYTES,
+  memberName,
   type LeadAttachment,
 } from "@/lib/leads";
 import { getSupabase } from "@/lib/supabase-browser";
@@ -101,7 +102,7 @@ export function AttachmentsPanel({
   const [busy, setBusy] = useState(false);
   const [problems, setProblems] = useState<string[]>([]);
   const [dragging, setDragging] = useState(false);
-  const names = new Map(team.map((member) => [member.id, member.full_name || member.email.split("@")[0]]));
+  const names = new Map(team.map((member) => [member.id, memberName(member)]));
 
   async function upload(files: File[]) {
     if (!files.length) return;

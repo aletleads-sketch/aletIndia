@@ -9,6 +9,18 @@ export type Profile = {
   active: boolean;
 };
 
+export const ROLE_LABELS: Record<AppRole, string> = {
+  admin: "Admin",
+  sales: "Sales",
+  marketing: "Marketing",
+  editor: "Content editor",
+};
+
+/** A team member's display name: their name, else the part of the email before "@". */
+export function memberName(member: Pick<Profile, "full_name" | "email">) {
+  return member.full_name?.trim() || member.email.split("@")[0];
+}
+
 export type Lead = {
   id: string;
   full_name: string;

@@ -209,7 +209,7 @@ export function LeadsWorkspace() {
         <UserMenu />
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4 lg:p-6">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 lg:p-6">
         <div className="grid shrink-0 grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
           {LEAD_TABS.map(({ id, label }) => {
             const { icon: Icon, tone, badge } = TAB_STYLE[id];
@@ -223,7 +223,7 @@ export function LeadsWorkspace() {
                   setDueOnly(false);
                   setTab(id);
                 }}
-                className={`flex items-center justify-center gap-3 rounded-xl border bg-white px-4 py-3.5 text-sm font-semibold transition ${active ? "border-[#1a63e8] bg-[#f3f7ff] ring-1 ring-[#1a63e8]" : "border-[#dfe5ef] hover:border-[#b9c6db]"}`}
+                className={`flex items-center justify-center gap-3 rounded-xl border bg-white px-4 py-2.5 text-sm font-semibold transition ${active ? "border-[#1a63e8] bg-[#f3f7ff] ring-1 ring-[#1a63e8]" : "border-[#dfe5ef] hover:border-[#b9c6db]"}`}
               >
                 <Icon className={`h-5 w-5 ${tone}`} />
                 {label}
@@ -239,13 +239,13 @@ export function LeadsWorkspace() {
           </p>
         ) : null}
 
-        <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(18rem,24rem)_1fr]">
+        <div className="grid min-h-[34rem] flex-1 gap-4 lg:grid-cols-[minmax(18rem,24rem)_1fr]">
           <section className={`flex min-h-0 flex-col rounded-2xl border border-[#dfe5ef] bg-white ${selected ? "hidden lg:flex" : "flex"}`}>
             <div className="flex items-center justify-between px-5 py-4">
               <h2 className="font-bold">
                 {visible.length} {query ? "results" : dueOnly ? "due" : visible.length === 1 ? "Lead" : "Leads"}
               </h2>
-              <label className="ml-auto mr-4 flex cursor-pointer items-center gap-1.5 text-sm text-[#5b6b85]">
+              <label className={`ml-auto mr-4 flex cursor-pointer items-center gap-1.5 text-sm text-[#5b6b85] ${profile.role === "admin" ? "" : "invisible"}`}>
                 <input type="checkbox" checked={mineOnly} onChange={(event) => setMineOnly(event.target.checked)} className="h-4 w-4 accent-[#0b57d0]" />
                 Mine
               </label>

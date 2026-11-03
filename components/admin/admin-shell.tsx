@@ -7,7 +7,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import type { Session } from "@supabase/supabase-js";
 import { CMS_SECTIONS } from "@/lib/cms-sections";
 import { getSupabase } from "@/lib/supabase-browser";
-import { initials, type Profile } from "@/lib/leads";
+import { initials, memberName, type Profile } from "@/lib/leads";
 import {
   ChartIcon,
   ChevronDownIcon,
@@ -18,6 +18,7 @@ import {
   InboxIcon,
   LayoutIcon,
   MenuIcon,
+  TeamIcon,
   UsersIcon,
   XIcon,
 } from "@/components/admin/icons";
@@ -25,6 +26,7 @@ import {
 type AdminContextValue = {
   profile: Profile;
   team: Profile[];
+  refreshTeam: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -47,6 +49,7 @@ const NAV = [
   { label: "Enquiries", href: null, icon: InboxIcon, soon: true },
   { label: "Content (CMS)", href: null, icon: LayoutIcon, children: CMS_SECTIONS, soon: true },
   { label: "Reports", href: "/admin/reports", icon: ChartIcon, soon: true },
+  { label: "Team", href: "/admin/team", icon: TeamIcon, adminOnly: true },
   { label: "Settings", href: null, icon: GearIcon, soon: true },
 ] as const;
 
@@ -80,17 +83,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
       if (!data.active) return setProblem("Your admin access is switched off. Ask an admin to turn it back on.");
       setProblem(null);
       setProfile(data as Profile);
-      const { data: members } = await supabase
-        .from("profiles")
-        .select("id,email,full_name,role,active")
-        .eq("active", true)
-        .order("full_name");
-      if (!cancelled) setTeam((members as Profile[] | null) ?? [data as Profile]);
+      const members = await loadTeam();
+      if (!cancelled) setTeam(members ?? [data as Profile]);
     })();
     return () => {
       cancelled = true;
     };
   }, [session, supabase]);
+
+  const refreshTeam = useCallback(async () => {
+    const members = await loadTeam();
+    if (members) setTeam(members);
+  }, []);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
@@ -114,7 +118,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     );
   } else {
     content = (
-      <AdminContext.Provider value={{ profile, team, signOut }}>
+      <AdminContext.Provider value={{ profile, team, refreshTeam, signOut }}>
         <Frame>{children}</Frame>
       </AdminContext.Provider>
     );
@@ -124,8 +128,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return <div className="fixed inset-0 z-[100] overflow-hidden bg-[#eef2f8] font-sans text-[#0f1b33]">{content}</div>;
 }
 
+/** Active members, used for assignee pickers and author names. */
+async function loadTeam() {
+  const { data } = await getSupabase().from("profiles").select("id,email,full_name,role,active").eq("active", true);
+  return (data as Profile[] | null)?.sort((a, b) => memberName(a).localeCompare(memberName(b))) ?? null;
+}
+
 function Frame({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { profile } = useAdmin();
   const [open, setOpen] = useState(false);
   const inCms = Boolean(pathname?.includes("/admin/content"));
   const [cmsOpen, setCmsOpen] = useState(inCms);
@@ -145,6 +156,7 @@ function Frame({ children }: { children: ReactNode }) {
         <nav className="flex-1 space-y-1 overflow-y-auto px-3">
           {NAV.map((item) => {
             const { label, href, icon: Icon } = item;
+            if ("adminOnly" in item && item.adminOnly && profile.role !== "admin") return null;
             if ("soon" in item && item.soon) {
               return (
                 <span key={label} aria-disabled="true" className={`${NAV_ITEM} cursor-not-allowed text-white/40`} title="Coming soon">
@@ -217,7 +229,7 @@ export function UserMenu() {
   const { profile, signOut } = useAdmin();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const name = profile.full_name || profile.email.split("@")[0];
+  const name = memberName(profile);
 
   useEffect(() => {
     if (!open) return;

@@ -9,9 +9,11 @@ import {
   fullDateTime,
   LEAD_COLUMNS,
   leadTab,
+  memberName,
   NOTE_KIND_LABELS,
   NOTE_KINDS,
   phoneHref,
+  ROLE_LABELS,
   STATUS_FLOW,
   STATUS_LABELS,
   toLocalInput,
@@ -181,7 +183,7 @@ export function LeadDetail({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex flex-wrap items-start gap-3 border-b border-[#e6ebf2] px-5 py-5 lg:px-7">
+      <div className="flex flex-wrap items-start gap-3 border-b border-[#e6ebf2] px-5 py-4 lg:px-7">
         <button type="button" onClick={onBack} aria-label="Back to list" className="mt-1 rounded-lg p-1 hover:bg-[#f1f4f9] lg:hidden">
           <ArrowLeftIcon />
         </button>
@@ -269,7 +271,7 @@ export function LeadDetail({
         </TabButton>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="@container min-h-0 flex-1 overflow-y-auto">
         {tab === "overview" ? <Overview lead={lead} onUpdate={update} /> : null}
         {tab === "followups" ? (
           <FollowUps
@@ -400,14 +402,16 @@ function MenuItem({ children, onClick, href, danger }: { children: ReactNode; on
 }
 
 function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch) => Promise<boolean> }) {
-  const { team } = useAdmin();
+  const { profile, team } = useAdmin();
+  // Sales only see their own leads and can't hand them on (RLS enforces this too).
+  const canReassign = profile.role === "admin";
   const assignable = team.filter((member) => member.role === "admin" || member.role === "sales");
   // form_data mostly repeats the columns above (see lead-intake-secure); show only what's new.
   const repeated = new Set(["submitted_service", "submitted_budget", "submitted_timeline"]);
   const extra = Object.entries(lead.form_data ?? {}).filter(([key, value]) => !repeated.has(key) && value !== "" && value != null);
 
   return (
-    <div className="grid gap-6 p-5 lg:grid-cols-2 lg:p-7">
+    <div className="grid gap-5 p-5 @3xl:grid-cols-2 @3xl:p-6">
       <Card title="Pipeline">
         <Field label="Priority">
           <select
@@ -426,12 +430,14 @@ function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch)
           <select
             value={lead.owner_id ?? ""}
             onChange={(event) => onUpdate({ owner_id: event.target.value || null })}
-            className="max-w-[14rem] rounded-lg border border-[#d4dbe7] px-2 py-1.5 text-sm"
+            disabled={!canReassign}
+            title={canReassign ? undefined : "Only an admin can reassign a lead"}
+            className="max-w-[14rem] rounded-lg border border-[#d4dbe7] px-2 py-1.5 text-sm disabled:bg-[#f4f6fa] disabled:text-[#334155]"
           >
             <option value="">Unassigned</option>
             {assignable.map((member) => (
               <option key={member.id} value={member.id}>
-                {member.full_name || member.email}
+                {memberName(member)} · {ROLE_LABELS[member.role]}
               </option>
             ))}
           </select>
@@ -499,7 +505,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4 text-sm">
       <span className="shrink-0 text-[#5b6b85]">{label}</span>
-      <span className="min-w-0 text-right break-words">{children || "—"}</span>
+      <span className="min-w-0 text-right [overflow-wrap:anywhere]">{children || "—"}</span>
     </div>
   );
 }
@@ -524,7 +530,7 @@ function FollowUps({
   const fileInput = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const names = new Map(team.map((member) => [member.id, member.full_name || member.email.split("@")[0]]));
+  const names = new Map(team.map((member) => [member.id, memberName(member)]));
 
   async function submit(event: FormEvent) {
     event.preventDefault();
