@@ -38,15 +38,16 @@ export function useAdmin() {
 
 export const canManageLeads = (profile: Profile) => profile.role === "admin" || profile.role === "sales";
 
+// `soon` items show as disabled "Coming soon" entries; drop the flag to open one up.
 const NAV = [
-  { label: "Dashboard", href: null, icon: HomeIcon },
+  { label: "Dashboard", href: null, icon: HomeIcon, soon: true },
   { label: "Leads", href: "/admin/leads", icon: UsersIcon },
-  { label: "Clients", href: "/admin/clients", icon: ClientIcon },
-  { label: "Projects", href: null, icon: FolderIcon },
-  { label: "Enquiries", href: null, icon: InboxIcon },
-  { label: "Content (CMS)", href: null, icon: LayoutIcon, children: CMS_SECTIONS },
-  { label: "Reports", href: "/admin/reports", icon: ChartIcon },
-  { label: "Settings", href: null, icon: GearIcon },
+  { label: "Clients", href: "/admin/clients", icon: ClientIcon, soon: true },
+  { label: "Projects", href: null, icon: FolderIcon, soon: true },
+  { label: "Enquiries", href: null, icon: InboxIcon, soon: true },
+  { label: "Content (CMS)", href: null, icon: LayoutIcon, children: CMS_SECTIONS, soon: true },
+  { label: "Reports", href: "/admin/reports", icon: ChartIcon, soon: true },
+  { label: "Settings", href: null, icon: GearIcon, soon: true },
 ] as const;
 
 const NAV_ITEM = "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-medium";
@@ -144,6 +145,15 @@ function Frame({ children }: { children: ReactNode }) {
         <nav className="flex-1 space-y-1 overflow-y-auto px-3">
           {NAV.map((item) => {
             const { label, href, icon: Icon } = item;
+            if ("soon" in item && item.soon) {
+              return (
+                <span key={label} aria-disabled="true" className={`${NAV_ITEM} cursor-not-allowed text-white/40`} title="Coming soon">
+                  <Icon />
+                  <span className="truncate">{label}</span>
+                  <span className="ml-auto shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[10px] tracking-wide whitespace-nowrap uppercase">Coming soon</span>
+                </span>
+              );
+            }
             if ("children" in item) {
               const expanded = cmsOpen || inCms;
               return (
@@ -184,13 +194,7 @@ function Frame({ children }: { children: ReactNode }) {
                 <Icon />
                 {label}
               </Link>
-            ) : (
-              <span key={label} className={`${NAV_ITEM} cursor-default text-white/40`} title="Coming soon">
-                <Icon />
-                {label}
-                <span className="ml-auto rounded-full bg-white/10 px-2 py-0.5 text-[10px] tracking-wide uppercase">Soon</span>
-              </span>
-            );
+            ) : null;
           })}
         </nav>
       </aside>
