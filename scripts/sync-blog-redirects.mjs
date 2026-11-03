@@ -12,7 +12,6 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const SLUGS_PATH = path.join(ROOT, "lib", "blog-slugs.json");
-const DATA_PATH = path.join(ROOT, "lib", "blogs-data.ts");
 const VERCEL_STATIC = path.join(ROOT, "vercel.static.json");
 
 function withBase(basePath, routePath) {
@@ -43,17 +42,11 @@ export function buildRedirects(slugs, basePath = "") {
   return redirects;
 }
 
+/** Slugs of the old WordPress posts, whose root URLs (/:slug) redirect to /blogs/:slug. */
 export async function readSlugs() {
-  try {
-    const raw = await readFile(SLUGS_PATH, "utf8");
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length) return parsed;
-  } catch {
-    /* fall through */
-  }
-
-  const data = await readFile(DATA_PATH, "utf8");
-  return [...data.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
+  const parsed = JSON.parse(await readFile(SLUGS_PATH, "utf8"));
+  if (!Array.isArray(parsed) || !parsed.length) throw new Error(`${SLUGS_PATH} has no blog slugs`);
+  return parsed;
 }
 
 export async function syncBlogRedirects(basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "/aletindia") {

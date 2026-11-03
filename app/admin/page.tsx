@@ -1,19 +1,13 @@
-import type { Metadata } from "next";
-import { assetPath } from "@/lib/site-path";
+"use client";
 
-export const metadata: Metadata = {
-  title: "ALET India | Admin",
-  robots: { index: false, follow: false },
-};
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
+/** The admin opens on Leads until the Dashboard is built. */
 export default function AdminPage() {
-  return (
-    <div className="fixed inset-0 z-[100] bg-[#08091b]">
-      <iframe
-        title="ALET India CMS and lead dashboard"
-        src={assetPath("/cms-admin.html")}
-        className="h-full w-full border-0"
-      />
-    </div>
-  );
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/admin/leads");
+  }, [router]);
+  return null;
 }

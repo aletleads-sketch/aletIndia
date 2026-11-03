@@ -12,7 +12,8 @@ import {
 } from "@/components/sections";
 import { Arrow, Eyebrow } from "@/components/ui";
 import { WordRotator } from "@/components/word-rotator";
-import { about, achievements, clients, company, faqs, hero, industries, services } from "@/lib/content";
+import { about, achievements, clients, company, hero, industries, services } from "@/lib/content";
+import { getFaqs } from "@/lib/faqs";
 
 export function HomePage() {
   return (
@@ -419,7 +420,8 @@ function About() {
   );
 }
 
-function Faq() {
+async function Faq() {
+  const faqs = await getFaqs("home");
   return (
     <section className="bg-surface">
       <div className="mx-auto grid w-full max-w-[92rem] items-stretch gap-8 px-5 py-14 sm:px-8 md:py-20 xl:px-12 lg:grid-cols-2 lg:gap-10">

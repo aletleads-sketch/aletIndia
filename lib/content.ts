@@ -504,49 +504,6 @@ export const industries = [
   },
 ];
 
-export const faqs = [
-  {
-    question: "What services does Alet India Softwares offer?",
-    answer:
-      "Alet India Softwares delivers customized technology solutions, including mobile application development, web application development, UI/UX design, software modernization, and digital transformation services. We help businesses turn innovative ideas into reliable, scalable digital products.",
-  },
-  {
-    question: "Why should I choose Alet India Softwares?",
-    answer:
-      "With experience dating back to 2017, Alet India combines technical expertise, transparent communication, and a client-focused approach. We prioritize understanding your business objectives and delivering solutions that create measurable business value.",
-  },
-  {
-    question: "How much does it cost to develop an application?",
-    answer:
-      "The cost depends on functionality, complexity, technology choices, integrations, and resource requirements. We evaluate your business needs and provide a customized proposal with estimated costs, timelines, and deliverables.",
-  },
-  {
-    question: "How long does it take to complete a project?",
-    answer:
-      "The cost depends on functionality, complexity, technology choices, integrations, and resource requirements. We evaluate your business needs and provide a customized proposal with estimated costs, timelines, and deliverables.",
-  },
-  {
-    question: "Can I hire dedicated developers?",
-    answer:
-      "For projects requiring ongoing development or specialized technical expertise, we can discuss dedicated resource arrangements based on your requirements, technology stack, and expected engagement duration.",
-  },
-  {
-    question: "How can I track my project's progress?",
-    answer:
-      "We believe in maintaining transparency throughout the development lifecycle. Depending on the engagement model, clients can receive regular progress reports, milestone updates, product demonstrations, and structured communication to stay informed about project activities.",
-  },
-  {
-    question: "Will I receive the source code and ownership?",
-    answer:
-      "Source code access, intellectual property rights, and ownership arrangements are defined in the project agreement. We encourage clear contractual terms so clients understand their rights and responsibilities before development begins.",
-  },
-  {
-    question: "Do you provide post-launch maintenance and support?",
-    answer:
-      "Yes, post-launch support and ongoing maintenance can be included in the engagement. Depending on the agreed scope, services may cover bug fixes, performance improvements, security updates, feature enhancements, and technology upgrades.",
-  },
-];
-
 export const process = [
   {
     title: "Requirements",

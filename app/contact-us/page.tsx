@@ -4,7 +4,8 @@ import { InquireForm } from "@/components/inquire-form";
 import { Breadcrumb, HeroTitle, Wave } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { Eyebrow, Photo } from "@/components/ui";
-import { company, services } from "@/lib/content";
+import { company } from "@/lib/content";
+import { getFaqs } from "@/lib/faqs";
 import { careers } from "@/lib/pages";
 
 export const metadata: Metadata = {
@@ -21,29 +22,9 @@ const channels = [
   { label: "Visit us", value: "Mayur Vihar Phase I, New Delhi", href: mapsHref, icon: "M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" },
 ];
 
-const faqs = [
-  {
-    q: "How soon will I hear back?",
-    a: "Our team replies to every inquiry within 24 hours with next steps and a time for a free consultation call.",
-  },
-  {
-    q: "Which services can I ask about?",
-    a: `Anything we offer — ${services
-      .slice(0, 6)
-      .map((service) => service.title)
-      .join(", ")}, and more.`,
-  },
-  {
-    q: "Do you work with clients outside India?",
-    a: "Yes. We have delivered projects for businesses in more than 20 countries and work comfortably across time zones.",
-  },
-  {
-    q: "Can I visit your office?",
-    a: `Of course. We are at ${company.address}. Call ahead and we'll set up a meeting.`,
-  },
-];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const faqs = await getFaqs("contact");
   return (
     <>
       <section className="hero-mesh relative overflow-hidden text-white">
@@ -152,17 +133,17 @@ export default function ContactPage() {
           <Reveal delay={120} className="space-y-4">
             {faqs.map((faq, index) => (
               <details
-                key={faq.q}
+                key={faq.id}
                 open={index === 0}
                 className="group rounded-3xl bg-white px-7 py-6 ring-1 ring-line open:shadow-[0_20px_50px_-35px_rgb(30_27_75_/_0.45)]"
               >
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-extrabold">
-                  {faq.q}
+                  {faq.question}
                   <span className="bg-brand-gradient flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
-                <p className="mt-4 text-[0.98rem] leading-7 text-ink/75">{faq.a}</p>
+                <p className="mt-4 text-[0.98rem] leading-7 text-ink/75">{faq.answer}</p>
               </details>
             ))}
           </Reveal>

@@ -1,30 +1,52 @@
+import { parseBlogBody } from "@/lib/blog-content";
 import type { BlogBlock, BlogPost } from "@/lib/blog-types";
-import { blogImages } from "@/lib/blog-images";
-import { blogPosts as importedPosts } from "@/lib/blogs-data";
+import { getPublishedBlogs, type CmsBlog } from "@/lib/cms-client";
 
 export type { BlogBlock, BlogPost, BlogSection } from "@/lib/blog-types";
 
-/** Swap the low-res WordPress images for the 4K set in `blog-images.ts`. */
-function withHdImages(post: BlogPost): BlogPost {
-  const images = blogImages[post.slug];
-  if (!images) return post;
-  const { cover, inline = cover } = images;
+const FALLBACK_IMAGE = "/images/pages/blog-laptop.jpg";
+
+function articleBody(content: unknown) {
+  if (typeof content === "string") return content;
+  if (content && typeof content === "object" && "body" in content) return String((content as { body: unknown }).body ?? "");
+  return "";
+}
+
+/** `YYYY-MM-DD` in India time, so a post published late evening keeps its local date. */
+function localDate(value: string | null) {
+  return new Date(value ?? Date.now()).toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+}
+
+function toPost(row: CmsBlog): BlogPost {
+  const categories = (row.category ?? "").split(",").map((name) => name.trim()).filter(Boolean);
   return {
-    ...post,
-    image: cover.src,
-    imageAlt: cover.alt,
-    sections: post.sections.map((section) => ({
-      ...section,
-      blocks: section.blocks.map((block) =>
-        block.type === "img" ? { ...block, src: inline.src, alt: inline.alt } : block,
-      ),
-    })),
+    slug: row.slug,
+    date: localDate(row.published_at),
+    title: row.title,
+    excerpt: row.excerpt ?? "",
+    image: row.cover_image_url || FALLBACK_IMAGE,
+    imageAlt: row.cover_image_alt || row.title,
+    tag: categories[0] ?? "Software Development",
+    categories,
+    author: "Alet India Softwares",
+    sections: parseBlogBody(articleBody(row.content)),
   };
 }
 
-export const blogPosts: BlogPost[] = importedPosts
-  .map(withHdImages)
-  .sort((a, b) => b.date.localeCompare(a.date));
+let posts: Promise<BlogPost[]> | null = null;
+
+/**
+ * Published posts from the CMS (Supabase `blogs`), newest first. Read once per production
+ * build, so a CMS change shows on the live site after the next build and deploy;
+ * `next dev` reads fresh on every request.
+ */
+export function getBlogPosts() {
+  const load = () =>
+    getPublishedBlogs().then((rows) => rows.map(toPost).sort((a, b) => b.date.localeCompare(a.date)));
+  if (process.env.NODE_ENV !== "production") return load();
+  posts ??= load();
+  return posts;
+}
 
 function blockPlainText(block: BlogBlock): string {
   switch (block.type) {
@@ -51,8 +73,8 @@ export function readingMinutes(post: BlogPost) {
   return Math.max(3, Math.round(words / 180));
 }
 
-export function getBlogPost(slug: string) {
-  return blogPosts.find((post) => post.slug === slug);
+export async function getBlogPost(slug: string) {
+  return (await getBlogPosts()).find((post) => post.slug === slug);
 }
 
 /** Display helper — data stays ISO (`YYYY-MM-DD`). */
@@ -66,8 +88,9 @@ export function formatBlogDate(date: string) {
   });
 }
 
-export function relatedPosts(slug: string) {
-  const current = getBlogPost(slug);
+export async function relatedPosts(slug: string) {
+  const blogPosts = await getBlogPosts();
+  const current = blogPosts.find((post) => post.slug === slug);
   if (!current) return blogPosts.slice(0, 3);
 
   const shared = blogPosts

@@ -19,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   if (!slugSet.has(slug)) return { title: "Not found — Alet India" };
-  const post = getBlogPost(slug);
+  const post = await getBlogPost(slug);
   return {
     title: post ? `${post.title} — Alet India` : "Article — Alet India",
     description: post?.excerpt,

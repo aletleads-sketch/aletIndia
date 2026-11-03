@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BlogsJournal } from "@/components/blogs-journal";
 import { Breadcrumb } from "@/components/page-hero";
-import { blogPosts } from "@/lib/blogs";
+import { getBlogPosts } from "@/lib/blogs";
 
 export const metadata: Metadata = {
   title: "Journal — Alet India",
@@ -9,7 +9,8 @@ export const metadata: Metadata = {
     "Articles from ALET India on app design, startup builds, cost, and choosing the right kind of mobile product.",
 };
 
-export default function BlogsPage() {
+export default async function BlogsPage() {
+  const blogPosts = await getBlogPosts();
   return (
     <div className="bg-[#f6f1e8] text-ink">
       <section className="hero-mesh relative overflow-hidden text-white">
