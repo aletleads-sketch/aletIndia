@@ -23,10 +23,20 @@ export function HtmlEmbed({ src, title, className, fallbackHeight = 800 }: HtmlE
     if (!document) return;
 
     const designed = document.getElementById("viewport");
-    const nextHeight = Math.ceil(
-      designed?.offsetHeight ||
-        Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight ?? 0),
-    );
+    const body = document.body;
+    // The document is never shorter than the iframe itself, so scrollHeight can only grow.
+    // Measure where the body's content ends instead, so the frame can also shrink to fit.
+    let contentHeight = 0;
+    if (body) {
+      const scrollY = document.defaultView?.scrollY ?? 0;
+      for (const child of Array.from(body.children)) {
+        const bottom = child.getBoundingClientRect().bottom + scrollY;
+        const marginBottom = parseFloat(getComputedStyle(child).marginBottom) || 0;
+        contentHeight = Math.max(contentHeight, bottom + marginBottom);
+      }
+      contentHeight += parseFloat(getComputedStyle(body).paddingBottom) || 0;
+    }
+    const nextHeight = Math.ceil(designed?.offsetHeight || contentHeight || document.documentElement.scrollHeight);
 
     if (nextHeight > 0) setHeight(nextHeight);
   }, []);

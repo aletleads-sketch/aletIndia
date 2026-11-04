@@ -73,7 +73,7 @@ export default function CareerPage() {
       </section>
 
       <section className="bg-[#fff7ed]">
-        <div className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-20 xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-14 xl:px-12">
           <Reveal>
             <Eyebrow>Why join</Eyebrow>
             <h2 className="mt-4 max-w-xl text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -102,7 +102,7 @@ export default function CareerPage() {
       </section>
 
       <section id="openings" className="scroll-mt-28 bg-[#fff7ed]">
-        <div className="mx-auto w-full max-w-[92rem] px-5 pb-16 sm:px-8 md:pb-24 xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 pb-12 sm:px-8 md:pb-16 xl:px-12">
           <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Eyebrow>Open positions</Eyebrow>
@@ -119,7 +119,7 @@ export default function CareerPage() {
         </div>
       </section>
 
-      <section className="px-5 py-16 sm:px-8 md:py-20">
+      <section className="px-5 py-12 sm:px-8 md:py-14">
         <Reveal className="mx-auto grid max-w-[92rem] items-center gap-8 overflow-hidden rounded-[2.5rem] bg-night text-white lg:grid-cols-[1.1fr_0.9fr]">
           <div className="px-8 py-12 sm:px-12">
             <Eyebrow light>No match?</Eyebrow>

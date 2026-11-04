@@ -110,7 +110,7 @@ export default function ContactPage() {
         <Wave />
       </section>
 
-      <section id="contact" className="mx-auto grid w-full max-w-[92rem] scroll-mt-24 gap-8 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[1.1fr_0.9fr] xl:px-12">
+      <section id="contact" className="mx-auto grid w-full max-w-[92rem] scroll-mt-24 gap-8 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[1.1fr_0.9fr] xl:px-12">
         <Reveal className="rounded-[2.5rem] bg-white p-3 ring-1 ring-line shadow-[0_30px_70px_-35px_rgb(30_27_75_/_0.45)]">
           <div className="px-5 pt-6 pb-5 sm:px-7">
             <Eyebrow>Send an inquiry</Eyebrow>
@@ -143,7 +143,7 @@ export default function ContactPage() {
       </section>
 
       <section className="bg-surface">
-        <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[0.8fr_1.2fr] xl:px-12">
+        <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[0.8fr_1.2fr] xl:px-12">
           <Reveal>
             <Eyebrow>FAQ</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">

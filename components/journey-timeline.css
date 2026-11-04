@@ -9,7 +9,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  padding: 48px clamp(20px, 3.5vw, 56px) 56px;
+  padding: 36px clamp(20px, 3.5vw, 56px) 40px;
   background: radial-gradient(ellipse at center, #f7f7f9 0%, #ececef 55%, #e2e2e6 100%);
 }
 .ajr-section *,

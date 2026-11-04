@@ -47,7 +47,7 @@ export function LegalPage({
         </p>
       </PhotoHero>
 
-      <section className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-16 sm:px-8 md:py-24 xl:px-12 lg:grid-cols-[18rem_1fr]">
+      <section className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 md:py-16 xl:px-12 lg:grid-cols-[18rem_1fr]">
         <aside className="lg:sticky lg:top-32 lg:self-start">
           <div className="rounded-3xl border border-line bg-surface p-6">
             {headings.length > 0 ? (
