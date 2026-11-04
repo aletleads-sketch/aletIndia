@@ -12,6 +12,7 @@ import {
   memberName,
   NOTE_KIND_LABELS,
   NOTE_KINDS,
+  formatPhone,
   phoneHref,
   ROLE_LABELS,
   STATUS_FLOW,
@@ -202,7 +203,7 @@ export function LeadDetail({
             {phone ? (
               <a href={`tel:${phone}`} className="flex items-center gap-1.5 hover:text-[#1a63e8]">
                 <PhoneIcon className="h-4 w-4" />
-                {lead.phone_country_code} {lead.phone_number}
+                {formatPhone(lead)}
               </a>
             ) : null}
           </div>
@@ -422,7 +423,7 @@ function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch)
           <Field label="Budget">{lead.budget_range}</Field>
           <Field label="Email">{lead.business_email}</Field>
           <Field label="Expected start">{lead.expected_start}</Field>
-          <Field label="Phone">{lead.phone_number ? `${lead.phone_country_code ?? ""} ${lead.phone_number}` : null}</Field>
+          <Field label="Phone">{formatPhone(lead)}</Field>
           <Field label="Country">{lead.country}</Field>
         </div>
         <div className="mt-4 border-t border-[#eef1f6] pt-3">

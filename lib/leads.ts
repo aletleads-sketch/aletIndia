@@ -190,9 +190,21 @@ export function toLocalInput(value: string | null) {
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 }
 
-export function phoneHref(lead: Pick<Lead, "phone_country_code" | "phone_number">) {
-  if (!lead.phone_number) return null;
-  return `${lead.phone_country_code ?? ""}${lead.phone_number}`.replace(/[^\d+]/g, "");
+type Phone = Pick<Lead, "phone_country_code" | "phone_number">;
+
+/**
+ * "+91 07739255330". The website form used to save the country code inside the number too,
+ * so older leads hold "+91 07739255330" in phone_number; don't repeat the code for those.
+ */
+export function formatPhone({ phone_country_code: code, phone_number: number }: Phone) {
+  if (!number) return null;
+  const trimmed = number.trim();
+  if (!code || trimmed.startsWith("+") || trimmed.startsWith(code.trim())) return trimmed;
+  return `${code.trim()} ${trimmed}`;
+}
+
+export function phoneHref(lead: Phone) {
+  return formatPhone(lead)?.replace(/[^\d+]/g, "") ?? null;
 }
 
 export type LeadAttachment = {
