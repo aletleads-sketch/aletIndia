@@ -9,7 +9,7 @@
     "lint": "eslint",
     "import:blogs": "node scripts/import-wp-blogs.mjs",
     "sync:blog-redirects": "node scripts/sync-blog-redirects.mjs",
-    "deploy:dev": "cross-env NEXT_PUBLIC_BASE_PATH= node scripts/sync-blog-redirects.mjs && cross-env NEXT_PUBLIC_BASE_PATH= NEXT_PUBLIC_NOINDEX=1 next build && node -e \"require('fs').copyFileSync('vercel.static.json','out/vercel.json')\" && vercel link --yes --project aletindia-dev --cwd out && vercel deploy --prod --yes --cwd out"
+    "deploy:dev": "vercel link --yes --project aletindia-dev && vercel deploy --prod --yes --local-config vercel.dev.json"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
