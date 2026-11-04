@@ -412,6 +412,25 @@ function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch)
 
   return (
     <div className="grid gap-5 p-5 @3xl:grid-cols-2 @3xl:p-6">
+      {/* Everything the visitor typed into the contact form, in one frame. */}
+      <section className="rounded-xl border border-[#e6ebf2] p-5 @3xl:col-span-2">
+        <h3 className="mb-3 text-sm font-bold">Contact form</h3>
+        <div className="grid gap-x-10 gap-y-2.5 @3xl:grid-cols-2">
+          <Field label="Name">{lead.full_name}</Field>
+          <Field label="Service">{lead.services?.name || lead.service_name}</Field>
+          <Field label="Company">{lead.company_name}</Field>
+          <Field label="Budget">{lead.budget_range}</Field>
+          <Field label="Email">{lead.business_email}</Field>
+          <Field label="Expected start">{lead.expected_start}</Field>
+          <Field label="Phone">{lead.phone_number ? `${lead.phone_country_code ?? ""} ${lead.phone_number}` : null}</Field>
+          <Field label="Country">{lead.country}</Field>
+        </div>
+        <div className="mt-4 border-t border-[#eef1f6] pt-3">
+          <p className="text-xs font-semibold tracking-wide text-[#5b6b85] uppercase">Project details</p>
+          <p className="mt-1 text-sm leading-6 whitespace-pre-wrap">{lead.project_details || "—"}</p>
+        </div>
+      </section>
+
       <Card title="Pipeline">
         <Field label="Priority">
           <select
@@ -458,24 +477,6 @@ function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch)
         {lead.lost_reason ? <Field label="Lost reason">{lead.lost_reason}</Field> : null}
       </Card>
 
-      <Card title="Contact">
-        <Field label="Name">{lead.full_name}</Field>
-        <Field label="Company">{lead.company_name}</Field>
-        <Field label="Email">{lead.business_email}</Field>
-        <Field label="Phone">{lead.phone_number ? `${lead.phone_country_code ?? ""} ${lead.phone_number}` : null}</Field>
-        <Field label="Country">{lead.country}</Field>
-      </Card>
-
-      <Card title="Project">
-        <Field label="Service">{lead.services?.name || lead.service_name}</Field>
-        <Field label="Budget">{lead.budget_range}</Field>
-        <Field label="Expected start">{lead.expected_start}</Field>
-        <div className="pt-2">
-          <p className="text-xs font-semibold tracking-wide text-[#5b6b85] uppercase">Details</p>
-          <p className="mt-1 text-sm leading-6 whitespace-pre-wrap">{lead.project_details || "—"}</p>
-        </div>
-      </Card>
-
       <Card title="Source & tracking">
         <Field label="Source">{lead.source}</Field>
         <Field label="Landing page">{lead.landing_page}</Field>
@@ -489,6 +490,13 @@ function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch)
         ))}
       </Card>
     </div>
+  );
+}
+
+/** The database logs raw status keys ("proposal"); show the labels people see instead ("Proposal sent"). */
+function statusChangeText(body: string) {
+  return body.replace(/^Status changed from (\w+) to (\w+)/, (text, from: string, to: string) =>
+    `Status changed from ${STATUS_LABELS[from as LeadStatus] ?? from} to ${STATUS_LABELS[to as LeadStatus] ?? to}`,
   );
 }
 
@@ -580,7 +588,7 @@ function FollowUps({
               </span>
               {automatic ? (
                 <p className="pt-3 text-sm text-[#5b6b85]">
-                  <span className="font-semibold text-[#334155]">{staffName}</span> · {note.body}
+                  <span className="font-semibold text-[#334155]">{staffName}</span> · {note.kind === "status_change" ? statusChangeText(note.body) : note.body}
                   <span className="ml-2 text-xs">{fullDateTime(note.created_at)}</span>
                 </p>
               ) : (
