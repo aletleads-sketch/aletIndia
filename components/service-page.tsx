@@ -13,6 +13,7 @@ import {
 import { Arrow, Check, Eyebrow, Photo } from "@/components/ui";
 import { services } from "@/lib/content";
 import { serviceDetails, serviceVisuals, type ServiceDetail, type ServiceVisual } from "@/lib/pages";
+import { breadcrumbJsonLd, canonical, jsonLd, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
 
 type Service = (typeof services)[number];
 
@@ -34,6 +35,7 @@ export function serviceMetadata(id: string) {
   return {
     title: `${service.nav} — Alet India`,
     description: serviceDetails[id].intro,
+    alternates: canonical(`/${service.slug}`),
   };
 }
 
@@ -45,9 +47,27 @@ export function ServicePage({ id }: { id: string }) {
   const related = [1, 2, 3].map((step) => services[(index + step) % services.length]);
   const theme = { "--a": visual.theme[0], "--b": visual.theme[1] } as CSSProperties;
   const props = { service, detail, visual, related };
+  const structured = [
+    {
+      "@type": "Service",
+      name: service.nav,
+      serviceType: service.title,
+      description: detail.intro,
+      url: pageUrl(`/${service.slug}`),
+      provider: { "@id": ORGANIZATION_ID },
+      areaServed: "Worldwide",
+    },
+    breadcrumbJsonLd([
+      { name: "Services", path: "/services" },
+      { name: service.nav, path: `/${service.slug}` },
+    ]),
+  ];
 
   return (
     <div style={theme}>
+      {structured.map((data) => (
+        <script key={data["@type"]} type="application/ld+json" dangerouslySetInnerHTML={jsonLd(data)} />
+      ))}
       {visual.layout === "split" ? <SplitLayout {...props} /> : null}
       {visual.layout === "immersive" ? <ImmersiveLayout {...props} /> : null}
       {visual.layout === "editorial" ? <EditorialLayout {...props} /> : null}

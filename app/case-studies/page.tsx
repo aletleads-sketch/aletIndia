@@ -6,8 +6,10 @@ import { Reveal } from "@/components/reveal";
 import { ContactSection } from "@/components/sections";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { CaseStudiesIndex } from "@/components/case-studies-index";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/case-studies"),
   title: "Case Studies — Alet India",
   description: "A closer look at how ALET India turns operational challenges into clear digital products.",
 };

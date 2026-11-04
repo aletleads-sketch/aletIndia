@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { YearsSinceFounding } from "@/components/count-up";
 import "./solution-lifecycle.css";
 
 export function SolutionLifecycle() {
@@ -41,7 +42,9 @@ export function SolutionLifecycle() {
 
           <ul className="alc-stats">
             <li className="alc-stat">
-              <strong>9+</strong>
+              <strong>
+                <YearsSinceFounding />
+              </strong>
               <span>
                 Years
                 <br />

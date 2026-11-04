@@ -49,6 +49,9 @@ function Hero() {
           </p>
           <h1 className="rise d1 mt-7 text-5xl leading-[1.04] font-extrabold tracking-tight text-balance sm:text-6xl lg:text-7xl">
             Your Trusted <span className="text-gradient">Technology</span> Partner
+            <span className="mt-4 block text-lg leading-snug font-semibold tracking-normal text-white/75 sm:text-xl">
+              Mobile App &amp; Web Development Company in New Delhi
+            </span>
           </h1>
           <p className="rise d2 mt-6 text-2xl font-semibold text-white/90 sm:text-3xl">
             We build <WordRotator words={hero.rotating} />

@@ -6,8 +6,10 @@ import { Reveal } from "@/components/reveal";
 import { ContactSection } from "@/components/sections";
 import { Eyebrow, Photo } from "@/components/ui";
 import { caseStudies, industries } from "@/lib/content";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/portfolio"),
   title: "Portfolio — Alet India",
   description:
     "Mobile apps, web platforms, and games ALET India has designed and built for clients across travel, delivery, real estate, fashion, sports, and gaming.",
@@ -89,7 +91,7 @@ export default function PortfolioPage() {
               <Image
                 key={src}
                 src={src}
-                alt=""
+                alt={`${spotlight.name} app screen ${index + 1}`}
                 width={280}
                 height={560}
                 className={`relative w-auto drop-shadow-[0_24px_30px_rgb(0_0_0_/_0.4)] ${

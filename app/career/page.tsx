@@ -6,8 +6,10 @@ import { Reveal } from "@/components/reveal";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { company } from "@/lib/content";
 import { careers } from "@/lib/pages";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/career"),
   title: "Careers — Alet India",
   description: `Open roles at ALET India in New Delhi. Share your resume at ${careers.email}.`,
 };

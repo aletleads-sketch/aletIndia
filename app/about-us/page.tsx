@@ -11,8 +11,10 @@ import { YearsSinceFounding } from "@/components/count-up";
 import { StatsBar, TestimonialsSection } from "@/components/sections";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { achievements, clients, company } from "@/lib/content";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/about-us"),
   title: "About Us — Alet India",
   description:
     "ALET India Softwares is an India-based software development and digital solutions company building practical technology since 2017.",

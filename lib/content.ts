@@ -65,11 +65,11 @@ export const services = [
   {
     id: "cross-platform",
     slug: "cross-functional-application",
-    title: "Cross-platform Application",
-    nav: "Cross-functional Application Development",
+    title: "Cross-platform App Development",
+    nav: "Cross-platform App Development",
     group: "Development",
     description:
-      "We deliver high-quality cross-functional applications that fulfil every need of your business.",
+      "We deliver high-quality cross-platform apps that run smoothly on Android, iOS, and the web.",
     image: "/images/services/cross-platform.jpg",
     imageAlt: "App running across phone and desktop devices",
   },
@@ -414,7 +414,7 @@ export const caseStudies = [
     name: "Refult",
     category: "Fashion Brand App",
     summary:
-      "Reflut is an online clothing brand app designed to bring fashion closer to users with a smooth, modern interface. It offers easy navigation through categories, engaging visuals, and a seamless shopping experience from browsing collections to checkout. Built for style and convenience, Reflut makes discovering and purchasing fashion effortless.",
+      "Refult is an online clothing brand app designed to bring fashion closer to users with a smooth, modern interface. It offers easy navigation through categories, engaging visuals, and a seamless shopping experience from browsing collections to checkout. Built for style and convenience, Refult makes discovering and purchasing fashion effortless.",
     tags: ["E-Commerce", "Android", "UI/UX"],
     color: "from-[#7c3aed] to-[#c084fc]",
     logo: "/images/clients/refult.jpg",

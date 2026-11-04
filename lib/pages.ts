@@ -42,7 +42,7 @@ export const serviceDetails: Record<string, ServiceDetail> = {
     stack: ["Kotlin", "Java", "Swift", "React Native", "Flutter", "Firebase"],
   },
   "cross-platform": {
-    eyebrow: "Cross-functional Application Development",
+    eyebrow: "Cross-platform App Development",
     headline: "One codebase,",
     accent: "every platform",
     intro:

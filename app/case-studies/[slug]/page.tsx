@@ -12,6 +12,7 @@ import {
   getNextDemoStudy,
 } from "@/lib/case-study-data";
 import { type CaseStudyContentBlock } from "@/lib/case-study-sections";
+import { breadcrumbJsonLd, canonical, jsonLd } from "@/lib/seo";
 
 /** Intrinsic sizes for tech-stack diagrams (avoids stretch from a shared wrong ratio). */
 const NARRATIVE_IMAGE_SIZE: Record<string, { width: number; height: number }> = {
@@ -34,6 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? {
         title: `${caseStudy.client} case study — Alet India`,
         description: caseStudy.summary,
+        alternates: canonical(`/case-studies/${caseStudy.slug}`),
       }
     : {};
 }
@@ -106,8 +108,14 @@ export default async function CaseStudyDetailPage({ params }: Props) {
   const next = getNextDemoStudy(slug);
   const sections = study.sections ?? [];
 
+  const breadcrumb = breadcrumbJsonLd([
+    { name: "Case Studies", path: "/case-studies" },
+    { name: study.client, path: `/case-studies/${study.slug}` },
+  ]);
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(breadcrumb)} />
       <article className="overflow-x-clip bg-white text-[#10210a]">
         <header className="hero-mesh relative overflow-hidden text-white">
           <div className="dot-grid pointer-events-none absolute inset-0" />

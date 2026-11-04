@@ -6,8 +6,10 @@ import { Reveal } from "@/components/reveal";
 import { Eyebrow, Photo } from "@/components/ui";
 import { company, services } from "@/lib/content";
 import { careers } from "@/lib/pages";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/contact-us"),
   title: "Contact Us — Alet India",
   description: `Talk to ALET India about your mobile app, web, design, or marketing project. Call ${company.phone} or email ${company.email}.`,
 };

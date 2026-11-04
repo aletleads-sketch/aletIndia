@@ -13,7 +13,7 @@ const navigation: NavigationItem[] = [
   { id: "home", label: "Home", href: "/", parent_id: null, sort_order: 10, visible: true, children: [] },
   { id: "services", label: "Services", href: "/services", parent_id: null, sort_order: 20, visible: true, children: [
     { id: "mobile", label: "Mobile Application Development", href: "/mobile-app-development", parent_id: "services", sort_order: 10, visible: true },
-    { id: "cross", label: "Cross-functional Application Development", href: "/cross-functional-application", parent_id: "services", sort_order: 20, visible: true },
+    { id: "cross", label: "Cross-platform App Development", href: "/cross-functional-application", parent_id: "services", sort_order: 20, visible: true },
     { id: "web", label: "Web Application Development", href: "/web-application", parent_id: "services", sort_order: 30, visible: true },
     { id: "ai", label: "AI & Data Solutions", href: "/ai-data-solutions", parent_id: "services", sort_order: 40, visible: true },
     { id: "salesforce", label: "Salesforce Solutions", href: "/salesforce-solutions", parent_id: "services", sort_order: 50, visible: true },
@@ -56,7 +56,7 @@ function groupServiceLinks(children: CmsMenuItem[]) {
 // order, visibility, and any services added later.
 const mainBranchServiceLabels: Record<string, string> = {
   "/mobile-app-development": "Mobile Application Development",
-  "/cross-functional-application": "Cross-functional Application Development",
+  "/cross-functional-application": "Cross-platform App Development",
   "/web-application": "Web Application Development",
   "/ai-data-solutions": "AI & Data Solutions",
   "/salesforce-solutions": "Salesforce Solutions",
