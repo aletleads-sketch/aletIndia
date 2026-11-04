@@ -4,7 +4,7 @@ import { InquireForm } from "@/components/inquire-form";
 import { Breadcrumb, HeroTitle, Wave } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { Eyebrow, Photo } from "@/components/ui";
-import { company, services } from "@/lib/content";
+import { company } from "@/lib/content";
 import { careers } from "@/lib/pages";
 import { canonical } from "@/lib/seo";
 
@@ -39,25 +39,6 @@ const faqs = [
   {
     q: "Do you work with international clients?",
     a: "Yes! Alet India Softwares collaborates with businesses worldwide, providing remote software development services, transparent communication, and structured project delivery to ensure smooth collaboration across different time zones.",
-  },
-  {
-    q: "How soon will I hear back?",
-    a: "Our team replies to every inquiry within 24 hours with next steps and a time for a free consultation call.",
-  },
-  {
-    q: "Which services can I ask about?",
-    a: `Anything we offer — ${services
-      .slice(0, 6)
-      .map((service) => service.title)
-      .join(", ")}, and more.`,
-  },
-  {
-    q: "Do you work with clients outside India?",
-    a: "Yes. We have delivered projects for businesses in more than 20 countries and work comfortably across time zones.",
-  },
-  {
-    q: "Can I visit your office?",
-    a: `Of course. We are at ${company.address}. Call ahead and we'll set up a meeting.`,
   },
 ];
 

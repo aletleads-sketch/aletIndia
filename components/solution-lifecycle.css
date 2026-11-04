@@ -178,7 +178,7 @@
   line-height: 1;
   letter-spacing: -0.02em;
 }
-.alc-section .alc-stat span {
+.alc-section .alc-stat > span {
   display: block;
   margin-top: 6px;
   font-size: 11px;
