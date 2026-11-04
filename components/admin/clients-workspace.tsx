@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "re
 import { Avatar, canManageLeads, UserMenu, useAdmin } from "@/components/admin/admin-shell";
 import { ArrowLeftIcon, MailIcon, PhoneIcon, PlusIcon, SearchIcon, XIcon } from "@/components/admin/icons";
 import { CLIENT_COLUMNS, matchesClientSearch, type Client } from "@/lib/clients";
-import { fullDateTime, memberName, phoneHref } from "@/lib/leads";
+import { formatPhone, fullDateTime, memberName, phoneHref } from "@/lib/leads";
 import { getSupabase } from "@/lib/supabase-browser";
 
 const input = "w-full rounded-lg border border-[#d4dbe7] px-3 py-2.5 text-sm outline-none focus:border-[#1a63e8] focus:ring-2 focus:ring-[#1a63e8]/20";
@@ -215,7 +215,7 @@ function ClientDetail({ client, onBack, onSaved, onDeleted }: { client: Client; 
             {phone ? (
               <a href={`tel:${phone}`} className="flex items-center gap-1.5 hover:text-[#1a63e8]">
                 <PhoneIcon className="h-4 w-4" />
-                {client.phone_country_code} {client.phone_number}
+                {formatPhone(client)}
               </a>
             ) : null}
           </div>

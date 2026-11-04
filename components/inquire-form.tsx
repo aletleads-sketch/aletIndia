@@ -61,7 +61,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
           body: JSON.stringify({
             full_name: name,
             business_email: email,
-            phone: `${countryCode} ${mobile}`.trim(),
+            phone: mobile,
             country,
             country_code: countryCode,
             country_iso: countryIso,
