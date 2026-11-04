@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
 import { refundPolicy } from "@/lib/pages";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/refund-policy"),
   title: "Refund Policy — Alet India",
   description: "When and how Alet India Softwares processes project refunds and cancellations.",
 };

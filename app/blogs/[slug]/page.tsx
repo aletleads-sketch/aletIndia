@@ -10,7 +10,8 @@ import {
   readingMinutes,
   relatedPosts,
 } from "@/lib/blogs";
-import { assetPath, BASE_PATH } from "@/lib/site-path";
+import { assetPath } from "@/lib/site-path";
+import { breadcrumbJsonLd, canonical, jsonLd, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -25,20 +26,16 @@ export async function generateMetadata({
   const post = getBlogPost(slug);
   if (!post) return { title: "Article — Alet India" };
 
-  const canonicalPath = `${BASE_PATH}/blogs/${post.slug}`.replace(/\/{2,}/g, "/") || `/blogs/${post.slug}`;
-
   return {
     title: `${post.title} — Alet India`,
     description: post.excerpt,
-    alternates: {
-      canonical: `/blogs/${post.slug}`,
-    },
+    alternates: canonical(`/blogs/${post.slug}`),
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: "article",
-      url: canonicalPath,
-      images: [{ url: assetPath(post.image) }],
+      url: pageUrl(`/blogs/${post.slug}`),
+      images: [{ url: pageUrl(post.image) }],
     },
   };
 }
@@ -54,32 +51,29 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   const related = relatedPosts(post.slug);
   const minutes = readingMinutes(post);
   const cover = assetPath(post.image);
-  const pageUrl = `https://aletindia.com${`${BASE_PATH}/blogs/${post.slug}`.replace(/\/{2,}/g, "/")}`;
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    datePublished: post.date,
-    description: post.excerpt,
-    image: cover.startsWith("http") ? cover : `https://aletindia.com${cover}`,
-    author: {
-      "@type": "Person",
-      name: post.author,
+  const url = pageUrl(`/blogs/${post.slug}`);
+  const structured = [
+    {
+      "@type": "BlogPosting",
+      headline: post.title,
+      datePublished: post.date,
+      description: post.excerpt,
+      image: pageUrl(post.image),
+      author: { "@type": "Organization", name: post.author },
+      publisher: { "@id": ORGANIZATION_ID },
+      mainEntityOfPage: url,
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Alet India",
-    },
-    mainEntityOfPage: pageUrl,
-  };
+    breadcrumbJsonLd([
+      { name: "Blogs", path: "/blogs" },
+      { name: post.title, path: `/blogs/${post.slug}` },
+    ]),
+  ];
 
   return (
     <article className="bg-[#f6f1e8] text-ink">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {structured.map((data) => (
+        <script key={data["@type"]} type="application/ld+json" dangerouslySetInnerHTML={jsonLd(data)} />
+      ))}
 
       <header className="hero-mesh relative overflow-hidden text-white">
         <div className="dot-grid pointer-events-none absolute inset-0" />

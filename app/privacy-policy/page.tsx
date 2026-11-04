@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
 import { privacyPolicy } from "@/lib/pages";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/privacy-policy"),
   title: "Privacy Policy — Alet India",
   description: "How Alet India collects, uses, and protects your personal information.",
 };

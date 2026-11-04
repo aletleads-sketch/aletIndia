@@ -3,6 +3,8 @@ import { Archivo, Montserrat, Plus_Jakarta_Sans, Sacramento, Space_Grotesk, Syne
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { InquireModalProvider } from "@/components/inquire-modal";
+import { NavigationProgress } from "@/components/navigation-progress";
+import { jsonLd, NOINDEX, organizationJsonLd, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -43,10 +45,11 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://aletindia.com"),
-  title: "Alet India — Inspired by Technology",
+  metadataBase: new URL(`${SITE_URL}/`),
+  title: "Alet India | Mobile App & Web Development Company",
   description:
     "Alet India is a New Delhi technology partner for mobile apps, web applications, UI and graphic design, and digital marketing. Established in 2017.",
+  ...(NOINDEX ? { robots: { index: false, follow: false } } : {}),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -56,6 +59,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${jakarta.variable} ${syne.variable} ${space.variable} ${archivo.variable} ${sacramento.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white font-sans text-ink">
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(organizationJsonLd)} />
+        <NavigationProgress />
         <InquireModalProvider>
           <Header />
           <main className="flex-1">{children}</main>

@@ -49,6 +49,9 @@ function Hero() {
           </p>
           <h1 className="rise d1 mt-7 text-5xl leading-[1.04] font-extrabold tracking-tight text-balance sm:text-6xl lg:text-7xl">
             Your Trusted <span className="text-gradient">Technology</span> Partner
+            <span className="mt-4 block text-lg leading-snug font-semibold tracking-normal text-white/75 sm:text-xl">
+              Mobile App &amp; Web Development Company in New Delhi
+            </span>
           </h1>
           <p className="rise d2 mt-6 text-2xl font-semibold text-white/90 sm:text-3xl">
             We build <WordRotator words={hero.rotating} />
@@ -211,7 +214,7 @@ function Services() {
   return (
     <section id="services" className="relative scroll-mt-24 overflow-hidden bg-surface">
       <div className="dot-grid-light pointer-events-none absolute top-0 right-0 h-72 w-72 opacity-70" />
-      <div className="relative mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-20 xl:px-12">
+      <div className="relative mx-auto w-full max-w-[92rem] px-5 py-10 sm:px-8 md:py-14 xl:px-12">
         <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow>Our Services</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
@@ -266,7 +269,7 @@ function WhyAlet() {
 
 function Work() {
   return (
-    <section id="work" className="scroll-mt-24 overflow-hidden bg-surface py-14 md:py-20">
+    <section id="work" className="scroll-mt-24 overflow-hidden bg-surface py-10 md:py-14">
       <div className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 xl:px-12">
         <Reveal className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -296,7 +299,7 @@ function Work() {
 
 function Industries() {
   return (
-    <section className="mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-20 xl:px-12">
+    <section className="mx-auto w-full max-w-[92rem] px-5 py-10 sm:px-8 md:py-14 xl:px-12">
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <Reveal>
           <Eyebrow>Industries</Eyebrow>
@@ -355,7 +358,7 @@ function Industries() {
 
 function About() {
   return (
-    <section id="about" className="mx-auto w-full max-w-[92rem] scroll-mt-24 px-5 py-14 sm:px-8 md:py-20 xl:px-12">
+    <section id="about" className="mx-auto w-full max-w-[92rem] scroll-mt-24 px-5 py-10 sm:px-8 md:py-14 xl:px-12">
       <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal>
           <Eyebrow>{about.title}</Eyebrow>
@@ -363,12 +366,12 @@ function About() {
             You can be <span className="text-gradient-dark">bigger</span> with ALET INDIA
           </h2>
           <p className="mt-5 text-sm font-semibold tracking-wide text-accent uppercase">
-            Take first step towards your success.
+            Take the first step towards your success.
           </p>
         </Reveal>
         <Reveal delay={120}>
           <p className="text-lg leading-8 text-ink/80">
-            {about.paragraphs[0].split(". ").slice(0, 2).join(". ")}.
+            {about.paragraphs[0].split(". ").slice(0, 2).join(". ").replace(/\.$/, "")}.
           </p>
           <details className="group mt-6">
             <summary className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-brand">
@@ -422,7 +425,7 @@ function About() {
 function Faq() {
   return (
     <section className="bg-surface">
-      <div className="mx-auto grid w-full max-w-[92rem] items-stretch gap-8 px-5 py-14 sm:px-8 md:py-20 xl:px-12 lg:grid-cols-2 lg:gap-10">
+      <div className="mx-auto grid w-full max-w-[92rem] items-stretch gap-8 px-5 py-10 sm:px-8 md:py-14 xl:px-12 lg:grid-cols-2 lg:gap-10">
         <Reveal className="flex h-full flex-col">
           <Eyebrow>FAQs</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">

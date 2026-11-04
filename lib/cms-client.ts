@@ -39,6 +39,7 @@ export type CmsBlog = {
   content: unknown;
   category: string | null;
   cover_image_url: string | null;
+  cover_image_alt: string | null;
   published_at: string | null;
 };
 
@@ -85,8 +86,8 @@ export type CmsSiteSection = {
   body: string | null;
 };
 
-const SUPABASE_URL = "https://seegtwkfeolpjlgjlbyd.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_AB_9PH5k_kHBDsXIr2IhAA_6VznqX81";
+export const SUPABASE_URL = "https://seegtwkfeolpjlgjlbyd.supabase.co";
+export const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_AB_9PH5k_kHBDsXIr2IhAA_6VznqX81";
 
 async function publicSelect<T>(table: string, params: URLSearchParams): Promise<T[]> {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params.toString()}`, {
@@ -132,7 +133,7 @@ export function getPublishedBlogs() {
   return publicSelect<CmsBlog>(
     "blogs",
     new URLSearchParams({
-      select: "id,title,slug,excerpt,content,category,cover_image_url,published_at",
+      select: "id,title,slug,excerpt,content,category,cover_image_url,cover_image_alt,published_at",
       status: "eq.published",
       order: "published_at.desc,created_at.desc",
     }),

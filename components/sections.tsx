@@ -103,14 +103,14 @@ export function ProcessSection({
     <section className="relative overflow-hidden bg-night text-white">
       <div className="dot-grid pointer-events-none absolute inset-0" />
       <div className="orb pointer-events-none absolute -top-32 left-1/3 h-96 w-96 rounded-full bg-violet/25 blur-3xl" />
-      <div className="relative mx-auto w-full max-w-[92rem] px-5 py-14 sm:px-8 md:py-20 xl:px-12">
+      <div className="relative mx-auto w-full max-w-[92rem] px-5 py-10 sm:px-8 md:py-14 xl:px-12">
         <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow light>Our Innovative Ideology</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
             {title} <span className="text-gradient">{accent}</span>
           </h2>
           <p className="mt-4 text-base text-white/65">
-            That makes us top performer in the industry
+            That makes us a top performer in the industry.
           </p>
         </Reveal>
 
@@ -184,7 +184,7 @@ export function ContactSection({
   defaultService?: string;
 }) {
   return (
-    <section id="contact" className="scroll-mt-24 px-5 py-14 sm:px-8 md:py-20 xl:px-12">
+    <section id="contact" className="scroll-mt-24 px-5 py-10 sm:px-8 md:py-14 xl:px-12">
       <div className="relative mx-auto grid max-w-[92rem] gap-8 overflow-hidden rounded-[2.5rem] bg-night px-6 py-12 text-white sm:px-14 sm:py-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
         <div className="orb pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-brand/40 blur-3xl" />
         <div className="orb orb-b pointer-events-none absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />

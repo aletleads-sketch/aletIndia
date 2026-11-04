@@ -13,6 +13,7 @@ import {
 import { Arrow, Check, Eyebrow, Photo } from "@/components/ui";
 import { services } from "@/lib/content";
 import { serviceDetails, serviceVisuals, type ServiceDetail, type ServiceVisual } from "@/lib/pages";
+import { breadcrumbJsonLd, canonical, jsonLd, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
 
 type Service = (typeof services)[number];
 
@@ -34,6 +35,7 @@ export function serviceMetadata(id: string) {
   return {
     title: `${service.nav} — Alet India`,
     description: serviceDetails[id].intro,
+    alternates: canonical(`/${service.slug}`),
   };
 }
 
@@ -45,9 +47,27 @@ export function ServicePage({ id }: { id: string }) {
   const related = [1, 2, 3].map((step) => services[(index + step) % services.length]);
   const theme = { "--a": visual.theme[0], "--b": visual.theme[1] } as CSSProperties;
   const props = { service, detail, visual, related };
+  const structured = [
+    {
+      "@type": "Service",
+      name: service.nav,
+      serviceType: service.title,
+      description: detail.intro,
+      url: pageUrl(`/${service.slug}`),
+      provider: { "@id": ORGANIZATION_ID },
+      areaServed: "Worldwide",
+    },
+    breadcrumbJsonLd([
+      { name: "Services", path: "/services" },
+      { name: service.nav, path: `/${service.slug}` },
+    ]),
+  ];
 
   return (
     <div style={theme}>
+      {structured.map((data) => (
+        <script key={data["@type"]} type="application/ld+json" dangerouslySetInnerHTML={jsonLd(data)} />
+      ))}
       {visual.layout === "split" ? <SplitLayout {...props} /> : null}
       {visual.layout === "immersive" ? <ImmersiveLayout {...props} /> : null}
       {visual.layout === "editorial" ? <EditorialLayout {...props} /> : null}
@@ -103,7 +123,7 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
         </ul>
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] space-y-16 overflow-x-clip px-5 py-16 sm:px-8 md:space-y-24 md:py-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] space-y-12 overflow-x-clip px-5 py-12 sm:px-8 md:space-y-16 md:py-16 xl:px-12">
         {detail.sections.map((section, index) => {
           const flip = index % 2 === 1;
           const imageSrc = visual.gallery[index % visual.gallery.length];
@@ -187,7 +207,7 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
         </section>
       ) : null}
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <Reveal className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <Eyebrow>Our stack</Eyebrow>
@@ -214,7 +234,7 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
 
       <ProcessSection showIdeology={false} />
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 pt-16 sm:px-8 md:pt-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal>
           <Eyebrow>More services</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -269,7 +289,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
         <Wave />
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-14 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2 xl:px-12">
+      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-14 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-2 xl:px-12">
         <Reveal>
           <Eyebrow>{detail.eyebrow}</Eyebrow>
           <p className="mt-6 text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-4xl">
@@ -290,7 +310,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
       </section>
 
       <section className="theme-soft">
-        <div className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
           <Reveal className="mx-auto max-w-2xl text-center">
             <Eyebrow>What we deliver</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -367,7 +387,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
       </section>
 
       {visual.screens ? (
-        <section className="mx-auto grid w-full max-w-[92rem] items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[0.9fr_1.1fr] xl:px-12">
+        <section className="mx-auto grid w-full max-w-[92rem] items-center gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[0.9fr_1.1fr] xl:px-12">
           <Reveal>
             <Eyebrow>Crafted by ALET</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
@@ -492,7 +512,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
         </div>
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2 xl:px-12">
+      <section className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-2 xl:px-12">
         <Reveal>
           <Eyebrow>Overview</Eyebrow>
           <p className="mt-6 text-xl leading-9 font-medium text-ink/85">{detail.intro}</p>
@@ -510,7 +530,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
       </section>
 
       <section className="bg-surface">
-        <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[0.85fr_1.15fr] xl:px-12">
+        <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[0.85fr_1.15fr] xl:px-12">
           <Reveal className="lg:sticky lg:top-32 lg:self-start">
             <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
               What we <span className="theme-text">deliver</span>
@@ -570,7 +590,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
       </section>
 
       {browserShot ? (
-        <section className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+        <section className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 md:py-16">
           <Reveal className="text-center">
             <Eyebrow>Live project</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -639,7 +659,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
         <PortfolioSlider />
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 pt-16 sm:px-8 md:pt-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal className="grid gap-8 lg:grid-cols-[0.6fr_1.4fr]">
           <div>
             <Eyebrow>More services</Eyebrow>
@@ -668,7 +688,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
         </Reveal>
       </section>
 
-      <div className="pt-16 md:pt-24">
+      <div className="pt-12 md:pt-16">
         <TestimonialsSection />
       </div>
     </>

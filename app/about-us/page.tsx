@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { AboutDifference } from "@/components/about-difference";
 import { AboutJourney } from "@/components/about-journey";
 import { AboutSolutionsJourney } from "@/components/about-solutions-journey";
@@ -8,10 +9,12 @@ import { HeroActions, HeroTitle, PhotoHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { YearsSinceFounding } from "@/components/count-up";
 import { StatsBar, TestimonialsSection } from "@/components/sections";
-import { Eyebrow, Photo } from "@/components/ui";
+import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { achievements, clients, company } from "@/lib/content";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/about-us"),
   title: "About Us — Alet India",
   description:
     "ALET India Softwares is an India-based software development and digital solutions company building practical technology since 2017.",
@@ -52,7 +55,7 @@ export default function AboutPage() {
 
       <StatsBar />
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 pt-14 pb-6 sm:px-8 md:pt-[4.5rem] md:pb-8 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 pt-8 pb-6 sm:px-8 md:pt-6 md:pb-8 xl:px-12">
         <div className="grid gap-10 rounded-[2.5rem] bg-surface p-7 sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:p-14">
           <Reveal>
             <h2 className="text-3xl font-extrabold tracking-tight text-balance text-brand sm:text-4xl">
@@ -68,7 +71,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] items-start gap-14 px-5 pt-4 pb-14 sm:px-8 md:pt-6 md:pb-12 lg:grid-cols-2 xl:px-12">
+      <section className="mx-auto grid w-full max-w-[92rem] items-start gap-14 px-5 pt-4 pb-10 sm:px-8 md:pt-6 md:pb-8 lg:grid-cols-2 xl:px-12">
         <Reveal from="left" className="relative">
           <div className="grid grid-cols-2 gap-4">
             <Photo src="/images/pages/office.jpg" className="h-64 rounded-[2rem] sm:h-80" />
@@ -106,7 +109,7 @@ export default function AboutPage() {
         </Reveal>
       </section>
 
-      <section className="bg-surface px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
+      <section className="bg-surface px-5 pt-10 sm:px-8 md:pt-12 xl:px-12">
         <div className="mx-auto w-full max-w-[92rem]">
           <Reveal>
             <Eyebrow>Our story</Eyebrow>
@@ -120,6 +123,43 @@ export default function AboutPage() {
       <AboutJourney />
       <AboutStoryJourney />
       <AboutDifference />
+
+      <section className="relative mt-6 overflow-hidden text-white md:mt-8">
+        <Image
+          src="/images/pages/presentation.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-brand/60" />
+        <div className="relative mx-auto grid w-full max-w-[92rem] items-start gap-10 px-5 py-10 sm:px-8 md:py-12 lg:grid-cols-[1.2fr_0.8fr] xl:px-12">
+          <Reveal>
+            <Eyebrow light>Our mission</Eyebrow>
+            <h2 className="mt-5 max-w-3xl text-4xl leading-[1.12] font-extrabold tracking-tight text-balance sm:text-5xl">
+              Turn every idea into a product that is{" "}
+              <span className="text-gradient">fast, beautiful, and built to last.</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={120} className="max-w-md space-y-6 lg:pt-1">
+            <p className="text-sm leading-7 text-white/75">
+              Stay competitive and let ALET India transform your business application requirements.
+              Our award-winning software development service offers custom mobile and web app
+              development for entrepreneurs and small businesses. From design to development,
+              testing, and support, we provide end-to-end software development services and build
+              your apps with trusted frameworks.
+            </p>
+            <Link
+              href="/contact-us"
+              className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold"
+            >
+              Start a project
+              <Arrow />
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
       <AboutSolutionsJourney />
 
       <section className="px-5 pt-2 sm:px-8">
@@ -146,7 +186,7 @@ export default function AboutPage() {
         </Reveal>
       </section>
 
-      <div className="py-14 md:py-[4.5rem]">
+      <div className="pt-10 pb-10 md:pt-10 md:pb-14">
         <TestimonialsSection />
       </div>
     </>

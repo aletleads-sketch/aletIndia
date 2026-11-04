@@ -18,7 +18,7 @@ export const hero = {
   kicker: "Inspired by Technology",
   title: "Your Trusted Technology Partner",
   lead: "We Lead",
-  leadAccent: "IT Industry",
+  leadAccent: "the IT Industry",
   rotating: [
     "Mobile Apps",
     "Web Platforms",
@@ -27,8 +27,8 @@ export const hero = {
     "Digital Growth",
   ],
   paragraphs: [
-    "We are experts in IT Industry to provide you hassle free solution for your business. Our Fully responsive, dynamic and customized web solution to helps you grow faster.",
-    "Enterprise level mobility solution that suits your business goals with latest technologies to always be one step ahead of industry competition.",
+    "We are IT industry experts who provide hassle-free solutions for your business. Our fully responsive, dynamic, and customised web solutions help you grow faster.",
+    "Enterprise-level mobility solutions that suit your business goals, built with the latest technologies to keep you one step ahead of the competition.",
   ],
 };
 
@@ -36,17 +36,17 @@ export const coreSolutions = [
   {
     title: "Development",
     description:
-      "ALET INDIA believes in discovering & developing the new challenging platform. Your industry doesn't matter, we create your ideas into reality.",
+      "ALET INDIA believes in discovering and developing challenging new platforms. Your industry doesn't matter — we turn your ideas into reality.",
   },
   {
     title: "Enhancement",
     description:
-      "ALET INDIA evaluate and enhance your idea to keep your valuable business and idea free from any hindrances to keep it running.",
+      "ALET INDIA evaluates and enhances your idea to keep your business free from hindrances and running smoothly.",
   },
   {
     title: "Upgrade",
     description:
-      "ALET INDIA believe in upgrading the technology to grab all new features and tools which make your idea turn into a reality.",
+      "ALET INDIA believes in upgrading its technology to adopt the latest features and tools that turn your idea into reality.",
   },
 ];
 
@@ -58,18 +58,18 @@ export const services = [
     nav: "Mobile Application Development",
     group: "Development",
     description:
-      "We provide unmatched quality of Mobile application for your idea and business needs.",
+      "We provide mobile applications of unmatched quality for your ideas and business needs.",
     image: "/images/services/mobile-apps.jpg",
     imageAlt: "Smartphone with mobile applications",
   },
   {
     id: "cross-platform",
     slug: "cross-functional-application",
-    title: "Cross platform Application",
-    nav: "Cross-functional Application Development",
+    title: "Cross-platform App Development",
+    nav: "Cross-platform App Development",
     group: "Development",
     description:
-      "We deliver the highest of cross functional application to fulfil every need of the application.",
+      "We deliver high-quality cross-platform apps that run smoothly on Android, iOS, and the web.",
     image: "/images/services/cross-platform.jpg",
     imageAlt: "App running across phone and desktop devices",
   },
@@ -80,7 +80,7 @@ export const services = [
     nav: "Web Application Development",
     group: "Development",
     description:
-      "We are experts in developing the fully responsive and dynamic website and web panels.",
+      "We are experts in developing fully responsive, dynamic websites and web panels.",
     image: "/images/services/web-apps.jpg",
     imageAlt: "Web application code on a developer screen",
   },
@@ -91,7 +91,7 @@ export const services = [
     nav: "Graphic Designing",
     group: "Designing",
     description:
-      "We design the rich quality of graphic without compromising the need of the user.",
+      "We design rich, high-quality graphics without compromising on the needs of the user.",
     image: "/images/services/graphic-design.jpg",
     imageAlt: "Graphic design creative workspace",
   },
@@ -102,7 +102,7 @@ export const services = [
     nav: "UX/UI Designing",
     group: "Designing",
     description:
-      "We are experts in designing the highest quality of User experience and User Interface.",
+      "We are experts in designing the highest-quality user experiences and user interfaces.",
     image: "/images/services/ui-design.jpg",
     imageAlt: "UI wireframes being designed on paper",
   },
@@ -113,7 +113,7 @@ export const services = [
     nav: "Digital Marketing",
     group: "Digital Marketing",
     description:
-      "We provide the best engagement with customer and clients by our Digital Marketing ideas.",
+      "We drive the best engagement with your customers and clients through our digital marketing ideas.",
     image: "/images/services/digital-marketing.jpg",
     imageAlt: "Digital marketing campaign planning workspace",
     channels: [
@@ -170,7 +170,7 @@ export const ideology = [
 export const about = {
   title: "About ALET India",
   paragraphs: [
-    "Established in 2017, Alet India Softwares is a technology-driven software development and IT consulting company delivering innovative digital solutions to businesses across the globe. With a growing international presence spanning more than 10 countries, we help startups, emerging businesses, and enterprises transform ideas into scalable, secure, and high-performing digital products.",
+    "Established in 2017, Alet India Softwares is a technology-driven software development and IT consulting company delivering innovative digital solutions to businesses across the globe. With a growing international presence spanning more than 20 countries, we help startups, emerging businesses, and enterprises transform ideas into scalable, secure, and high-performing digital products.",
     "Our expertise spans Custom Software Development, Mobile & Web Application Development, AI & Data Solutions, Salesforce Solutions, Game Development, Cloud Computing, and IT Consulting. By combining technical expertise with a business-first approach, we develop solutions that address real-world challenges, streamline operations, enhance customer experiences, and support long-term business growth.",
     "At Alet India, we embrace emerging technologies and modern engineering practices, including Generative AI, Machine Learning, Intelligent Automation, Cloud-Native Architecture, Microservices, API-First Development, DevSecOps, and CI/CD Automation. Our approach emphasizes performance, security, scalability, and maintainability, ensuring that the solutions we build are prepared for evolving business requirements and technological advancements.",
     "We specialize in building customized mobile, web, and enterprise applications using modern technologies and development frameworks such as Flutter, React Native, Kotlin, Java, React.js, Next.js, and Node.js. From product discovery and UI/UX design to development, quality assurance, deployment, and ongoing enhancement, we provide end-to-end software development services tailored to each client's business objectives.",
@@ -187,7 +187,7 @@ export const about = {
     },
     {
       type: "p" as const,
-      text: "Established in 2017, Alet India Softwares is a technology-driven software development and IT consulting company delivering innovative digital solutions to businesses across the globe. With a growing international presence spanning more than 10 countries, we help startups, emerging businesses, and enterprises transform ideas into scalable, secure, and high-performing digital products.",
+      text: "Established in 2017, Alet India Softwares is a technology-driven software development and IT consulting company delivering innovative digital solutions to businesses across the globe. With a growing international presence spanning more than 20 countries, we help startups, emerging businesses, and enterprises transform ideas into scalable, secure, and high-performing digital products.",
     },
     {
       type: "p" as const,
@@ -414,7 +414,7 @@ export const caseStudies = [
     name: "Refult",
     category: "Fashion Brand App",
     summary:
-      "Reflut is an online clothing brand app designed to bring fashion closer to users with a smooth, modern interface. It offers easy navigation through categories, engaging visuals, and a seamless shopping experience from browsing collections to checkout. Built for style and convenience, Reflut makes discovering and purchasing fashion effortless.",
+      "Refult is an online clothing brand app designed to bring fashion closer to users with a smooth, modern interface. It offers easy navigation through categories, engaging visuals, and a seamless shopping experience from browsing collections to checkout. Built for style and convenience, Refult makes discovering and purchasing fashion effortless.",
     tags: ["E-Commerce", "Android", "UI/UX"],
     color: "from-[#7c3aed] to-[#c084fc]",
     logo: "/images/clients/refult.jpg",
@@ -523,7 +523,7 @@ export const faqs = [
   {
     question: "How long does it take to complete a project?",
     answer:
-      "The cost depends on functionality, complexity, technology choices, integrations, and resource requirements. We evaluate your business needs and provide a customized proposal with estimated costs, timelines, and deliverables.",
+      "The timeline depends on the project's scope, features, integrations, and complexity. Once we understand your requirements, we share a project plan with clear milestones and an estimated delivery schedule.",
   },
   {
     question: "Can I hire dedicated developers?",
@@ -551,34 +551,34 @@ export const process = [
   {
     title: "Requirements",
     description:
-      "Every Application is deeply analysed and evaluated to expand true behaviour.",
+      "Every application is deeply analysed and evaluated to make sure it behaves as intended.",
   },
   {
     title: "Designing",
     description:
-      "We design the application user interface to meet the true value of the application.",
+      "We design application interfaces that bring out the true value of the application.",
   },
   {
     title: "Development",
     description:
-      "We implement the complete idea of the system to make the application bug free.",
+      "We implement the complete idea of the system and make the application bug-free.",
   },
   {
     title: "Testing",
     description:
-      "We test every application completely to deliver the product bug free.",
+      "We test every application thoroughly to deliver a bug-free product.",
   },
   {
     title: "Deliver",
     description:
-      "We deliver the product on time with the user manual to keep you hindrance free.",
+      "We deliver the product on time, with a user manual, so you can get started without hindrance.",
   },
 ];
 
 export const testimonials = [
   {
     quote:
-      "ALET INDIA is a team of truly devoted people with the best knowledge of their respective fields. Innovative technology are one of the most considered factors by Alet India. Fully satisfied. You guys are awesome! Thanks.",
+      "ALET INDIA is a team of truly devoted people with the best knowledge of their respective fields. Innovative technology is one of the things Alet India values most. Fully satisfied. You guys are awesome! Thanks.",
     name: "RK Sharma",
     role: "Founder of RK Travels",
     image: "/images/people/rk.jpg",
@@ -586,7 +586,7 @@ export const testimonials = [
   },
   {
     quote:
-      "Alet India has supported my business in every step of success. Very satisfied with the service.",
+      "Alet India has supported my business at every step of its success. Very satisfied with the service.",
     name: "Aadi",
     role: "Founder of Lenitive Pharmaceuticals",
     image: "/images/people/aadi.jpg",
@@ -594,15 +594,15 @@ export const testimonials = [
   },
   {
     quote:
-      "I heartily appreciate to the ALET INDIA team who offers the tremendous service & support. So i will recommend this company to everyone.",
+      "I heartily appreciate the ALET INDIA team, who offer tremendous service and support. I will recommend this company to everyone.",
     name: "INSIGHT STUDIO",
-    role: "Educational Service provider Company",
+    role: "Educational Service Provider Company",
     image: "/images/people/insight.png",
     fit: "contain" as const,
   },
   {
     quote:
-      "Thanks to the ALET INDIA who offers the amazing and wonderful support that helps my business to the next level. You guys are splendid and I will recommend this company to everyone",
+      "Thanks to ALET INDIA for the amazing support that has taken my business to the next level. You guys are splendid, and I will recommend this company to everyone.",
     name: "Cricket FantasyBuzz",
     role: "Cricket Fantasy Company",
     image: "/images/people/cricket.png",
@@ -610,7 +610,7 @@ export const testimonials = [
   },
   {
     quote:
-      "Working with the ALET INDIA is a pleasant experience. They understand your requirements well and propose solutions that best suit you.!",
+      "Working with ALET INDIA is a pleasant experience. They understand your requirements well and propose solutions that suit you best.",
     name: "Mayank Agarwal",
     role: "CEO of Trisect RPO Group",
     image: "/images/people/mayank.png",

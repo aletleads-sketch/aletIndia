@@ -6,8 +6,10 @@ import { Reveal } from "@/components/reveal";
 import { ContactSection } from "@/components/sections";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { CaseStudiesIndex } from "@/components/case-studies-index";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/case-studies"),
   title: "Case Studies — Alet India",
   description: "A closer look at how ALET India turns operational challenges into clear digital products.",
 };
@@ -59,7 +61,7 @@ export function LegacyAllDeliveriesCaseStudy() {
         <Wave />
       </section>
 
-      <section id="all-deliveries" className="scroll-mt-24 px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+      <section id="all-deliveries" className="scroll-mt-24 px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <div className="mx-auto grid w-full max-w-[92rem] gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
           <Reveal>
             <Eyebrow>Case study · 01</Eyebrow>
@@ -86,7 +88,7 @@ export function LegacyAllDeliveriesCaseStudy() {
       </section>
 
       <section className="bg-surface">
-        <div className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
           <Reveal className="mx-auto max-w-2xl text-center">
             <Eyebrow>The challenge</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">One platform. <span className="text-gradient-dark">Many moving parts.</span></h2>
@@ -105,7 +107,7 @@ export function LegacyAllDeliveriesCaseStudy() {
         </div>
       </section>
 
-      <section className="overflow-hidden bg-night py-16 text-white md:py-24">
+      <section className="overflow-hidden bg-night py-12 text-white md:py-16">
         <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] xl:px-12">
           <Reveal>
             <Eyebrow light>How we approached it</Eyebrow>
@@ -123,7 +125,7 @@ export function LegacyAllDeliveriesCaseStudy() {
         </div>
       </section>
 
-      <section className="px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+      <section className="px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <div className="mx-auto grid w-full max-w-[92rem] gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <Reveal className="relative overflow-hidden rounded-[2rem] bg-[#c2410c] p-5 sm:p-8">
             <Image src="/images/all-deliveries-website.png" alt="All Deliveries responsive website design" width={1200} height={700} className="h-auto w-full rounded-[1.35rem] shadow-[0_22px_44px_-18px_rgb(0_0_0_/_0.55)]" />

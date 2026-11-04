@@ -47,7 +47,7 @@ export function CaseStudyCard({
         {mockup ? (
           <Image
             src={study.screens[0]}
-            alt=""
+            alt={`${study.name} website screenshot`}
             width={1200}
             height={700}
             draggable={false}
@@ -79,7 +79,7 @@ export function CaseStudyCard({
               >
                 <Image
                   src={study.screens[0]}
-                  alt=""
+                  alt={`${study.name} website screenshot`}
                   fill
                   sizes="(max-width: 768px) 100vw, 30rem"
                   draggable={false}
@@ -97,7 +97,7 @@ export function CaseStudyCard({
                   <Image
                     key={src}
                     src={src}
-                    alt=""
+                    alt={`${study.name} app screen`}
                     width={280}
                     height={560}
                     draggable={false}
@@ -112,7 +112,7 @@ export function CaseStudyCard({
             <Image
               key={src}
               src={src}
-              alt=""
+              alt={`${study.name} app screen`}
               width={280}
               height={560}
               draggable={false}
@@ -130,7 +130,7 @@ export function CaseStudyCard({
           <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white p-1.5">
             <Image
               src={study.logo}
-              alt=""
+              alt={`${study.name} logo`}
               width={60}
               height={60}
               draggable={false}

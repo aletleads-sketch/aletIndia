@@ -18,7 +18,7 @@ function PreviewVisual({ entry }: { entry: IndexEntry }) {
         <Image
           key={src}
           src={src}
-          alt=""
+          alt={`${entry.detail.study.name} app screen`}
           fill
           sizes="(max-width: 768px) 60vw, 18rem"
           className="object-contain object-center drop-shadow-[0_28px_48px_rgb(0_0_0_/_0.5)]"

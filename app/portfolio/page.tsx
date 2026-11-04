@@ -6,8 +6,10 @@ import { Reveal } from "@/components/reveal";
 import { ContactSection } from "@/components/sections";
 import { Eyebrow, Photo } from "@/components/ui";
 import { caseStudies, industries } from "@/lib/content";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/portfolio"),
   title: "Portfolio — Alet India",
   description:
     "Mobile apps, web platforms, and games ALET India has designed and built for clients across travel, delivery, real estate, fashion, sports, and gaming.",
@@ -81,7 +83,7 @@ export default function PortfolioPage() {
         <Wave />
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <Reveal className="grid overflow-hidden rounded-[2.5rem] bg-night text-white lg:grid-cols-2">
           <div className="relative flex items-end justify-center gap-4 bg-gradient-to-br from-[#5b4bdb] to-[#8b5cf6] px-6 pt-14">
             <div className="dot-grid pointer-events-none absolute inset-0" />
@@ -89,7 +91,7 @@ export default function PortfolioPage() {
               <Image
                 key={src}
                 src={src}
-                alt=""
+                alt={`${spotlight.name} app screen ${index + 1}`}
                 width={280}
                 height={560}
                 className={`relative w-auto drop-shadow-[0_24px_30px_rgb(0_0_0_/_0.4)] ${
@@ -117,7 +119,7 @@ export default function PortfolioPage() {
       </section>
 
       <section className="bg-surface">
-        <div className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
           <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-6">
             <div>
               <Eyebrow>Case studies</Eyebrow>
@@ -130,7 +132,7 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 pt-16 sm:px-8 md:pt-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal className="max-w-2xl">
           <Eyebrow>Industries</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">

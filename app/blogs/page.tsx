@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { BlogsJournal } from "@/components/blogs-journal";
 import { Breadcrumb } from "@/components/page-hero";
 import { blogPosts } from "@/lib/blogs";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: canonical("/blogs"),
   title: "Journal — Alet India",
   description:
     "Articles from ALET India on app design, startup builds, cost, and choosing the right kind of mobile product.",
