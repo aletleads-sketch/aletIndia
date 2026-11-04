@@ -36,8 +36,7 @@ export function buildBlogRedirects(basePath: string = BASE_PATH) {
 }
 
 const nextConfig: NextConfig = {
-  // Export a portable static site for the existing hosting deployment.
-  output: "export",
+  // Served by `next start` at https://aletindia.com/aletindia
   basePath: BASE_PATH,
   trailingSlash: false,
   experimental: {
