@@ -36,8 +36,8 @@ export function buildBlogRedirects(basePath: string = BASE_PATH) {
 }
 
 const nextConfig: NextConfig = {
-  // Served by `next start` at https://aletindia.com/aletindia
-  basePath: BASE_PATH,
+  // Empty NEXT_PUBLIC_BASE_PATH serves the app at the domain root.
+  ...(BASE_PATH ? { basePath: BASE_PATH } : {}),
   trailingSlash: false,
   experimental: {
     // The desktop build environment cannot reliably spawn the default worker pool.
