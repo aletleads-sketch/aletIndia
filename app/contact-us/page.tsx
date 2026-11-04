@@ -23,6 +23,22 @@ const channels = [
 
 const faqs = [
   {
+    q: "What services does Alet India Softwares offer?",
+    a: "Alet India Softwares specializes in custom mobile app development, web development, software solutions, and IT consulting. We help businesses turn their ideas into scalable, secure, and high-performing digital products.",
+  },
+  {
+    q: "How can I get a quote for my project?",
+    a: `Simply fill out our Contact Us form or email us at ${company.email} with your project requirements. Our team will review your needs and provide a customized proposal covering the scope, estimated timeline, and development cost.`,
+  },
+  {
+    q: "How much does it cost to develop a mobile app or website?",
+    a: "Development costs depend on project complexity, features, design requirements, technology stack, and timeline. We offer flexible pricing options tailored to your business needs and budget.",
+  },
+  {
+    q: "Do you work with international clients?",
+    a: "Yes! Alet India Softwares collaborates with businesses worldwide, providing remote software development services, transparent communication, and structured project delivery to ensure smooth collaboration across different time zones.",
+  },
+  {
     q: "How soon will I hear back?",
     a: "Our team replies to every inquiry within 24 hours with next steps and a time for a free consultation call.",
   },
