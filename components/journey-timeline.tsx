@@ -1,4 +1,5 @@
 import "./journey-timeline.css";
+import { loadFields } from "@/lib/site-content";
 
 function IconPeople() {
   return (
@@ -38,7 +39,9 @@ function IconShield() {
   );
 }
 
-export function JourneyTimeline() {
+export async function JourneyTimeline() {
+  const copy = await loadFields("_shared#journey_timeline");
+  const step = (index: number) => copy.steps[index] ?? { tag: "", title: "", text: "" };
   return (
     <section className="ajr-section" aria-labelledby="ajr-title">
       <svg className="ajr-map" viewBox="0 30 1000 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -46,13 +49,11 @@ export function JourneyTimeline() {
       </svg>
 
       <div className="ajr-head">
-        <div className="ajr-eyebrow">Our Journey</div>
+        <div className="ajr-eyebrow">{copy.eyebrow}</div>
         <h2 className="ajr-title" id="ajr-title">
-          From 2017 to Today
+          {copy.title}
         </h2>
-        <p className="ajr-sub">
-          How ALET India grew from a simple vision into a long-term technology partner for businesses of every size.
-        </p>
+        <p className="ajr-sub">{copy.text}</p>
       </div>
 
       <ol className="ajr-steps">
@@ -66,13 +67,10 @@ export function JourneyTimeline() {
           <div className="ajr-card">
             <div className="ajr-num">
               <strong>01</strong>
-              <span>2017</span>
+              <span>{step(0).tag}</span>
             </div>
-            <h3>Where It All Began</h3>
-            <p>
-              ALET India started with a vision to make dependable, high-quality technology solutions accessible to
-              businesses of different sizes.
-            </p>
+            <h3>{step(0).title}</h3>
+            <p>{step(0).text}</p>
           </div>
         </li>
 
@@ -81,13 +79,10 @@ export function JourneyTimeline() {
           <div className="ajr-card">
             <div className="ajr-num">
               <strong>02</strong>
-              <span>Growth</span>
+              <span>{step(1).tag}</span>
             </div>
-            <h3>Growing Beyond Boundaries</h3>
-            <p>
-              We expanded from individual development projects into mobile, web, user experience, and digital services
-              for diverse markets.
-            </p>
+            <h3>{step(1).title}</h3>
+            <p>{step(1).text}</p>
           </div>
           <div className="ajr-icon" aria-hidden="true">
             <span>
@@ -106,13 +101,10 @@ export function JourneyTimeline() {
           <div className="ajr-card">
             <div className="ajr-num">
               <strong>03</strong>
-              <span>Evolution</span>
+              <span>{step(2).tag}</span>
             </div>
-            <h3>Evolving With Technology</h3>
-            <p>
-              Our focus grew from building new products to enhancing platforms, modernising technology, and supporting
-              the full product lifecycle.
-            </p>
+            <h3>{step(2).title}</h3>
+            <p>{step(2).text}</p>
           </div>
         </li>
 
@@ -121,13 +113,10 @@ export function JourneyTimeline() {
           <div className="ajr-card">
             <div className="ajr-num">
               <strong>04</strong>
-              <span>Today</span>
+              <span>{step(3).tag}</span>
             </div>
-            <h3>Building for Tomorrow</h3>
-            <p>
-              We continue to bring clarity to complex ideas and create digital solutions with lasting value as a
-              technology partner, not only a vendor.
-            </p>
+            <h3>{step(3).title}</h3>
+            <p>{step(3).text}</p>
           </div>
           <div className="ajr-icon" aria-hidden="true">
             <span>

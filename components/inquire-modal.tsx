@@ -10,6 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useSiteContent } from "@/components/site-content-provider";
 import { InquireForm } from "@/components/inquire-form";
 
 type InquireModalContextValue = {
@@ -66,6 +67,7 @@ export function InquireNowButton({
 }
 
 function InquireModal({ onClose }: { onClose: () => void }) {
+  const { inquireForm: copy } = useSiteContent();
   const titleId = useId();
 
   useEffect(() => {
@@ -98,13 +100,13 @@ function InquireModal({ onClose }: { onClose: () => void }) {
         <div className="flex items-start justify-between gap-5 border-b border-line px-5 py-5 sm:px-8">
           <div>
             <p className="text-[0.68rem] font-extrabold tracking-[0.16em] text-brand uppercase">
-              Contact us
+              {copy.popupEyebrow}
             </p>
             <h2 id={titleId} className="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">
-              Have an idea? Let&apos;s turn it into reality.
+              {copy.popupTitle}
             </h2>
             <p className="mt-1 text-sm text-muted">
-              Tell us about your project, budget, and timeline. We&apos;ll get back with next steps.
+              {copy.popupText}
             </p>
           </div>
           <button

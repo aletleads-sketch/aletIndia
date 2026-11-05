@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { CustomCaptcha, type CaptchaResponse } from "@/components/custom-captcha";
-import { careers } from "@/lib/pages";
+import type { careers } from "@/lib/pages";
+import { useSiteContent } from "@/components/site-content-provider";
 
 type Opening = (typeof careers.openings)[number];
 
@@ -22,6 +23,7 @@ export function ApplicationModal({
   opening: Opening;
   onClose: () => void;
 }) {
+  const { careers } = useSiteContent();
   const [roleId, setRoleId] = useState(opening.id);
   const [previewComplete, setPreviewComplete] = useState(false);
   const [captcha, setCaptcha] = useState<CaptchaResponse | null>(null);

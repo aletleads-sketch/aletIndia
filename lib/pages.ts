@@ -598,8 +598,8 @@ export const privacyPolicy: LegalSection[] = [
   {
     heading: "Objective",
     paragraphs: [
-      "This Privacy Statement sets out the privacy and data protection standards followed by Alet India Pvt Limited (\"Alet India\") and its entities around the world for the personal information of its clients, partners, employees (current or former employees and trainees), applicants, contractors, prospects, vendors, and current or former members of the Board of Directors whose personal information is processed by Alet India (\"Data Subjects\").",
-      "This Privacy Statement explains the use and protection of personal information collected by Alet India. It applies to any personal information you provide to Alet India and, subject to local law, any personal information we collect from other sources. Throughout this Privacy Statement, \"Alet India\" refers to Alet India Pvt Limited, including its affiliates and subsidiaries (also referred to as \"we\", \"us\", or \"our\").",
+      "This Privacy Statement sets out the privacy and data protection standards followed by Alet India Softwares (\"Alet India\") and its entities around the world for the personal information of its clients, partners, employees (current or former employees and trainees), applicants, contractors, prospects, vendors, and current or former members of the Board of Directors whose personal information is processed by Alet India (\"Data Subjects\").",
+      "This Privacy Statement explains the use and protection of personal information collected by Alet India. It applies to any personal information you provide to Alet India and, subject to local law, any personal information we collect from other sources. Throughout this Privacy Statement, \"Alet India\" refers to Alet India Softwares, including its affiliates and subsidiaries (also referred to as \"we\", \"us\", or \"our\").",
     ],
   },
   {

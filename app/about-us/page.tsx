@@ -10,46 +10,43 @@ import { Reveal } from "@/components/reveal";
 import { YearsSinceFounding } from "@/components/count-up";
 import { StatsBar, TestimonialsSection } from "@/components/sections";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
-import { achievements, clients, company } from "@/lib/content";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
 import { canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   alternates: canonical("/about-us"),
   title: "About Us — Alet India",
   description:
     "ALET India Softwares is an India-based software development and digital solutions company building practical technology since 2017.",
 };
 
-const companyIntroduction = [
-  "Every great digital experience begins with an idea. At Alet India Softwares, we turn those ideas into technology that helps businesses move forward.",
-  "Established in 2017, Alet India Softwares is an India-based software development and digital solutions company committed to helping businesses innovate, adapt, and grow.",
-  "From custom mobile applications and web platforms to intuitive digital experiences and application modernization, we combine technology, creativity, and business understanding to deliver solutions built around real-world challenges.",
-  "Our philosophy is simple: Build with purpose. Improve continuously. Innovate for the future.",
-];
+export function generateMetadata() {
+  return withSeoOverrides("/about-us", baseMetadata);
+}
 
-const whoWeAre = [
-  "We believe technology is most powerful when it solves a meaningful problem.",
-  "Behind every application is a business objective. Behind every interface is a human experience. And behind every successful digital product is a combination of thoughtful planning, strong engineering, and continuous improvement.",
-  "At Alet India Softwares, we bring these elements together to create digital experiences that are practical, scalable, and designed around the people who use them.",
-  "We work with entrepreneurs, startups, and businesses looking to launch new products, improve existing systems, or take their digital capabilities to the next level.",
-  "Our focus is not simply on what we build, but on why it matters to your business.",
-];
-
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [{ achievements, clients }, hero, intro, who, story, mission, logos] = await Promise.all([
+    loadSiteContent(),
+    loadFields("/about-us#hero"),
+    loadFields("/about-us#intro"),
+    loadFields("/about-us#who_we_are"),
+    loadFields("/about-us#our_story"),
+    loadFields("/about-us#our_mission"),
+    loadFields("/about-us#client_logos"),
+  ]);
+  const [photo1, photo2, photo3] = [0, 1, 2].map((index) => who.photos[index] ?? who.photos[0]);
   return (
     <>
       <PhotoHero
-        crumb="About Us"
-        image="/images/pages/team-table.jpg"
-        imageAlt="ALET India team collaborating around a table"
+        crumb={hero.crumb}
+        image={hero.image.src}
+        imageAlt={hero.image.alt}
         align="bottom"
         className="min-h-[42rem] lg:min-h-[48rem]"
       >
-        <HeroTitle title="Rooted in experience." accent="Driven by what’s next." />
-        <p className="rise d2 mt-6 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">
-          Building digital possibilities since {company.established}. We turn ideas into technology
-          that helps businesses innovate, adapt, and move forward.
-        </p>
+        <HeroTitle title={hero.title} accent={hero.accent} />
+        <p className="rise d2 mt-6 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">{hero.text}</p>
         <HeroActions />
       </PhotoHero>
 
@@ -59,14 +56,14 @@ export default function AboutPage() {
         <div className="grid gap-10 rounded-[2.5rem] bg-surface p-7 sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:p-14">
           <Reveal>
             <h2 className="text-3xl font-extrabold tracking-tight text-balance text-brand sm:text-4xl">
-              Building digital possibilities since 2017
+              {intro.heading}
             </h2>
             <p className="mt-4 text-xs font-extrabold tracking-tight text-balance">
-              Ideas deserve more than a <span className="text-gradient-dark">good beginning.</span>
+              {intro.tagline} <span className="text-gradient-dark">{intro.taglineAccent}</span>
             </p>
           </Reveal>
           <Reveal delay={120} className="space-y-5 text-base leading-8 text-muted">
-            {companyIntroduction.map((paragraph, index) => <p key={paragraph} className={index === 0 ? "text-lg text-ink/80" : ""}>{paragraph}</p>)}
+            {intro.paragraphs.map((paragraph, index) => <p key={paragraph} className={index === 0 ? "text-lg text-ink/80" : ""}>{paragraph}</p>)}
           </Reveal>
         </div>
       </section>
@@ -74,24 +71,24 @@ export default function AboutPage() {
       <section className="mx-auto grid w-full max-w-[92rem] items-start gap-14 px-5 pt-4 pb-10 sm:px-8 md:pt-6 md:pb-8 lg:grid-cols-2 xl:px-12">
         <Reveal from="left" className="relative">
           <div className="grid grid-cols-2 gap-4">
-            <Photo src="/images/pages/office.jpg" className="h-64 rounded-[2rem] sm:h-80" />
-            <Photo src="/images/pages/team-meeting.jpg" className="mt-12 h-64 rounded-[2rem] sm:h-80" />
-            <Photo src="/images/pages/coworking.jpg" className="col-span-2 h-48 rounded-[2rem] sm:h-56" />
+            <Photo src={photo1.src} alt={photo1.alt} className="h-64 rounded-[2rem] sm:h-80" />
+            <Photo src={photo2.src} alt={photo2.alt} className="mt-12 h-64 rounded-[2rem] sm:h-80" />
+            <Photo src={photo3.src} alt={photo3.alt} className="col-span-2 h-48 rounded-[2rem] sm:h-56" />
           </div>
           <div className="bg-brand-gradient absolute top-1/2 left-1/2 flex h-32 w-32 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border-[6px] border-white text-white shadow-2xl">
             <span className="text-4xl font-extrabold">
               <YearsSinceFounding />
             </span>
-            <span className="text-[0.65rem] font-bold tracking-widest uppercase">Years</span>
+            <span className="text-[0.65rem] font-bold tracking-widest uppercase">{who.yearsLabel}</span>
           </div>
         </Reveal>
         <Reveal delay={120}>
-          <Eyebrow>Who we are</Eyebrow>
+          <Eyebrow>{who.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-            Engineers at heart. <span className="text-gradient-dark">Problem-solvers by nature.</span>
+            {who.title} <span className="text-gradient-dark">{who.accent}</span>
           </h2>
           <div className="mt-6 space-y-4 text-base leading-8 text-muted">
-            {whoWeAre.map((paragraph, index) => <p key={paragraph} className={index === 0 ? "text-lg text-ink/80" : ""}>{paragraph}</p>)}
+            {who.paragraphs.map((paragraph, index) => <p key={paragraph} className={index === 0 ? "text-lg text-ink/80" : ""}>{paragraph}</p>)}
           </div>
           <ul className="mt-8 flex flex-wrap items-center gap-6">
             {achievements.map((item) => (
@@ -112,9 +109,9 @@ export default function AboutPage() {
       <section className="bg-surface px-5 pt-10 sm:px-8 md:pt-12 xl:px-12">
         <div className="mx-auto w-full max-w-[92rem]">
           <Reveal>
-            <Eyebrow>Our story</Eyebrow>
+            <Eyebrow>{story.eyebrow}</Eyebrow>
             <h2 className="mt-4 max-w-full text-[clamp(1.35rem,4.6vw,3rem)] font-extrabold tracking-tight text-balance">
-              A journey that began with <span className="text-gradient-dark">a vision.</span>
+              {story.title} <span className="text-gradient-dark">{story.accent}</span>
             </h2>
           </Reveal>
         </div>
@@ -126,8 +123,8 @@ export default function AboutPage() {
 
       <section className="relative mt-6 overflow-hidden text-white md:mt-8">
         <Image
-          src="/images/pages/presentation.jpg"
-          alt=""
+          src={mission.image.src}
+          alt={mission.image.alt}
           fill
           sizes="100vw"
           className="object-cover"
@@ -135,25 +132,19 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-brand/60" />
         <div className="relative mx-auto grid w-full max-w-[92rem] items-start gap-10 px-5 py-10 sm:px-8 md:py-12 lg:grid-cols-[1.2fr_0.8fr] xl:px-12">
           <Reveal>
-            <Eyebrow light>Our mission</Eyebrow>
+            <Eyebrow light>{mission.eyebrow}</Eyebrow>
             <h2 className="mt-5 max-w-3xl text-4xl leading-[1.12] font-extrabold tracking-tight text-balance sm:text-5xl">
-              Turn every idea into a product that is{" "}
-              <span className="text-gradient">fast, beautiful, and built to last.</span>
+              {mission.title}{" "}
+              <span className="text-gradient">{mission.accent}</span>
             </h2>
           </Reveal>
           <Reveal delay={120} className="max-w-md space-y-6 lg:pt-1">
-            <p className="text-sm leading-7 text-white/75">
-              Stay competitive and let ALET India transform your business application requirements.
-              Our award-winning software development service offers custom mobile and web app
-              development for entrepreneurs and small businesses. From design to development,
-              testing, and support, we provide end-to-end software development services and build
-              your apps with trusted frameworks.
-            </p>
+            <p className="text-sm leading-7 text-white/75">{mission.text}</p>
             <Link
-              href="/contact-us"
+              href={mission.button.href}
               className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold"
             >
-              Start a project
+              {mission.button.label}
               <Arrow />
             </Link>
           </Reveal>
@@ -165,7 +156,7 @@ export default function AboutPage() {
       <section className="px-5 pt-2 sm:px-8">
         <Reveal className="mx-auto max-w-[92rem] rounded-[2.5rem] bg-surface px-6 pt-7 pb-10 sm:px-12 sm:pt-8 sm:pb-12">
           <p className="text-center text-xs font-bold tracking-[0.22em] text-muted uppercase">
-            Trusted by growing businesses
+            {logos.heading}
           </p>
           <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {clients.map((client) => (

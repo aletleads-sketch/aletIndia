@@ -1,29 +1,30 @@
 import Link from "next/link";
 import { YearsSinceFounding } from "@/components/count-up";
 import "./solution-lifecycle.css";
+import { loadFields } from "@/lib/site-content";
 
-export function SolutionLifecycle() {
+export async function SolutionLifecycle() {
+  const copy = await loadFields("_shared#solution_lifecycle");
+  const stat = (index: number) => copy.stats[index] ?? { value: "", line1: "", line2: "" };
+  const card = (index: number) => copy.cards[index] ?? { title: "", text: "", points: [], note1: "", note2: "" };
   return (
     <section className="alc-section" aria-labelledby="alc-heading">
       <div className="alc-container">
         <div className="alc-intro">
-          <div className="alc-eyebrow">Alet India Solution</div>
+          <div className="alc-eyebrow">{copy.eyebrow}</div>
           <h2 className="alc-title" id="alc-heading">
-            From first idea
+            {copy.titleLine1}
             <br />
-            to the <span>
-              next
+            {copy.titleLine2} <span>
+              {copy.accentLine1}
               <br />
-              upgrade
+              {copy.accentLine2}
             </span>
           </h2>
-          <p className="alc-lead">
-            A continuous cycle — we build, refine, and raise the bar so your product keeps winning
-            in a changing digital world.
-          </p>
+          <p className="alc-lead">{copy.text}</p>
 
-          <Link href="/contact-us" className="alc-btn">
-            Let&apos;s Build Together
+          <Link href={copy.button.href} className="alc-btn">
+            {copy.button.label}
             <span>
               <svg
                 width="20"
@@ -46,31 +47,31 @@ export function SolutionLifecycle() {
                 <YearsSinceFounding />
               </strong>
               <span>
-                Years
+                {stat(0).line1}
                 <br />
-                Experience
+                {stat(0).line2}
               </span>
             </li>
             <li className="alc-stat">
-              <strong>500+</strong>
+              <strong>{stat(1).value}</strong>
               <span>
-                Projects
+                {stat(1).line1}
                 <br />
-                Delivered
+                {stat(1).line2}
               </span>
             </li>
             <li className="alc-stat">
-              <strong>98%</strong>
+              <strong>{stat(2).value}</strong>
               <span>
-                Client
+                {stat(2).line1}
                 <br />
-                Satisfaction
+                {stat(2).line2}
               </span>
             </li>
           </ul>
 
           <div className="alc-script" aria-hidden="true">
-            Ideas<em>into Impact</em>
+            {copy.script}<em>{copy.scriptAccent}</em>
             <svg viewBox="0 0 150 30" fill="none">
               <path
                 d="M3 26 C45 12 95 6 147 3"
@@ -155,17 +156,12 @@ export function SolutionLifecycle() {
                 <circle cx="90" cy="12" r="6" fill="#fff" stroke="#2563ff" strokeWidth="2.4" />
                 <path d="M96 12 L108 11" stroke="#2563ff" strokeWidth="2.4" strokeLinecap="round" />
               </svg>
-              <h3>Development</h3>
-              <p>
-                We turn your ideas into robust, scalable and high-performing digital products
-                tailored to your business goals.
-              </p>
+              <h3>{card(0).title}</h3>
+              <p>{card(0).text}</p>
               <ul className="alc-list">
-                <li>Requirement analysis &amp; planning</li>
-                <li>Modern technology stack</li>
-                <li>Clean and scalable architecture</li>
-                <li>Quality-driven development</li>
-                <li>On-time delivery</li>
+                {[...card(0).points].map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
               </ul>
               <div className="alc-note">
                 <svg
@@ -179,9 +175,9 @@ export function SolutionLifecycle() {
                   <path d="M14 28h6M15 16l2 3 2-3M17 2v3M6.5 6.5l2 2M27.5 6.5l-2 2M3 17h3M28 17h3" />
                 </svg>
                 <span>
-                  Turn Ideas
+                  {card(0).note1}
                   <br />
-                  Into Reality
+                  {card(0).note2}
                 </span>
               </div>
             </article>
@@ -219,17 +215,12 @@ export function SolutionLifecycle() {
                 <circle cx="96" cy="20" r="6" fill="#fff" stroke="#3d5ff0" strokeWidth="2.4" />
                 <path d="M102 19 L118 15" stroke="#3d5ff0" strokeWidth="2.4" strokeLinecap="round" />
               </svg>
-              <h3>Enhancement</h3>
-              <p>
-                We continuously improve your product based on user feedback, market trends and new
-                opportunities.
-              </p>
+              <h3>{card(1).title}</h3>
+              <p>{card(1).text}</p>
               <ul className="alc-list">
-                <li>Feature enhancements</li>
-                <li>Performance optimization</li>
-                <li>UI/UX improvements</li>
-                <li>Security &amp; reliability upgrades</li>
-                <li>Analytics &amp; data-driven improvements</li>
+                {[...card(1).points].map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
               </ul>
               <div className="alc-note">
                 <svg viewBox="0 0 34 34">
@@ -238,9 +229,9 @@ export function SolutionLifecycle() {
                   <rect x="24" y="5" width="6" height="25" rx="2" fill="#7b3fe4" />
                 </svg>
                 <span>
-                  Make Your Product
+                  {card(1).note1}
                   <br />
-                  Even Stronger
+                  {card(1).note2}
                 </span>
               </div>
             </article>
@@ -262,17 +253,12 @@ export function SolutionLifecycle() {
                   <path d="M39 52V28M30 37l9-9 9 9" />
                 </svg>
               </div>
-              <h3>Upgrade</h3>
-              <p>
-                We help you adopt the latest technology, migrate to modern platforms and scale your
-                product for future growth.
-              </p>
+              <h3>{card(2).title}</h3>
+              <p>{card(2).text}</p>
               <ul className="alc-list">
-                <li>Technology upgrades</li>
-                <li>Migration &amp; modernization</li>
-                <li>Scalability &amp; infrastructure improvements</li>
-                <li>Integration with new tools and APIs</li>
-                <li>Long-term support &amp; maintenance</li>
+                {[...card(2).points].map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
               </ul>
               <div className="alc-note">
                 <svg
@@ -289,9 +275,9 @@ export function SolutionLifecycle() {
                   <path d="M16 20L30 6M25 6h5v5" />
                 </svg>
                 <span>
-                  Stay Ahead
+                  {card(2).note1}
                   <br />
-                  with Latest Technology
+                  {card(2).note2}
                 </span>
               </div>
             </article>

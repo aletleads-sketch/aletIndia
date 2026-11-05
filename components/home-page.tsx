@@ -12,7 +12,7 @@ import {
 } from "@/components/sections";
 import { Arrow, Eyebrow } from "@/components/ui";
 import { WordRotator } from "@/components/word-rotator";
-import { about, achievements, clients, company, faqs, hero, industries, services } from "@/lib/content";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
 
 export function HomePage() {
   return (
@@ -34,7 +34,8 @@ export function HomePage() {
   );
 }
 
-function Hero() {
+async function Hero() {
+  const [{ hero, company }, copy] = await Promise.all([loadSiteContent(), loadFields("/#hero")]);
   return (
     <section className="hero-mesh relative overflow-hidden text-white">
       <div className="dot-grid pointer-events-none absolute inset-0" />
@@ -45,39 +46,39 @@ function Hero() {
         <div>
           <p className="rise glass inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs font-semibold tracking-wide text-white/90">
             <span className="pulse-dot" aria-hidden="true" />
-            {hero.lead} {hero.leadAccent} · Since {company.established}
+            {hero.lead} {hero.leadAccent} · {copy.since} {company.established}
           </p>
           <h1 className="rise d1 mt-7 text-5xl leading-[1.04] font-extrabold tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            Your Trusted <span className="text-gradient">Technology</span> Partner
+            {copy.titleBefore} <span className="text-gradient">{copy.titleAccent}</span> {copy.titleAfter}
             <span className="mt-4 block text-lg leading-snug font-semibold tracking-normal text-white/75 sm:text-xl">
-              Mobile App &amp; Web Development Company in New Delhi
+              {copy.subtitle}
             </span>
           </h1>
           <p className="rise d2 mt-6 text-2xl font-semibold text-white/90 sm:text-3xl">
-            We build <WordRotator words={hero.rotating} />
+            {copy.weBuild} <WordRotator words={hero.rotating} />
           </p>
           <p className="rise d3 mt-6 max-w-xl text-base leading-7 text-white/70 sm:text-lg">
-            {hero.paragraphs[0]}
+            {copy.text}
           </p>
           <div className="rise d4 mt-9 flex flex-wrap gap-3">
             <a
-              href="#contact"
+              href={copy.primaryButton.href}
               className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_40px_-8px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
             >
-              Get a Free Consultation
+              {copy.primaryButton.label}
               <Arrow />
             </a>
             <a
-              href="#work"
+              href={copy.secondaryButton.href}
               className="glass inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/15"
             >
-              View Our Work
+              {copy.secondaryButton.label}
             </a>
           </div>
           <div className="rise d5 mt-10 flex items-center gap-4">
             <div className="flex -space-x-3">
-              {["/images/people/rk.jpg", "/images/people/aadi.jpg", "/images/people/mayank.png"].map(
-                (src) => (
+              {copy.people.map(
+                ({ src }) => (
                   <Image
                     key={src}
                     src={src}
@@ -90,8 +91,7 @@ function Hero() {
               )}
             </div>
             <p className="text-sm text-white/70">
-              <span className="font-bold text-white">500+ clients</span> across 20+
-              countries trust ALET India
+              <span className="font-bold text-white">{copy.trustBold}</span> {copy.trustText}
             </p>
           </div>
         </div>
@@ -108,8 +108,8 @@ function Hero() {
               <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
             </div>
             <Image
-              src="/images/hero-technologies.jpg"
-              alt="AI, cloud, web, mobile and modern technology services"
+              src={copy.image.src}
+              alt={copy.image.alt}
               width={1280}
               height={720}
               priority
@@ -118,16 +118,16 @@ function Hero() {
           </div>
 
           <Image
-            src="/images/work/tajika-1.png"
-            alt="Tajika mobile app"
+            src={copy.phoneLeft.src}
+            alt={copy.phoneLeft.alt}
             width={280}
             height={560}
             className="float absolute -bottom-24 -left-6 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-left-16 sm:w-24"
             style={{ ["--tilt" as string]: "-6deg" }}
           />
           <Image
-            src="/images/all_deliveries_home.png"
-            alt="All Deliveries mobile app home"
+            src={copy.phoneRight.src}
+            alt={copy.phoneRight.alt}
             width={1024}
             height={1536}
             className="float float-b absolute -right-2 -bottom-24 w-24 drop-shadow-[0_25px_35px_rgb(0_0_0_/_0.55)] sm:-right-10 sm:w-24"
@@ -148,8 +148,8 @@ function Hero() {
               </svg>
             </span>
             <span>
-              <span className="block text-lg leading-none font-extrabold">500+</span>
-              <span className="text-xs text-white/70">Projects delivered</span>
+              <span className="block text-lg leading-none font-extrabold">{copy.badge1Value}</span>
+              <span className="text-xs text-white/70">{copy.badge1Label}</span>
             </span>
           </div>
 
@@ -163,8 +163,8 @@ function Hero() {
               </svg>
             </span>
             <span>
-              <span className="block text-sm leading-none font-bold">Clutch</span>
-              <span className="text-xs text-white/70">Clients say we deliver</span>
+              <span className="block text-sm leading-none font-bold">{copy.badge2Title}</span>
+              <span className="text-xs text-white/70">{copy.badge2Label}</span>
             </span>
           </div>
         </div>
@@ -182,11 +182,12 @@ function Hero() {
   );
 }
 
-function ClientMarquee() {
+async function ClientMarquee() {
+  const [{ clients }, copy] = await Promise.all([loadSiteContent(), loadFields("/#client_logos")]);
   return (
     <section className="py-10 sm:py-12" aria-label="Our clients">
       <p className="text-center text-xs font-bold tracking-[0.22em] text-muted uppercase">
-        Driving technology for our clients
+        {copy.heading}
       </p>
       <div className="marquee mx-auto mt-6 max-w-[92rem]">
         <ul className="marquee-track items-center gap-6 pr-6">
@@ -210,18 +211,19 @@ function ClientMarquee() {
   );
 }
 
-function Services() {
+async function Services() {
+  const [{ services }, copy] = await Promise.all([loadSiteContent(), loadFields("/#services")]);
   return (
     <section id="services" className="relative scroll-mt-24 overflow-hidden bg-surface">
       <div className="dot-grid-light pointer-events-none absolute top-0 right-0 h-72 w-72 opacity-70" />
       <div className="relative mx-auto w-full max-w-[92rem] px-5 py-10 sm:px-8 md:py-14 xl:px-12">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <Eyebrow>Our Services</Eyebrow>
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-            Building digital products that{" "}
-            <span className="text-gradient-dark">grow your business</span>
+            {copy.title}{" "}
+            <span className="text-gradient-dark">{copy.accent}</span>
           </h2>
-          <p className="mt-4 text-base leading-7 text-muted">{hero.paragraphs[1]}</p>
+          <p className="mt-4 text-base leading-7 text-muted">{copy.text}</p>
         </Reveal>
 
         <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -243,7 +245,7 @@ function Services() {
                   <div className="relative p-7">
                     <h3 className="text-2xl font-extrabold tracking-tight">{service.title}</h3>
                     <span className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-white/80">
-                      Explore
+                      {copy.explore}
                       <span className="transition duration-300 group-hover:translate-x-1.5">
                         <Arrow />
                       </span>
@@ -267,26 +269,27 @@ function WhyAlet() {
   );
 }
 
-function Work() {
+async function Work() {
+  const copy = await loadFields("/#work");
   return (
     <section id="work" className="scroll-mt-24 overflow-hidden bg-surface py-10 md:py-14">
       <div className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 xl:px-12">
         <Reveal className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Eyebrow>Portfolio</Eyebrow>
+            <Eyebrow>{copy.eyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl xl:text-6xl">
-              Products we&apos;ve <span className="text-gradient-dark">brought to life</span>
+              {copy.title} <span className="text-gradient-dark">{copy.accent}</span>
             </h2>
           </div>
           <div className="flex flex-col items-start gap-3 sm:items-end">
             <p className="max-w-xs text-sm text-muted sm:text-right sm:text-base">
-              Real apps for real clients — drag or scroll to explore.
+              {copy.text}
             </p>
             <Link
-              href="/portfolio"
+              href={copy.link.href}
               className="inline-flex items-center gap-2 text-sm font-extrabold text-brand"
             >
-              View all projects
+              {copy.link.label}
               <Arrow />
             </Link>
           </div>
@@ -297,18 +300,18 @@ function Work() {
   );
 }
 
-function Industries() {
+async function Industries() {
+  const [{ achievements, industries }, copy] = await Promise.all([loadSiteContent(), loadFields("/#industries")]);
   return (
     <section className="mx-auto w-full max-w-[92rem] px-5 py-10 sm:px-8 md:py-14 xl:px-12">
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <Reveal>
-          <Eyebrow>Industries</Eyebrow>
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-            Your industry doesn&apos;t matter. <span className="text-gradient-dark">We make it real.</span>
+            {copy.title} <span className="text-gradient-dark">{copy.accent}</span>
           </h2>
           <p className="mt-5 max-w-md text-base leading-7 text-muted">
-            We have built apps for almost every category of the App Store, from travel
-            and pharma to fantasy sports and on-demand delivery.
+            {copy.text}
           </p>
           <ul className="mt-8 flex flex-wrap items-center gap-6">
             {achievements.map((item) => (
@@ -356,26 +359,27 @@ function Industries() {
   );
 }
 
-function About() {
+async function About() {
+  const [{ about }, copy] = await Promise.all([loadSiteContent(), loadFields("/#about")]);
   return (
     <section id="about" className="mx-auto w-full max-w-[92rem] scroll-mt-24 px-5 py-10 sm:px-8 md:py-14 xl:px-12">
       <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal>
-          <Eyebrow>{about.title}</Eyebrow>
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-            You can be <span className="text-gradient-dark">bigger</span> with ALET INDIA
+            {copy.titleBefore} <span className="text-gradient-dark">{copy.titleAccent}</span> {copy.titleAfter}
           </h2>
           <p className="mt-5 text-sm font-semibold tracking-wide text-accent uppercase">
-            Take the first step towards your success.
+            {copy.tagline}
           </p>
         </Reveal>
         <Reveal delay={120}>
           <p className="text-lg leading-8 text-ink/80">
-            {about.paragraphs[0].split(". ").slice(0, 2).join(". ").replace(/\.$/, "")}.
+            {copy.intro}
           </p>
           <details className="group mt-6">
             <summary className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-brand">
-              Read our full story
+              {copy.readMore}
               <span className="faq-icon text-lg leading-none transition duration-300">+</span>
             </summary>
             <div className="mt-6 space-y-5">
@@ -410,10 +414,10 @@ function About() {
             </div>
           </details>
           <Link
-            href="/about-us"
+            href={copy.link.href}
             className="mt-6 flex w-fit items-center gap-2 text-sm font-extrabold text-brand"
           >
-            More about ALET India
+            {copy.link.label}
             <Arrow />
           </Link>
         </Reveal>
@@ -422,17 +426,18 @@ function About() {
   );
 }
 
-function Faq() {
+async function Faq() {
+  const [{ company, faqs }, copy] = await Promise.all([loadSiteContent(), loadFields("/#faqs")]);
   return (
     <section className="bg-surface">
       <div className="mx-auto grid w-full max-w-[92rem] items-stretch gap-8 px-5 py-10 sm:px-8 md:py-14 xl:px-12 lg:grid-cols-2 lg:gap-10">
         <Reveal className="flex h-full flex-col">
-          <Eyebrow>FAQs</Eyebrow>
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Questions, <span className="text-gradient-dark">answered</span>
+            {copy.title} <span className="text-gradient-dark">{copy.accent}</span>
           </h2>
           <p className="mt-5 text-base leading-7 text-muted">
-            Still curious? Write to{" "}
+            {copy.stillCurious}{" "}
             <a href={`mailto:${company.email}`} className="font-semibold text-brand">
               {company.email}
             </a>
@@ -440,8 +445,8 @@ function Faq() {
           </p>
           <div className="relative mt-8 min-h-64 w-full flex-1 overflow-hidden rounded-2xl max-lg:aspect-[4/5] lg:min-h-0">
             <Image
-              src="/images/pages/faq-question.jpg"
-              alt="A man raising his hand to ask a question"
+              src={copy.image.src}
+              alt={copy.image.alt}
               fill
               sizes="(max-width: 1024px) 100vw, 46vw"
               className="object-cover object-center"

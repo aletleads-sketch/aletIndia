@@ -6,13 +6,13 @@ import { CaseStudyScreens } from "@/components/case-study-demo";
 import { CaseStudyFileNav } from "@/components/case-study-file-nav";
 import { Wave } from "@/components/page-hero";
 import { Arrow } from "@/components/ui";
-import {
-  demoCaseStudiesResolved,
-  getCaseStudy,
-  getNextDemoStudy,
-} from "@/lib/case-study-data";
+import { nextStudy } from "@/lib/case-study-data";
+import { loadCaseStudies, loadFields } from "@/lib/site-content";
 import { type CaseStudyContentBlock } from "@/lib/case-study-sections";
-import { breadcrumbJsonLd, canonical, jsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
+import { JsonLd } from "@/components/json-ld";
+import { loadSchemaSettings } from "@/lib/seo-schema";
 
 /** Intrinsic sizes for tech-stack diagrams (avoids stretch from a shared wrong ratio). */
 const NARRATIVE_IMAGE_SIZE: Record<string, { width: number; height: number }> = {
@@ -24,19 +24,19 @@ const NARRATIVE_IMAGE_SIZE: Record<string, { width: number; height: number }> = 
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return demoCaseStudiesResolved.map(({ slug }) => ({ slug }));
+export async function generateStaticParams() {
+  return (await loadCaseStudies()).studies.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const caseStudy = getCaseStudy(slug);
+  const caseStudy = (await loadCaseStudies()).studies.find((study) => study.slug === slug);
   return caseStudy
-    ? {
+    ? withSeoOverrides(`/case-studies/${caseStudy.slug}`, {
         title: `${caseStudy.client} case study — Alet India`,
         description: caseStudy.summary,
         alternates: canonical(`/case-studies/${caseStudy.slug}`),
-      }
+      })
     : {};
 }
 
@@ -102,12 +102,14 @@ function NarrativeBlocks({ blocks }: { blocks: CaseStudyContentBlock[] }) {
 
 export default async function CaseStudyDetailPage({ params }: Props) {
   const { slug } = await params;
-  const study = getCaseStudy(slug);
+  const [{ studies, index }, copy] = await Promise.all([loadCaseStudies(), loadFields("/case-studies/[slug]#study")]);
+  const study = studies.find((item) => item.slug === slug);
   if (!study) notFound();
 
-  const next = getNextDemoStudy(slug);
+  const next = nextStudy(studies, slug, index.map((entry) => entry.slug));
   const sections = study.sections ?? [];
 
+  const schema = await loadSchemaSettings();
   const breadcrumb = breadcrumbJsonLd([
     { name: "Case Studies", path: "/case-studies" },
     { name: study.client, path: `/case-studies/${study.slug}` },
@@ -115,7 +117,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(breadcrumb)} />
+      <JsonLd items={schema.breadcrumb.enabled ? [breadcrumb] : []} />
       <article className="overflow-x-clip bg-white text-[#10210a]">
         <header className="hero-mesh relative overflow-hidden text-white">
           <div className="dot-grid pointer-events-none absolute inset-0" />
@@ -127,15 +129,15 @@ export default async function CaseStudyDetailPage({ params }: Props) {
               className="text-xs font-bold tracking-[0.16em] text-white/55 uppercase"
             >
               <Link href="/" className="hover:text-white">
-                Home
+                {copy.homeCrumb}
               </Link>
               <span className="px-2 text-white/30">/</span>
               <Link href="/case-studies" className="hover:text-white">
-                Case Studies
+                {copy.listCrumb}
               </Link>
             </nav>
             <p className="mt-8 text-xs font-bold tracking-[0.28em] text-brand-2 uppercase">
-              {study.industry} · Case study
+              {study.industry} · {copy.kindLabel}
             </p>
             <h1 className="mt-4 max-w-4xl text-4xl leading-[1.02] font-extrabold tracking-tight text-balance break-words sm:text-6xl">
               {study.title}
@@ -159,16 +161,15 @@ export default async function CaseStudyDetailPage({ params }: Props) {
         </header>
 
         <div className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:py-16 xl:px-12">
-          <CaseStudyFileNav />
+          <CaseStudyFileNav title={copy.navTitle} items={copy.nav.map((item) => ({ id: String(item.id ?? ""), label: String(item.label ?? "") }))} />
 
           <div className="min-w-0 max-w-full space-y-16">
             <section className="scroll-mt-32">
               <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words text-[#1a3314]">
-                Walk the screens
+                {copy.screensTitle}
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-7 text-pretty text-[#10210a]/70">
-                Tap a frame to bring that screen forward. These are the product views from the
-                build.
+                {copy.screensText}
               </p>
               <CaseStudyScreens screens={study.screens} />
             </section>
@@ -189,16 +190,16 @@ export default async function CaseStudyDetailPage({ params }: Props) {
 
             <section className="rounded-[2rem] bg-[#10210a] px-5 py-10 text-white sm:px-10 sm:py-12">
               <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words sm:text-4xl">
-                Have a similar business idea?
+                {copy.ctaTitle}
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
-                Let&apos;s turn your vision into a connected digital experience.
+                {copy.ctaText}
               </p>
               <Link
-                href="/contact-us"
+                href={copy.ctaButton.href}
                 className="mt-8 inline-flex max-w-full items-center gap-2 rounded-full bg-[#d6ff4a] px-6 py-3 text-sm font-extrabold whitespace-nowrap text-[#10210a] transition hover:-translate-y-0.5 hover:brightness-110"
               >
-                Start your project <Arrow />
+                {copy.ctaButton.label} <Arrow />
               </Link>
             </section>
           </div>
@@ -209,7 +210,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
             <div className="mx-auto flex w-full max-w-[92rem] flex-col gap-4 px-5 py-12 sm:px-8 sm:flex-row sm:items-end sm:justify-between xl:px-12">
               <div>
                 <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">
-                  Next file
+                  {copy.nextLabel}
                 </p>
                 <p className="mt-3 text-3xl font-extrabold tracking-tight">{next.client}</p>
                 <p className="mt-3 max-w-xl text-base leading-7 text-[#10210a]/70">
@@ -220,7 +221,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
                 href={`/case-studies/${next.slug}`}
                 className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#10210a] px-7 py-3.5 text-sm font-extrabold text-[#d6ff4a] transition hover:-translate-y-0.5 hover:brightness-110"
               >
-                Read {next.client} <Arrow />
+                {copy.readNext} {next.client} <Arrow />
               </Link>
             </div>
           </section>

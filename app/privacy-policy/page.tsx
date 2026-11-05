@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
-import { privacyPolicy } from "@/lib/pages";
 import { canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   alternates: canonical("/privacy-policy"),
   title: "Privacy Policy — Alet India",
   description: "How Alet India collects, uses, and protects your personal information.",
 };
 
+export function generateMetadata() {
+  return withSeoOverrides("/privacy-policy", baseMetadata);
+}
+
 export default function Page() {
   return (
-    <LegalPage
-      crumb="Privacy Policy"
-      title="Privacy &"
-      accent="Cookie Policy"
-      intro="How Alet India collects, uses, and protects your personal information."
-      sections={privacyPolicy}
-      current="/privacy-policy"
-      image="/images/pages/security.jpg"
-    />
+    <LegalPage path="/privacy-policy" />
   );
 }

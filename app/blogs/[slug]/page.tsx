@@ -3,18 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BlogSections } from "@/components/blog-blocks";
 import { Arrow, Photo } from "@/components/ui";
-import {
-  blogPosts,
-  formatBlogDate,
-  getBlogPost,
-  readingMinutes,
-  relatedPosts,
-} from "@/lib/blogs";
+import { formatBlogDate, getBlogPost, readingMinutes, relatedPosts } from "@/lib/blogs";
+import { loadBlogPosts, loadFields } from "@/lib/site-content";
 import { assetPath } from "@/lib/site-path";
-import { breadcrumbJsonLd, canonical, jsonLd, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, canonical, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
+import { JsonLd } from "@/components/json-ld";
+import { loadSchemaSettings } from "@/lib/seo-schema";
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  return (await loadBlogPosts()).map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({
@@ -23,10 +21,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = getBlogPost(slug, await loadBlogPosts());
   if (!post) return { title: "Article — Alet India" };
 
-  return {
+  return withSeoOverrides(`/blogs/${post.slug}`, {
     title: `${post.title} — Alet India`,
     description: post.excerpt,
     alternates: canonical(`/blogs/${post.slug}`),
@@ -37,23 +35,25 @@ export async function generateMetadata({
       url: pageUrl(`/blogs/${post.slug}`),
       images: [{ url: pageUrl(post.image) }],
     },
-  };
+  });
 }
 
 export default async function BlogArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const [blogPosts, copy] = await Promise.all([loadBlogPosts(), loadFields("/blogs/[slug]#article")]);
+  const post = getBlogPost(slug, blogPosts);
   if (!post) notFound();
 
   const index = blogPosts.findIndex((item) => item.slug === post.slug);
   const previous = blogPosts[index - 1];
   const next = blogPosts[index + 1];
-  const related = relatedPosts(post.slug);
+  const related = relatedPosts(post.slug, blogPosts);
   const minutes = readingMinutes(post);
   const cover = assetPath(post.image);
   const url = pageUrl(`/blogs/${post.slug}`);
+  const schema = await loadSchemaSettings();
   const structured = [
-    {
+    schema.article.enabled && {
       "@type": "BlogPosting",
       headline: post.title,
       datePublished: post.date,
@@ -63,17 +63,16 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       publisher: { "@id": ORGANIZATION_ID },
       mainEntityOfPage: url,
     },
-    breadcrumbJsonLd([
-      { name: "Blogs", path: "/blogs" },
-      { name: post.title, path: `/blogs/${post.slug}` },
-    ]),
-  ];
+    schema.breadcrumb.enabled &&
+      breadcrumbJsonLd([
+        { name: "Blogs", path: "/blogs" },
+        { name: post.title, path: `/blogs/${post.slug}` },
+      ]),
+  ].filter((item) => item !== false);
 
   return (
     <article className="bg-[#f6f1e8] text-ink">
-      {structured.map((data) => (
-        <script key={data["@type"]} type="application/ld+json" dangerouslySetInnerHTML={jsonLd(data)} />
-      ))}
+      <JsonLd items={structured} />
 
       <header className="hero-mesh relative overflow-hidden text-white">
         <div className="dot-grid pointer-events-none absolute inset-0" />
@@ -82,11 +81,11 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         <div className="relative mx-auto w-full max-w-3xl px-5 pt-28 pb-10 sm:px-8 sm:pt-36 sm:pb-12 lg:pt-40 lg:pb-14">
           <nav aria-label="Breadcrumb" className="text-xs font-bold tracking-[0.16em] text-white/60 uppercase">
             <Link href="/" className="hover:text-white">
-              Home
+              {copy.homeCrumb}
             </Link>
             <span className="px-2 text-white/30">/</span>
             <Link href="/blogs" className="hover:text-white">
-              Blogs
+              {copy.blogsCrumb}
             </Link>
           </nav>
 
@@ -108,7 +107,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             {post.excerpt}
           </p>
           <p className="mt-6 text-sm font-semibold text-white/55 sm:mt-8">
-            {post.author} · {formatBlogDate(post.date)} · {minutes} min read
+            {post.author} · {formatBlogDate(post.date)} · {minutes} {copy.minRead}
           </p>
         </div>
       </header>
@@ -128,15 +127,15 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <BlogSections sections={post.sections} />
 
           <div className="rounded-[1.8rem] bg-night px-7 py-8 text-white sm:px-10">
-            <p className="text-xs font-bold tracking-[0.2em] text-brand-2 uppercase">Build it</p>
+            <p className="text-xs font-bold tracking-[0.2em] text-brand-2 uppercase">{copy.ctaEyebrow}</p>
             <p className="mt-3 text-2xl font-extrabold tracking-tight">
-              Want this thinking applied to your product?
+              {copy.ctaTitle}
             </p>
             <Link
-              href="/contact-us"
+              href={copy.ctaButton.href}
               className="btn-sheen bg-brand-gradient mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
             >
-              Talk to ALET
+              {copy.ctaButton.label}
               <Arrow />
             </Link>
           </div>
@@ -144,7 +143,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <nav className="grid gap-4 border-t border-night/15 pt-8 sm:grid-cols-2">
             {previous ? (
               <Link href={`/blogs/${previous.slug}`} className="group">
-                <span className="text-xs font-bold tracking-[0.16em] text-muted uppercase">Previous</span>
+                <span className="text-xs font-bold tracking-[0.16em] text-muted uppercase">{copy.previous}</span>
                 <span className="mt-2 block font-extrabold tracking-tight group-hover:text-brand">
                   {previous.title}
                 </span>
@@ -154,7 +153,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             )}
             {next ? (
               <Link href={`/blogs/${next.slug}`} className="group sm:text-right">
-                <span className="text-xs font-bold tracking-[0.16em] text-muted uppercase">Next</span>
+                <span className="text-xs font-bold tracking-[0.16em] text-muted uppercase">{copy.next}</span>
                 <span className="mt-2 block font-extrabold tracking-tight group-hover:text-brand">
                   {next.title}
                 </span>
@@ -164,7 +163,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         </div>
 
         <aside className="lg:sticky lg:top-32 lg:self-start">
-          <p className="text-xs font-bold tracking-[0.18em] text-accent uppercase">More from the journal</p>
+          <p className="text-xs font-bold tracking-[0.18em] text-accent uppercase">{copy.moreTitle}</p>
           <ul className="mt-4 space-y-4">
             {related.map((item) => (
               <li key={item.slug}>
@@ -178,7 +177,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             ))}
           </ul>
           <Link href="/blogs" className="mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-brand">
-            All articles
+            {copy.allArticles.label}
             <Arrow />
           </Link>
         </aside>

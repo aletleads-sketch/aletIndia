@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Arrow } from "@/components/ui";
-import { caseStudyIndexEntries, caseStudyIndustries } from "@/lib/case-study-data";
+import { industriesOf, type CaseStudyIndexItem } from "@/lib/case-study-data";
 
-type IndexEntry = (typeof caseStudyIndexEntries)[number];
+type IndexEntry = CaseStudyIndexItem;
 
 function PreviewVisual({ entry }: { entry: IndexEntry }) {
   const src = entry.previewImage ?? entry.detail.study.screens[0];
@@ -29,7 +29,9 @@ function PreviewVisual({ entry }: { entry: IndexEntry }) {
   );
 }
 
-function StudyPreview({ entry }: { entry: IndexEntry }) {
+type BrowserCopy = { openStudy: string; footnote: string; footnoteLink: { label: string; href: string } };
+
+function StudyPreview({ entry, openStudy }: { entry: IndexEntry; openStudy: string }) {
   return (
     <article className="grid overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#0a122e]/80 shadow-[0_28px_70px_-40px_rgb(0_0_0_/_0.75)] backdrop-blur lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
       <PreviewVisual entry={entry} />
@@ -58,7 +60,7 @@ function StudyPreview({ entry }: { entry: IndexEntry }) {
             href={`/case-studies/${entry.slug}`}
             className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-extrabold text-white shadow-[0_12px_40px_-8px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
           >
-            Open the full study <Arrow />
+            {openStudy} <Arrow />
           </Link>
         </div>
       </div>
@@ -66,19 +68,21 @@ function StudyPreview({ entry }: { entry: IndexEntry }) {
   );
 }
 
-export function CaseStudiesBrowser({ embedded = false }: { embedded?: boolean }) {
-  const [industry, setIndustry] = useState<(typeof caseStudyIndustries)[number]>("All");
+export function CaseStudiesBrowser({ embedded = false, entries, copy }: { embedded?: boolean; entries: IndexEntry[]; copy: BrowserCopy }) {
+  const caseStudyIndexEntries = entries;
+  const caseStudyIndustries = useMemo(() => industriesOf(entries), [entries]);
+  const [industry, setIndustry] = useState("All");
   const [activeSlug, setActiveSlug] = useState(caseStudyIndexEntries[0]?.slug ?? "tajika");
 
   const filtered = useMemo(() => {
     if (industry === "All") return caseStudyIndexEntries;
     return caseStudyIndexEntries.filter((entry) => entry.industry === industry);
-  }, [industry]);
+  }, [industry, caseStudyIndexEntries]);
 
   const active =
     filtered.find((entry) => entry.slug === activeSlug) ?? filtered[0] ?? caseStudyIndexEntries[0];
 
-  const selectIndustry = (next: (typeof caseStudyIndustries)[number]) => {
+  const selectIndustry = (next: string) => {
     setIndustry(next);
     const nextList =
       next === "All"
@@ -160,16 +164,16 @@ export function CaseStudiesBrowser({ embedded = false }: { embedded?: boolean })
             </ul>
           </div>
 
-          {active ? <StudyPreview entry={active} /> : null}
+          {active ? <StudyPreview entry={active} openStudy={copy.openStudy} /> : null}
         </div>
 
         <p className="mt-8 text-sm leading-7 text-white/55 sm:text-[0.95rem]">
-          Want something in this shape for your own product?{" "}
+          {copy.footnote}{" "}
           <Link
-            href="/contact-us"
+            href={copy.footnoteLink.href}
             className="font-extrabold text-brand-2 transition hover:brightness-110"
           >
-            Start a conversation.
+            {copy.footnoteLink.label}
           </Link>
         </p>
       </div>

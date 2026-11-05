@@ -7,7 +7,7 @@ import {
   type CaseStudyNarrativeSection,
 } from "@/lib/case-study-sections";
 
-type CaseStudySource = (typeof caseStudies)[number];
+type CaseStudySource = Omit<(typeof caseStudies)[number], "landscape" | "mockup"> & { landscape?: boolean; mockup?: boolean };
 
 export type DemoCaseStudy = {
   slug: string;
@@ -372,19 +372,22 @@ export const getCaseStudy = (slug: string) =>
   demoCaseStudiesResolved.find((study) => study.slug === slug);
 
 
-export const getNextDemoStudy = (slug: string) => {
-  const featured = demoCaseStudiesResolved.filter((study) =>
-    ["tajika", "all-deliveries", "guri-houses", "quick-savaari"].includes(study.slug),
-  );
+export const FEATURED_CASE_STUDIES = ["tajika", "all-deliveries", "guri-houses", "quick-savaari"];
+
+/** The study after this one among those featured on the index (or the first featured one). */
+export const nextStudy = (studies: DemoCaseStudy[], slug: string, featuredSlugs: string[] = FEATURED_CASE_STUDIES) => {
+  const featured = studies.filter((study) => featuredSlugs.includes(study.slug));
   const index = featured.findIndex((study) => study.slug === slug);
   if (index < 0) return featured[0];
   return featured[(index + 1) % featured.length];
 };
 
+export const getNextDemoStudy = (slug: string) => nextStudy(demoCaseStudiesResolved, slug);
+
 /** Legacy shape used by the index browser for study.screens / study.name. */
-export const caseStudyDetails: CaseStudyDetail[] = demoCaseStudiesResolved.map((demo) => {
+export const detailFor = (demo: DemoCaseStudy, projects: CaseStudySource[] = caseStudies): CaseStudyDetail => {
   const study =
-    caseStudies.find((item) => item.name === demo.client) ??
+    projects.find((item) => item.name === demo.client) ??
     ({
       name: demo.client,
       category: demo.industry,
@@ -418,7 +421,9 @@ export const caseStudyDetails: CaseStudyDetail[] = demoCaseStudiesResolved.map((
       step.body,
     ]),
   };
-});
+};
+
+export const caseStudyDetails: CaseStudyDetail[] = demoCaseStudiesResolved.map((demo) => detailFor(demo));
 
 /** Featured studies shown in the Case Studies index browser (live UX, local slugs). */
 export type CaseStudyIndexEntry = {
@@ -481,3 +486,18 @@ export const caseStudyIndustries = [
   "All",
   ...Array.from(new Set(caseStudyIndexEntries.map((entry) => entry.industry))),
 ] as const;
+
+export type CaseStudyIndexItem = CaseStudyIndexEntry & { detail: CaseStudyDetail };
+
+/** Index cards for the studies that have a preview, in the given order. */
+export const indexFrom = (
+  studies: DemoCaseStudy[],
+  previews: Map<string, CaseStudyIndexEntry>,
+  projects: CaseStudySource[] = caseStudies,
+): CaseStudyIndexItem[] =>
+  studies.flatMap((study) => {
+    const preview = previews.get(study.slug);
+    return preview ? [{ ...preview, detail: detailFor(study, projects) }] : [];
+  });
+
+export const industriesOf = (entries: CaseStudyIndexEntry[]) => ["All", ...Array.from(new Set(entries.map((entry) => entry.industry)))];

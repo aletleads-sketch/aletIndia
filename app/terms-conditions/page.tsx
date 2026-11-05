@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
-import { termsConditions } from "@/lib/pages";
 import { canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   alternates: canonical("/terms-conditions"),
   title: "Terms & Conditions — Alet India",
   description: "The terms that apply when you use www.aletindia.com and our services.",
 };
 
+export function generateMetadata() {
+  return withSeoOverrides("/terms-conditions", baseMetadata);
+}
+
 export default function Page() {
   return (
-    <LegalPage
-      crumb="Terms & Conditions"
-      title="Terms &"
-      accent="Conditions"
-      intro="The terms that apply when you use www.aletindia.com and our services."
-      sections={termsConditions}
-      current="/terms-conditions"
-      image="/images/pages/signing.jpg"
-    />
+    <LegalPage path="/terms-conditions" />
   );
 }

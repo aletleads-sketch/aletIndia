@@ -7,12 +7,17 @@ import { ContactSection } from "@/components/sections";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
 import { CaseStudiesIndex } from "@/components/case-studies-index";
 import { canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   alternates: canonical("/case-studies"),
   title: "Case Studies — Alet India",
   description: "A closer look at how ALET India turns operational challenges into clear digital products.",
 };
+
+export function generateMetadata() {
+  return withSeoOverrides("/case-studies", baseMetadata);
+}
 
 const outcomes = [
   ["One clear journey", "Book a parcel, shopping run, or vehicle in one familiar flow."],
@@ -139,7 +144,7 @@ export function LegacyAllDeliveriesCaseStudy() {
         </div>
       </section>
 
-      <ContactSection title="Have a project with a" accent="story to tell?" />
+      <ContactSection placement="CaseStudies" />
     </>
   );
 }

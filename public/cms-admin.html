@@ -58,6 +58,8 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/+esm';
     const supabase = createClient('https://seegtwkfeolpjlgjlbyd.supabase.co','sb_publishable_AB_9PH5k_kHBDsXIr2IhAA_6VznqX81');
+    // Tells the website to show saved content now instead of within the hour.
+    async function refreshSite(){ try{ const {data}=await supabase.auth.getSession(); const token=data.session?.access_token; if(token) await fetch('api/content/revalidate',{method:'POST',headers:{Authorization:`Bearer ${token}`}}); }catch{} }
     const $ = (selector) => document.querySelector(selector);
     const pageParams = new URLSearchParams(location.search);
     let initialView = pageParams.get('view') || 'dashboard';
@@ -110,7 +112,7 @@
       document.querySelectorAll('[data-type]').forEach(button=>button.addEventListener('click',()=>loadContent(button.dataset.type)));
       $('#content-form')?.addEventListener('submit',saveContent); document.querySelector('[data-cancel-edit]')?.addEventListener('click',()=>loadContent($('#content-form [name="content_type"]').value));
       document.querySelectorAll('[data-edit]').forEach(button=>button.addEventListener('click',()=>{const type=$('#content-form [name="content_type"]').value; loadContent(type,currentContentRecords.find(row=>row.id===button.dataset.edit));}));
-      document.querySelectorAll('[data-delete]').forEach(button=>button.addEventListener('click',async()=>{if(!confirm('Delete this item? This cannot be undone.')) return; const {error}=await supabase.from(button.dataset.delete).delete().eq('id',button.dataset.id); if(error) alert(error.message); else loadContent($('#content-form [name="content_type"]').value);}));
+      document.querySelectorAll('[data-delete]').forEach(button=>button.addEventListener('click',async()=>{if(!confirm('Delete this item? This cannot be undone.')) return; const {error}=await supabase.from(button.dataset.delete).delete().eq('id',button.dataset.id); if(error) alert(error.message); else { refreshSite(); } if(!error) loadContent($('#content-form [name="content_type"]').value);}));
     }
     async function legacySaveContent(event){
       event.preventDefault(); const form=new FormData(event.currentTarget); const type=form.get('content_type'); const table=type==='services'?'services':tables[type]; const status=form.get('status'); const split=(value)=>String(value||'').split(',').map(x=>x.trim()).filter(Boolean); const imageFieldName=type==='services'?'hero_image_url':'cover_image_url'; let imageUrl=form.get(`existing_${imageFieldName}`)||null; const file=form.get(`${imageFieldName}_file`); if(file instanceof File && file.size){if(file.size>6*1024*1024||!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)){$('#save-message').textContent='Choose a JPG, PNG, WebP or GIF image smaller than 6 MB.';return;} $('#save-message').textContent='Uploading image…'; const extension=(file.name.split('.').pop()||'jpg').toLowerCase(); const path=`content/${Date.now()}-${crypto.randomUUID()}.${extension}`; const {data,error:uploadError}=await supabase.storage.from('cms-media').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type}); if(uploadError){$('#save-message').textContent=uploadError.message;return;} imageUrl=supabase.storage.from('cms-media').getPublicUrl(data.path).data.publicUrl;} let payload={status};
@@ -119,7 +121,7 @@
       if(type==='blogs'){payload={...payload,title:form.get('title'),slug:form.get('slug')||slugify(form.get('title')),excerpt:form.get('excerpt'),category:form.get('category')||null,cover_image_url:imageUrl,cover_image_alt:form.get('cover_image_alt')||null,content:{body:form.get('content')||''},published_at:status==='published'?(form.get('existing_published_at')||new Date().toISOString()):null};}
       if(type==='faqs'){payload={...payload,question:form.get('question'),answer:form.get('answer'),topic:form.get('topic')};}
       if(type==='menus'){payload={label:form.get('label'),href:form.get('href')||null,parent_id:form.get('parent_id')||null,sort_order:Number(form.get('sort_order')||0),visible:form.get('visible')==='true'};}
-      const recordId=form.get('record_id'); const request=recordId?supabase.from(table).update(payload).eq('id',recordId):supabase.from(table).insert(payload); const {error}=await request; $('#save-message').textContent=error?error.message:'Saved successfully.'; if(!error) setTimeout(()=>loadContent(type),650);
+      const recordId=form.get('record_id'); const request=recordId?supabase.from(table).update(payload).eq('id',recordId):supabase.from(table).insert(payload); const {error}=await request; $('#save-message').textContent=error?error.message:'Saved successfully.'; if(!error){ refreshSite(); setTimeout(()=>loadContent(type),650); }
     }
     /* Homepage CMS extensions. These declarations intentionally replace the generic legacy
        handlers above while preserving Projects, Services, Blogs, FAQs and Menus. */
@@ -152,7 +154,7 @@
       else if(type==='blogs') payload={...payload,title:form.get('title'),slug:form.get('slug')||slugify(form.get('title')),excerpt:form.get('excerpt'),category:form.get('category')||null,cover_image_url:imageUrl,cover_image_alt:form.get('cover_image_alt')||null,content:{body:form.get('content')||''},published_at:status==='published'?(form.get('existing_published_at')||new Date().toISOString()):null};
       else if(type==='faqs') payload={...payload,question:form.get('question'),answer:form.get('answer'),topic:form.get('topic'),sort_order:Number(form.get('sort_order')||0)};
       else payload={label:form.get('label'),href:form.get('href')||null,parent_id:form.get('parent_id')||null,sort_order:Number(form.get('sort_order')||0),visible:form.get('visible')==='true'};
-      const recordId=form.get('record_id'); const request=recordId?supabase.from(table).update(payload).eq('id',recordId):supabase.from(table).insert(payload); const {error}=await request; $('#save-message').textContent=error?error.message:'Saved successfully.'; if(!error) setTimeout(()=>loadContent(type),650);
+      const recordId=form.get('record_id'); const request=recordId?supabase.from(table).update(payload).eq('id',recordId):supabase.from(table).insert(payload); const {error}=await request; $('#save-message').textContent=error?error.message:'Saved successfully.'; if(!error){ refreshSite(); setTimeout(()=>loadContent(type),650); }
     }
     async function loadTableView(type){ await loadContent(type); $('#content-view').classList.remove('hidden'); }
     let currentLeads=[];

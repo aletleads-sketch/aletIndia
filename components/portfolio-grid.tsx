@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { CaseStudyCard } from "@/components/case-study-card";
-import { caseStudies } from "@/lib/content";
+import { useSiteContent } from "@/components/site-content-provider";
+import type { SiteContent } from "@/lib/site-content-shared";
 
-type Study = (typeof caseStudies)[number];
+type Study = SiteContent["caseStudies"][number];
 
 const filters = ["All", "Mobile Apps", "Web", "Games"] as const;
 type Filter = (typeof filters)[number];
@@ -15,7 +16,8 @@ function kind(study: Study): Exclude<Filter, "All"> {
   return "Mobile Apps";
 }
 
-export function PortfolioGrid() {
+export function PortfolioGrid({ filterNames }: { filterNames?: string[] }) {
+  const { caseStudies } = useSiteContent();
   const [active, setActive] = useState<Filter>("All");
   const items = caseStudies
     .map((study, index) => ({ study, index }))
@@ -24,7 +26,7 @@ export function PortfolioGrid() {
   return (
     <>
       <div role="tablist" aria-label="Filter projects" className="flex flex-wrap gap-2">
-        {filters.map((filter) => {
+        {filters.map((filter, filterIndex) => {
           const count =
             filter === "All"
               ? caseStudies.length
@@ -42,7 +44,7 @@ export function PortfolioGrid() {
                   : "bg-white text-ink ring-1 ring-line hover:text-brand"
               }`}
             >
-              {filter}
+              {filterNames?.[filterIndex] || filter}
               <span
                 className={`rounded-full px-2 py-0.5 text-[0.7rem] ${
                   active === filter ? "bg-white/20" : "bg-surface text-muted"

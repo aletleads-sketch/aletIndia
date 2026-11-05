@@ -5,23 +5,32 @@ import { PortfolioGrid } from "@/components/portfolio-grid";
 import { Reveal } from "@/components/reveal";
 import { ContactSection } from "@/components/sections";
 import { Eyebrow, Photo } from "@/components/ui";
-import { caseStudies, industries } from "@/lib/content";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
 import { canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   alternates: canonical("/portfolio"),
   title: "Portfolio — Alet India",
   description:
     "Mobile apps, web platforms, and games ALET India has designed and built for clients across travel, delivery, real estate, fashion, sports, and gaming.",
 };
 
-const wall = [
-  ["/images/work/tajika-1.png", "/images/QUICK-SAWARI.png", "/images/GURI-HOUSES.png"],
-  ["/images/all_deliveries_home.png", "/images/Refult.png", "/images/cricket-fantasybuzz-1.png"],
-  ["/images/QUICK-SAWARI-2.png", "/images/work/tajika-2.png", "/images/REFULT-2.png"],
-];
+export function generateMetadata() {
+  return withSeoOverrides("/portfolio", baseMetadata);
+}
 
-export default function PortfolioPage() {
+
+export default async function PortfolioPage() {
+  const [{ caseStudies, industries }, hero, spotlightCopy, grid, sectors] = await Promise.all([
+    loadSiteContent(),
+    loadFields("/portfolio#hero"),
+    loadFields("/portfolio#project_spotlight"),
+    loadFields("/portfolio#case_studies"),
+    loadFields("/portfolio#industries"),
+  ]);
+  const wallImages = hero.wall.map((image) => image.src);
+  const wall = [wallImages.slice(0, 3), wallImages.slice(3, 6), wallImages.slice(6, 9)];
   const spotlight = caseStudies[0];
 
   return (
@@ -60,17 +69,16 @@ export default function PortfolioPage() {
 
         <div className="relative mx-auto w-full max-w-[92rem] px-5 pt-36 pb-32 sm:px-8 lg:min-h-[42rem] lg:pt-44 xl:px-12">
           <div className="max-w-2xl">
-            <Breadcrumb crumb="Portfolio" className="rise" />
-            <HeroTitle title="Products we've" accent="brought to life" />
+            <Breadcrumb crumb={hero.crumb} className="rise" />
+            <HeroTitle title={hero.title} accent={hero.accent} />
             <p className="rise d2 mt-6 text-base leading-7 text-white/70 sm:text-lg">
-              Real apps for real clients — from on-demand delivery and ride booking to fashion
-              stores, fantasy sports, and multiplayer games.
+              {hero.text}
             </p>
             <dl className="rise d3 mt-10 flex flex-wrap gap-8">
               {[
-                [caseStudies.length, "Featured projects"],
-                [industries.length, "Industries served"],
-                ["20+", "Countries"],
+                [caseStudies.length, hero.projectsLabel],
+                [industries.length, hero.industriesLabel],
+                [hero.countriesValue, hero.countriesLabel],
               ].map(([value, label]) => (
                 <div key={label}>
                   <dt className="text-gradient text-4xl font-extrabold">{value}</dt>
@@ -101,7 +109,7 @@ export default function PortfolioPage() {
             ))}
           </div>
           <div className="flex flex-col justify-center p-8 sm:p-14">
-            <Eyebrow light>Project spotlight</Eyebrow>
+            <Eyebrow light>{spotlightCopy.eyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">{spotlight.name}</h2>
             <p className="mt-2 text-sm font-bold tracking-[0.16em] text-white/60 uppercase">
               {spotlight.category}
@@ -122,21 +130,21 @@ export default function PortfolioPage() {
         <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
           <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-6">
             <div>
-              <Eyebrow>Case studies</Eyebrow>
+              <Eyebrow>{grid.eyebrow}</Eyebrow>
               <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-                Browse our <span className="text-gradient-dark">work</span>
+                {grid.title} <span className="text-gradient-dark">{grid.accent}</span>
               </h2>
             </div>
           </Reveal>
-          <PortfolioGrid />
+          <PortfolioGrid filterNames={grid.filters} />
         </div>
       </section>
 
       <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal className="max-w-2xl">
-          <Eyebrow>Industries</Eyebrow>
+          <Eyebrow>{sectors.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Sectors we <span className="text-gradient-dark">build for</span>
+            {sectors.title} <span className="text-gradient-dark">{sectors.accent}</span>
           </h2>
         </Reveal>
         <ul className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -156,7 +164,7 @@ export default function PortfolioPage() {
         </ul>
       </section>
 
-      <ContactSection title="Have a product in" accent="mind?" />
+      <ContactSection placement="Portfolio" />
     </>
   );
 }

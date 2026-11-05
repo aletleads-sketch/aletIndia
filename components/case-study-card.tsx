@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { caseStudies } from "@/lib/content";
+import type { CaseStudyItem } from "@/lib/site-content-shared";
 
 export const cardColors = [
   "bg-[#5b4bdb]",
@@ -20,7 +20,7 @@ export function CaseStudyCard({
   className = "",
   hidden = false,
 }: {
-  study: (typeof caseStudies)[number];
+  study: CaseStudyItem;
   colorIndex: number;
   className?: string;
   hidden?: boolean;

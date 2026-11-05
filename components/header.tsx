@@ -6,10 +6,10 @@ import { useEffect, useRef, useState } from "react";
 import { InquireNowButton } from "@/components/inquire-modal";
 import { Logo } from "@/components/logo";
 import type { CmsMenuItem } from "@/lib/cms-client";
+import type { NavigationItem } from "@/lib/site-content-shared";
 
-type NavigationItem = CmsMenuItem & { children: CmsMenuItem[] };
-
-const navigation: NavigationItem[] = [
+/** Used when the menu cannot be read from the database (menu_items, menu = header). */
+const defaultNavigation: NavigationItem[] = [
   { id: "home", label: "Home", href: "/", parent_id: null, sort_order: 10, visible: true, children: [] },
   { id: "services", label: "Services", href: "/services", parent_id: null, sort_order: 20, visible: true, children: [
     { id: "mobile", label: "Mobile Application Development", href: "/mobile-app-development", parent_id: "services", sort_order: 10, visible: true },
@@ -75,7 +75,8 @@ function serviceNavLabel(item: CmsMenuItem) {
   return mainBranchServiceLabels[item.href] || item.label;
 }
 
-export function Header() {
+export function Header({ navigation: storedNavigation }: { navigation?: NavigationItem[] | null }) {
+  const navigation = storedNavigation?.length ? storedNavigation : defaultNavigation;
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openItemId, setOpenItemId] = useState<string | null>(null);

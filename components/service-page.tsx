@@ -11,44 +11,53 @@ import {
   TestimonialsSection,
 } from "@/components/sections";
 import { Arrow, Check, Eyebrow, Photo } from "@/components/ui";
-import { services } from "@/lib/content";
-import { serviceDetails, serviceVisuals, type ServiceDetail, type ServiceVisual } from "@/lib/pages";
-import { breadcrumbJsonLd, canonical, jsonLd, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
+import { services as codeServices } from "@/lib/content";
+import { serviceDetails as codeDetails, type ServiceDetail, type ServiceVisual } from "@/lib/pages";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
+import type { SectionValues } from "@/lib/section-fields";
+import type { SiteContent } from "@/lib/site-content-shared";
+import { breadcrumbJsonLd, canonical, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
+import { JsonLd } from "@/components/json-ld";
+import { loadSchemaSettings } from "@/lib/seo-schema";
 
-type Service = (typeof services)[number];
+type Service = SiteContent["services"][number];
 
 type LayoutProps = {
+  copy: SectionValues<"_shared#service_page">;
   service: Service;
   detail: ServiceDetail;
   visual: ServiceVisual;
   related: Service[];
 };
 
-export function getService(id: string) {
-  const service = services.find((item) => item.id === id);
+/** The service with this code id (e.g. "mobile-apps"), from the database or the code. */
+async function getService(id: string) {
+  const content = await loadSiteContent();
+  const service = content.services.find((item) => item.id === id) ?? codeServices.find((item) => item.id === id);
   if (!service) throw new Error(`Unknown service: ${id}`);
-  return service;
+  return { service, content };
 }
 
-export function serviceMetadata(id: string) {
-  const service = getService(id);
+export async function serviceMetadata(id: string) {
+  const { service, content } = await getService(id);
   return {
     title: `${service.nav} — Alet India`,
-    description: serviceDetails[id].intro,
+    description: (content.serviceDetails[id] ?? codeDetails[id]).intro,
     alternates: canonical(`/${service.slug}`),
   };
 }
 
-export function ServicePage({ id }: { id: string }) {
-  const service = getService(id);
-  const detail = serviceDetails[id];
-  const visual = serviceVisuals[id];
-  const index = services.indexOf(service);
+export async function ServicePage({ id }: { id: string }) {
+  const [schema, { service, content }, copy] = await Promise.all([loadSchemaSettings(), getService(id), loadFields("_shared#service_page")]);
+  const { services } = content;
+  const detail = content.serviceDetails[id];
+  const visual = content.serviceVisuals[id];
+  const index = Math.max(0, services.findIndex((item) => item.id === id));
   const related = [1, 2, 3].map((step) => services[(index + step) % services.length]);
   const theme = { "--a": visual.theme[0], "--b": visual.theme[1] } as CSSProperties;
-  const props = { service, detail, visual, related };
+  const props = { copy, service, detail, visual, related };
   const structured = [
-    {
+    schema.service.enabled && {
       "@type": "Service",
       name: service.nav,
       serviceType: service.title,
@@ -57,26 +66,25 @@ export function ServicePage({ id }: { id: string }) {
       provider: { "@id": ORGANIZATION_ID },
       areaServed: "Worldwide",
     },
-    breadcrumbJsonLd([
-      { name: "Services", path: "/services" },
-      { name: service.nav, path: `/${service.slug}` },
-    ]),
-  ];
+    schema.breadcrumb.enabled &&
+      breadcrumbJsonLd([
+        { name: "Services", path: "/services" },
+        { name: service.nav, path: `/${service.slug}` },
+      ]),
+  ].filter((item) => item !== false);
 
   return (
     <div style={theme}>
-      {structured.map((data) => (
-        <script key={data["@type"]} type="application/ld+json" dangerouslySetInnerHTML={jsonLd(data)} />
-      ))}
+      <JsonLd items={structured} />
       {visual.layout === "split" ? <SplitLayout {...props} /> : null}
       {visual.layout === "immersive" ? <ImmersiveLayout {...props} /> : null}
       {visual.layout === "editorial" ? <EditorialLayout {...props} /> : null}
-      <ContactSection title="Let's discuss your" accent="project" defaultService={service.title} />
+      <ContactSection placement="ServicePages" defaultService={service.title} />
     </div>
   );
 }
 
-function SplitLayout({ service, detail, visual, related }: LayoutProps) {
+function SplitLayout({ copy, service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
   const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   return (
@@ -184,9 +192,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
           <Reveal className="theme-gradient relative mx-auto max-w-[92rem] overflow-hidden rounded-[2.5rem] px-6 pt-12 text-white sm:px-12">
             <div className="dot-grid pointer-events-none absolute inset-0" />
             <div className="relative text-center">
-              <Eyebrow light>From our portfolio</Eyebrow>
+              <Eyebrow light>{copy.portfolioEyebrow}</Eyebrow>
               <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Screens from apps we&apos;ve shipped
+                {copy.portfolioTitle}
               </h2>
             </div>
             <div className="relative mt-10 flex items-end justify-center gap-3 sm:gap-6">
@@ -210,9 +218,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
       <section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <Reveal className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <Eyebrow>Our stack</Eyebrow>
+            <Eyebrow>{copy.stackEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Technologies <span className="theme-text">we trust</span>
+              {copy.stackTitle} <span className="theme-text">{copy.stackAccent}</span>
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-muted">{service.description}</p>
           </div>
@@ -236,9 +244,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
 
       <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal>
-          <Eyebrow>More services</Eyebrow>
+          <Eyebrow>{copy.moreEyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Explore <span className="theme-text">other services</span>
+            {copy.moreSplitTitle} <span className="theme-text">{copy.moreSplitAccent}</span>
           </h2>
         </Reveal>
         <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -255,7 +263,7 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
   );
 }
 
-function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
+function ImmersiveLayout({ copy, service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
   const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   const [a, b] = visual.theme;
@@ -312,9 +320,9 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
       <section className="theme-soft">
         <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <Eyebrow>What we deliver</Eyebrow>
+            <Eyebrow>{copy.deliverEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Built for <span className="theme-text">real results</span>
+              {copy.deliverTitle} <span className="theme-text">{copy.deliverAccent}</span>
             </h2>
           </Reveal>
           <ul className={`mt-12 grid gap-6 ${detail.sections.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2"}`}>
@@ -389,19 +397,18 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
       {visual.screens ? (
         <section className="mx-auto grid w-full max-w-[92rem] items-center gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[0.9fr_1.1fr] xl:px-12">
           <Reveal>
-            <Eyebrow>Crafted by ALET</Eyebrow>
+            <Eyebrow>{copy.craftedEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-              Interfaces people <span className="theme-text">enjoy using</span>
+              {copy.craftedTitle} <span className="theme-text">{copy.craftedAccent}</span>
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-muted">
-              A look at screens we designed and built for clients across real estate, fashion,
-              sports, and travel.
+              {copy.craftedText}
             </p>
             <Link
-              href="/portfolio"
+              href={copy.craftedLink.href}
               className="theme-gradient mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5"
             >
-              See the full portfolio
+              {copy.craftedLink.label}
               <Arrow />
             </Link>
           </Reveal>
@@ -436,9 +443,9 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
       <section className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 xl:px-12">
         <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <Eyebrow>More services</Eyebrow>
+            <Eyebrow>{copy.moreEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Keep <span className="theme-text">exploring</span>
+              {copy.moreImmersiveTitle} <span className="theme-text">{copy.moreImmersiveAccent}</span>
             </h2>
           </div>
         </Reveal>
@@ -457,7 +464,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
                   <div className="relative p-7">
                     <h3 className="text-2xl font-extrabold tracking-tight">{item.title}</h3>
                     <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-white/85">
-                      Explore
+                      {copy.explore}
                       <span className="transition group-hover:translate-x-1.5">
                         <Arrow />
                       </span>
@@ -473,7 +480,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
   );
 }
 
-function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
+function EditorialLayout({ copy, service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
   const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   const deliverFit = visual.deliverFit ?? galleryFit[0];
@@ -514,7 +521,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
 
       <section className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-2 xl:px-12">
         <Reveal>
-          <Eyebrow>Overview</Eyebrow>
+          <Eyebrow>{copy.overviewEyebrow}</Eyebrow>
           <p className="mt-6 text-xl leading-9 font-medium text-ink/85">{detail.intro}</p>
         </Reveal>
         <Reveal delay={120}>
@@ -592,9 +599,9 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
       {browserShot ? (
         <section className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 md:py-16">
           <Reveal className="text-center">
-            <Eyebrow>Live project</Eyebrow>
+            <Eyebrow>{copy.liveEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Built and launched <span className="theme-text">by ALET</span>
+              {copy.liveTitle} <span className="theme-text">{copy.liveAccent}</span>
             </h2>
           </Reveal>
           <Reveal delay={120} className="relative mt-12">
@@ -612,13 +619,13 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
                   <div className="relative z-10 flex h-9 items-end bg-[#dfe3ea] px-2.5 pt-1.5">
                     <span className="flex h-7 min-w-44 items-center rounded-t-lg bg-white px-3.5 text-[0.7rem] font-semibold text-[#3b4352] shadow-[0_-1px_3px_rgb(0_0_0_/_0.08)]">
                       <span className="mr-2 h-2.5 w-2.5 rounded-full bg-[#f04438]" aria-hidden="true" />
-                      Courier &amp; Logistics
+                      {copy.liveTab}
                     </span>
                   </div>
                   <div className="overflow-hidden rounded-b-[0.85rem] bg-white">
                     <Image
                       src={browserShot}
-                      alt="All Deliveries website built and launched by ALET"
+                      alt={copy.liveImageAlt}
                       width={1920}
                       height={900}
                       className="h-auto w-full"
@@ -643,15 +650,14 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
         <div className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 xl:px-12">
           <Reveal className={service.id === "web-apps" ? "" : "grid items-end gap-8 lg:grid-cols-[0.8fr_1.2fr]"}>
             <div>
-              <Eyebrow>Portfolio</Eyebrow>
+              <Eyebrow>{copy.recentEyebrow}</Eyebrow>
               <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-                Recent <span className="theme-text">projects</span>
+                {copy.recentTitle} <span className="theme-text">{copy.recentAccent}</span>
               </h2>
             </div>
             {service.id !== "web-apps" ? (
               <p className="max-w-2xl text-base leading-7 text-muted lg:justify-self-end">
-                Explore selected {service.nav.toLowerCase()} work, with the product thinking,
-                interface craft, and delivery detail visible in every project.
+                {copy.recentTextBefore} {service.nav.toLowerCase()} {copy.recentTextAfter}
               </p>
             ) : null}
           </Reveal>
@@ -662,9 +668,9 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
       <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal className="grid gap-8 lg:grid-cols-[0.6fr_1.4fr]">
           <div>
-            <Eyebrow>More services</Eyebrow>
+            <Eyebrow>{copy.moreEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              You may <span className="theme-text">also need</span>
+              {copy.moreEditorialTitle} <span className="theme-text">{copy.moreEditorialAccent}</span>
             </h2>
           </div>
           <ul className="divide-y divide-line border-y border-line">

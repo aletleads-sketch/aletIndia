@@ -3,16 +3,19 @@
 import { useMemo, useState } from "react";
 import { ApplicationModal } from "@/components/application-modal";
 import { Arrow, Photo } from "@/components/ui";
-import { careers } from "@/lib/pages";
+import { useSiteContent } from "@/components/site-content-provider";
 
-const openings = careers.openings;
-const departments = ["All", ...new Set(openings.map((job) => job.department))];
 
-export function JobBoard() {
+type JobBoardCopy = { hiring: string; experience: string; location: string; doTitle: string; bringTitle: string; apply: string };
+
+export function JobBoard({ copy }: { copy: JobBoardCopy }) {
+  const { careers } = useSiteContent();
+  const openings = careers.openings;
+  const departments = ["All", ...new Set(openings.map((job) => job.department))];
   const [department, setDepartment] = useState("All");
   const visible = useMemo(
     () => openings.filter((job) => department === "All" || job.department === department),
-    [department],
+    [department, openings],
   );
   const [selectedId, setSelectedId] = useState(openings[0].id);
   const [applicationOpening, setApplicationOpening] = useState<(typeof openings)[number] | null>(null);
@@ -81,15 +84,15 @@ export function JobBoard() {
           <div className="p-7 sm:p-9">
             <p className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
-              Hiring now
+              {copy.hiring}
             </p>
             <h3 className="mt-4 text-3xl font-extrabold tracking-tight">{selected.title}</h3>
             <p className="mt-3 text-base leading-7 text-ink/75">{selected.summary}</p>
             <dl className="mt-6 grid gap-3 sm:grid-cols-3">
               {[
-                ["Experience", selected.experience],
+                [copy.experience, selected.experience],
                 ["Type", selected.type],
-                ["Location", selected.location],
+                [copy.location, selected.location],
               ].map(([label, value]) => (
                 <div key={label} className="rounded-2xl bg-[#fff7ed] px-4 py-3">
                   <dt className="text-[0.68rem] font-bold tracking-[0.16em] text-accent uppercase">{label}</dt>
@@ -98,15 +101,15 @@ export function JobBoard() {
               ))}
             </dl>
             <div className="mt-8 grid gap-8 md:grid-cols-2">
-              <JobList title="What you will do" items={selected.responsibilities} />
-              <JobList title="What you bring" items={selected.skills} />
+              <JobList title={copy.doTitle} items={selected.responsibilities} />
+              <JobList title={copy.bringTitle} items={selected.skills} />
             </div>
             <button
               type="button"
               onClick={() => setApplicationOpening(selected)}
               className="btn-sheen mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
             >
-              Apply for this role
+              {copy.apply}
               <Arrow />
             </button>
           </div>

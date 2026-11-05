@@ -4,49 +4,64 @@ import { JobBoard } from "@/components/job-board";
 import { Breadcrumb, Wave } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { Arrow, Eyebrow, Photo } from "@/components/ui";
-import { company } from "@/lib/content";
-import { careers } from "@/lib/pages";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
 import { canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
+import { JsonLd } from "@/components/json-ld";
+import { loadSchemaSettings } from "@/lib/seo-schema";
+import { isDate, jobPostingSchema, organizationSchema, type JobPostingData, type OrganizationData } from "@/lib/seo-schema-shared";
 
-export const metadata: Metadata = {
-  alternates: canonical("/career"),
-  title: "Careers — Alet India",
-  description: `Open roles at ALET India in New Delhi. Share your resume at ${careers.email}.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { careers } = await loadSiteContent();
+  return withSeoOverrides("/career", {
+    alternates: canonical("/career"),
+    title: "Careers — Alet India",
+    description: `Open roles at ALET India in New Delhi. Share your resume at ${careers.email}.`,
+  });
+}
 
-const perks = [
-  { title: "Shipped products", body: "Apps and platforms already used by clients in 20+ countries.", image: "/images/pages/phone-apps.jpg" },
-  { title: "A modern stack", body: "Kotlin, Swift, Flutter, React, and Next.js on live client work.", image: "/images/pages/code.jpg" },
-  { title: "New Delhi studio", body: `A close team building together since ${company.established}.`, image: "/images/pages/team-laptops.jpg" },
-  { title: "Room to grow", body: "Own a feature, then a product, with leads who review your work.", image: "/images/pages/presentation.jpg" },
-];
 
-export default function CareerPage() {
-  const openings = careers.openings;
+export default async function CareerPage() {
+  const [schema, { careers }, hero, why, list, noMatch] = await Promise.all([
+    loadSchemaSettings(),
+    loadSiteContent(),
+    loadFields("/career#hero"),
+    loadFields("/career#why_join"),
+    loadFields("/career#openings"),
+    loadFields("/career#no_match"),
+  ]);
+  const jobBoardCopy = await loadFields("/career#job_board");
+  const openings = careers.openings;  const perks = why.perks.map((perk) => ({ title: String(perk.title ?? ""), body: String(perk.body ?? ""), image: String(perk.image ?? "") }));
+const jobData = schema.job_posting.data as JobPostingData;
+  // Google rejects job postings without a posting date, so they stay off until the admin sets one.
+  const jobSchemas =
+    schema.job_posting.enabled && isDate(jobData.datePosted)
+      ? openings.map((job) => jobPostingSchema(job, jobData, organizationSchema(schema.organization.data as OrganizationData).name))
+      : [];
 
   return (
     <>
+      <JsonLd items={jobSchemas} />
       <section className="relative overflow-hidden bg-[#140c08] text-white">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_60%_at_90%_0%,rgb(249_115_22_/_0.45),transparent_70%)]" />
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative mx-auto grid w-full max-w-[92rem] items-end gap-12 px-5 pt-36 pb-24 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:pt-40 xl:px-12">
           <div>
-            <Breadcrumb crumb="Career" className="rise" />
+            <Breadcrumb crumb={hero.crumb} className="rise" />
             <p className="rise d1 mt-8 text-7xl leading-none font-extrabold tracking-tight text-amber-300 sm:text-8xl">
               {String(openings.length).padStart(2, "0")}
             </p>
             <h1 className="rise d1 mt-3 max-w-xl text-4xl leading-[1.05] font-extrabold tracking-tight text-balance sm:text-6xl">
-              Open roles at ALET India
+              {hero.title}
             </h1>
             <p className="rise d2 mt-5 max-w-lg text-base leading-7 text-white/70">
-              Developers, designers, and marketers. Pick a role, read what the week looks like,
-              and send your resume to {careers.email}.
+              {hero.textBefore} {careers.email}.
             </p>
             <a
               href="#openings"
               className="rise d3 btn-sheen mt-8 inline-flex items-center gap-2 rounded-full bg-amber-400 px-7 py-3.5 text-sm font-bold text-night transition hover:-translate-y-0.5"
             >
-              Browse openings
+              {hero.button}
               <Arrow />
             </a>
           </div>
@@ -75,9 +90,9 @@ export default function CareerPage() {
       <section className="bg-[#fff7ed]">
         <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-14 xl:px-12">
           <Reveal>
-            <Eyebrow>Why join</Eyebrow>
+            <Eyebrow>{why.eyebrow}</Eyebrow>
             <h2 className="mt-4 max-w-xl text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Work you can point to
+              {why.title}
             </h2>
           </Reveal>
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -105,30 +120,28 @@ export default function CareerPage() {
         <div className="mx-auto w-full max-w-[92rem] px-5 pb-12 sm:px-8 md:pb-16 xl:px-12">
           <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <Eyebrow>Open positions</Eyebrow>
+              <Eyebrow>{list.eyebrow}</Eyebrow>
               <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-                Pick a role
+                {list.title}
               </h2>
             </div>
             <p className="max-w-sm text-sm leading-6 text-muted">
-              Select a job to see the work and the skills. Apply by email and we will reply from{" "}
-              {careers.email}.
+              {list.textBefore} {careers.email}.
             </p>
           </Reveal>
-          <JobBoard />
+          <JobBoard copy={jobBoardCopy} />
         </div>
       </section>
 
       <section className="px-5 py-12 sm:px-8 md:py-14">
         <Reveal className="mx-auto grid max-w-[92rem] items-center gap-8 overflow-hidden rounded-[2.5rem] bg-night text-white lg:grid-cols-[1.1fr_0.9fr]">
           <div className="px-8 py-12 sm:px-12">
-            <Eyebrow light>No match?</Eyebrow>
+            <Eyebrow light>{noMatch.eyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance">
-              Send your resume anyway
+              {noMatch.title}
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-white/70">
-              If your work fits mobile, web, design, or marketing, write to us. We keep strong
-              profiles for the next opening.
+              {noMatch.text}
             </p>
             <a
               href={`mailto:${careers.email}`}
@@ -138,12 +151,12 @@ export default function CareerPage() {
               <Arrow />
             </a>
           </div>
-          <Photo src="/images/pages/coworking.jpg" alt="ALET India studio" className="h-64 lg:h-full lg:min-h-[18rem]" />
+          <Photo src={noMatch.image.src} alt={noMatch.image.alt} className="h-64 lg:h-full lg:min-h-[18rem]" />
         </Reveal>
         <p className="mx-auto mt-8 max-w-[92rem] text-sm text-muted">
-          Looking for a project instead of a role?{" "}
-          <Link href="/contact-us" className="font-bold text-brand">
-            Talk to the team
+          {noMatch.footnote}{" "}
+          <Link href={noMatch.footnoteLink.href} className="font-bold text-brand">
+            {noMatch.footnoteLink.label}
           </Link>
           .
         </p>

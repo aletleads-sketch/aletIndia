@@ -1,12 +1,10 @@
-import { company } from "@/lib/content";
-
 /**
  * The public address every page should be known by. Canonical links, the sitemap
  * and structured data all point here, even when the build is served from the dev
  * domain, so search engines treat the live site as the original.
- * Change NEXT_PUBLIC_SITE_URL when the site moves (e.g. to https://aletindia.com).
+ * The site lives at the domain root; set NEXT_PUBLIC_SITE_URL only to point somewhere else.
  */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://aletindia.com/aletindia").replace(/\/+$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://aletindia.com").replace(/\/+$/, "");
 
 /** Dev and preview builds set NEXT_PUBLIC_NOINDEX=1 so they never compete with the live site. */
 export const NOINDEX = process.env.NEXT_PUBLIC_NOINDEX === "1";
@@ -28,25 +26,6 @@ export function jsonLd(data: Record<string, unknown>) {
   return { __html: JSON.stringify({ "@context": "https://schema.org", ...data }).replace(/</g, "\\u003c") };
 }
 
-export const organizationJsonLd = {
-  "@type": "Organization",
-  "@id": ORGANIZATION_ID,
-  name: "Alet India Softwares",
-  alternateName: "ALET India",
-  url: pageUrl("/"),
-  logo: pageUrl("/images/alet-india-logo.png"),
-  foundingDate: String(company.established),
-  email: company.email,
-  telephone: company.phone,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "326A, Phase 1, Mayur Vihar Phase I, Pocket 2",
-    addressLocality: "New Delhi",
-    addressRegion: "Delhi",
-    postalCode: "110091",
-    addressCountry: "IN",
-  },
-};
 
 export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
   return {

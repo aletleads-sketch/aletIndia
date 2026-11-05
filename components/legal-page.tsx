@@ -2,8 +2,7 @@ import Link from "next/link";
 import { HeroTitle, PhotoHero } from "@/components/page-hero";
 import { Photo } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { company, legalLinks } from "@/lib/content";
-import type { LegalSection } from "@/lib/pages";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
 
 const anchor = (heading: string) =>
   heading
@@ -11,23 +10,20 @@ const anchor = (heading: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-export function LegalPage({
-  crumb,
-  title,
-  accent,
-  intro,
-  sections,
-  current,
-  image,
-}: {
-  crumb: string;
-  title: string;
-  accent: string;
-  intro: string;
-  sections: LegalSection[];
-  current: string;
-  image: string;
-}) {
+export type LegalPath = "/privacy-policy" | "/terms-conditions" | "/refund-policy";
+
+/** A policy page; its text comes from the database (page sections "hero" and "policy"). */
+export async function LegalPage({ path }: { path: LegalPath }) {
+  const [{ company, legalLinks }, hero, body, side] = await Promise.all([
+    loadSiteContent(),
+    loadFields(`${path}#hero`),
+    loadFields(`${path}#policy`),
+    loadFields("_shared#policy_sidebar"),
+  ]);
+  const { crumb, title, accent, intro } = hero;
+  const image = hero.image.src;
+  const sections = body.sections;
+  const current = path;
   const headings = sections.flatMap((section) => (section.heading ? [section.heading] : []));
 
   return (
@@ -42,8 +38,7 @@ export function LegalPage({
         <p className="rise d2 mt-6 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">{intro}</p>
         <p className="rise d3 mt-6 inline-flex items-center gap-3 text-sm font-semibold text-white/70">
           <span className="pulse-dot" aria-hidden="true" />
-          {headings.length > 0 ? `${headings.length} sections · ` : ""}Applies to all ALET India
-          services
+          {headings.length > 0 ? `${headings.length} sections · ` : ""}{side.appliesTo}
         </p>
       </PhotoHero>
 
@@ -53,7 +48,7 @@ export function LegalPage({
             {headings.length > 0 ? (
               <>
                 <p className="text-xs font-bold tracking-[0.18em] text-brand uppercase">
-                  On this page
+                  {side.onThisPage}
                 </p>
                 <ul className="mt-4 space-y-2.5">
                   {headings.map((heading) => (
@@ -74,7 +69,7 @@ export function LegalPage({
                 headings.length > 0 ? "mt-8" : ""
               }`}
             >
-              Policies
+              {side.policiesLabel}
             </p>
             <ul className="mt-4 space-y-2.5">
               {legalLinks.map((link) => (
@@ -92,12 +87,12 @@ export function LegalPage({
             </ul>
           </div>
           <div className="relative mt-5 hidden overflow-hidden rounded-3xl text-white lg:block">
-            <Photo src="/images/pages/video-call.jpg" className="h-56" sizes="18rem" />
+            <Photo src={side.questionImage.src} alt={side.questionImage.alt} className="h-56" sizes="18rem" />
             <div className="absolute inset-0 bg-gradient-to-t from-night via-night/60 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-5">
-              <p className="text-sm font-extrabold">Have a question?</p>
-              <Link href="/contact-us" className="mt-1 inline-block text-xs font-bold text-brand-2">
-                Contact our team →
+              <p className="text-sm font-extrabold">{side.questionTitle}</p>
+              <Link href={side.questionLink.href} className="mt-1 inline-block text-xs font-bold text-brand-2">
+                {side.questionLink.label}
               </Link>
             </div>
           </div>
@@ -142,11 +137,11 @@ export function LegalPage({
             </div>
 
             <div className="mt-12 rounded-2xl bg-surface px-6 py-5 text-sm text-ink/75">
-              Questions about this policy? Write to{" "}
-              <a href="mailto:info@aletindia.com" className="font-semibold text-brand">
-                info@aletindia.com
+              {side.contactNote}{" "}
+              <a href={`mailto:${side.contactEmail}`} className="font-semibold text-brand">
+                {side.contactEmail}
               </a>{" "}
-              or call{" "}
+              {side.orCall}{" "}
               <a href={company.phoneHref} className="font-semibold text-brand">
                 {company.phone}
               </a>

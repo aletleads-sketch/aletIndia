@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { testimonials } from "@/lib/content";
+import { useSiteContent } from "@/components/site-content-provider";
 
 const ROTATE_MS = 3000;
 
 export function TestimonialSlider() {
+  const { testimonials } = useSiteContent();
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const count = testimonials.length;

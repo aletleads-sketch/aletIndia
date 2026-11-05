@@ -3,34 +3,21 @@
 import { useState, type FormEvent } from "react";
 import { CountryCodeSelect } from "@/components/country-code-select";
 import { CustomCaptcha, type CaptchaResponse } from "@/components/custom-captcha";
-import { company, services } from "@/lib/content";
-
-const budgets = [
-  "Under $10,000",
-  "$10,000–$20,000",
-  "$20,000–$50,000",
-  "$50,000–$1M",
-  "Not decided",
-];
-
-const startDates = [
-  "Immediately",
-  "Within 1–3 months",
-  "Within 3–6 months",
-  "Just exploring",
-];
+import { useSiteContent } from "@/components/site-content-provider";
 
 const fieldClass =
   "w-full rounded-full border border-[#d8dde8] bg-white px-5 py-3.5 text-[0.95rem] text-ink outline-none transition placeholder:text-[#9aa3b5] focus:border-ink/40 focus:ring-4 focus:ring-ink/5";
 
 const selectClass = `${fieldClass} appearance-none bg-[url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22 fill=%22none%22%3E%3Cpath d=%22M1 1.5 6 6.5 11 1.5%22 stroke=%22%23586178%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E')] bg-[length:12px] bg-[right_1.25rem_center] bg-no-repeat pr-12`;
 
-export function InquireForm({ defaultService }: { defaultService?: string } = {}) {
+export function InquireForm({ defaultService }: { defaultService?: string } = {}) {  const { company, services, inquireForm: copy } = useSiteContent();
+  const budgets = copy.budgets;
+  const startDates = copy.startDates;
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [budget, setBudget] = useState("$50,000–$1M");
-  const [startDate, setStartDate] = useState("Within 1–3 months");
+  const [startDate, setStartDate] = useState(copy.startDates[1] ?? copy.startDates[0] ?? "");
   const [captcha, setCaptcha] = useState<CaptchaResponse | null>(null);
   const [captchaRefreshKey, setCaptchaRefreshKey] = useState(0);
 
@@ -47,7 +34,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
     const details = String(data.get("details") || "").trim();
     const website = String(data.get("website") || "").trim();
     if (!captcha) {
-      setError("Please answer the human verification question before sending your enquiry.");
+      setError(copy.captchaMissing);
       return;
     }
     setSending(true);
@@ -82,13 +69,13 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
         },
       );
       const result = (await response.json().catch(() => ({}))) as { error?: string };
-      if (!response.ok) throw new Error(result.error || "Unable to send your enquiry right now.");
+      if (!response.ok) throw new Error(result.error || copy.sendFailed);
       setSent(true);
     } catch (submitError) {
       setError(
         submitError instanceof Error && submitError.message !== "Failed to fetch"
           ? submitError.message
-          : "Unable to send your enquiry right now.",
+          : copy.sendFailed,
       );
       setCaptchaRefreshKey((current) => current + 1);
     } finally {
@@ -111,17 +98,16 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
             />
           </svg>
         </span>
-        <p className="mt-6 text-2xl font-extrabold">Inquiry ready</p>
+        <p className="mt-6 text-2xl font-extrabold">{copy.successTitle}</p>
         <p className="mt-3 text-sm leading-relaxed text-muted">
-          Thank you. Your enquiry has been safely added to the ALET India team&apos;s CRM.
-          We&apos;ll be in touch shortly.
+          {copy.successText}
         </p>
         <button
           type="button"
           onClick={() => setSent(false)}
           className="mt-6 text-sm font-bold text-brand underline-offset-4 hover:underline"
         >
-          Write another inquiry
+          {copy.writeAnother}
         </button>
       </div>
     );
@@ -134,24 +120,24 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
     >
       <div className="grid gap-5">
         <Field
-          label="Full name"
+          label={copy.nameLabel}
           name="name"
-          placeholder="Your full name"
+          placeholder={copy.namePlaceholder}
           autoComplete="name"
           required
         />
         <Field
-          label="Business email"
+          label={copy.emailLabel}
           name="email"
           type="email"
-          placeholder="you@company.com"
+          placeholder={copy.emailPlaceholder}
           autoComplete="email"
           required
         />
 
         <div className="grid gap-2">
           <span className="text-sm font-medium text-[#4b5568]">
-            Phone number <span className="text-accent">*</span>
+            {copy.phoneLabel} <span className="text-accent">*</span>
           </span>
           <div className="grid grid-cols-[minmax(6.75rem,8.5rem)_1fr] gap-2.5">
             <CountryCodeSelect />
@@ -159,7 +145,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
               name="mobile"
               type="tel"
               required
-              placeholder="Mobile number"
+              placeholder={copy.phonePlaceholder}
               autoComplete="tel-national"
               className={fieldClass}
             />
@@ -168,7 +154,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
 
         <label className="grid gap-2">
           <span className="text-sm font-medium text-[#4b5568]">
-            Service required <span className="text-accent">*</span>
+            {copy.serviceLabel} <span className="text-accent">*</span>
           </span>
           <select name="service" required defaultValue={defaultService ?? services[0]?.title} className={selectClass}>
             {services.map((service) => (
@@ -180,7 +166,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
         </label>
 
         <RadioGroup
-          legend="Estimated budget (optional)"
+          legend={copy.budgetLabel}
           name="budget"
           options={budgets}
           value={budget}
@@ -188,7 +174,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
         />
 
         <RadioGroup
-          legend="Expected start date"
+          legend={copy.startLabel}
           name="startDate"
           options={startDates}
           value={startDate}
@@ -196,11 +182,11 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
         />
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-[#4b5568]">Project details</span>
+          <span className="text-sm font-medium text-[#4b5568]">{copy.detailsLabel}</span>
           <textarea
             name="details"
             rows={5}
-            placeholder="Tell us about your goals, timeline, or any links that help."
+            placeholder={copy.detailsPlaceholder}
             className="w-full resize-y rounded-[1.25rem] border border-[#d8dde8] bg-white px-5 py-3.5 text-[0.95rem] text-ink outline-none transition placeholder:text-[#9aa3b5] focus:border-ink/40 focus:ring-4 focus:ring-ink/5"
           />
         </label>
@@ -217,7 +203,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
 
       {error ? (
         <p role="alert" className="mt-6 rounded-2xl bg-red-50 px-5 py-4 text-sm leading-6 text-red-700">
-          {error} Please try again, or email us at{" "}
+          {error} {copy.tryAgain}{" "}
           <a href={`mailto:${company.email}`} className="font-bold underline">
             {company.email}
           </a>
@@ -230,7 +216,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
         disabled={sending || !captcha}
         className="mt-7 inline-flex w-full items-center justify-center rounded-full bg-ink px-6 py-3.5 text-sm font-bold text-white transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-70"
       >
-        {sending ? "Sending…" : "Submit inquiry"}
+        {sending ? copy.sending : copy.submit}
       </button>
     </form>
   );

@@ -6,22 +6,21 @@ import { InquireForm } from "@/components/inquire-form";
 import { Reveal } from "@/components/reveal";
 import { TestimonialSlider } from "@/components/testimonial-slider";
 import { Arrow, Eyebrow } from "@/components/ui";
-import { company, getYearsOfExperience, ideology, process as processSteps, services, stats } from "@/lib/content";
+import { getYearsOfExperience } from "@/lib/content";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
+import type { SiteContent } from "@/lib/site-content-shared";
 
 export const yearsOfExperience = getYearsOfExperience();
 
-type Service = (typeof services)[number];
+type Service = SiteContent["services"][number];
 
-export function StatsBar() {
+export async function StatsBar() {
+  const [{ stats }, copy] = await Promise.all([loadSiteContent(), loadFields("_shared#stats_bar")]);
   const items = [
-    { label: "Years of Experience", value: yearsOfExperience },
+    { key: "years", label: copy.yearsLabel, value: yearsOfExperience },
     ...stats.map((stat) => ({
-      label:
-        stat.label === "Clients"
-          ? "Happy Clients"
-          : stat.label === "Projects"
-            ? "Projects Delivered"
-            : "Countries Served",
+      key: stat.label,
+      label: stat.label === "Clients" ? copy.clientsLabel : stat.label === "Projects" ? copy.projectsLabel : copy.countriesLabel,
       value: stat.value,
     })),
   ];
@@ -30,9 +29,9 @@ export function StatsBar() {
     <section className="relative z-10 -mt-20 px-5 sm:px-8">
       <Reveal className="mx-auto grid max-w-[92rem] grid-cols-2 gap-px overflow-hidden rounded-3xl bg-line shadow-[0_30px_70px_-25px_rgb(30_27_75_/_0.35)] lg:grid-cols-4">
         {items.map((item) => (
-          <div key={item.label} className="bg-white px-6 py-6 text-center sm:py-8">
+          <div key={item.key} className="bg-white px-6 py-6 text-center sm:py-8">
             <p className="text-gradient-dark text-4xl font-extrabold tracking-tight sm:text-5xl">
-              {item.label === "Years of Experience" ? <YearsCountUp /> : <CountUp value={item.value} />}+
+              {item.key === "years" ? <YearsCountUp /> : <CountUp value={item.value} />}+
             </p>
             <p className="mt-2 text-sm font-medium text-muted">{item.label}</p>
           </div>
@@ -90,28 +89,19 @@ export function ServiceCard({ service }: { service: Service }) {
   );
 }
 
-export function ProcessSection({
-  title = "Requirements to",
-  accent = "delivery",
-  showIdeology = true,
-}: {
-  title?: string;
-  accent?: string;
-  showIdeology?: boolean;
-}) {
+export async function ProcessSection({ showIdeology = true }: { showIdeology?: boolean }) {
+  const [{ ideology, process: processSteps }, copy] = await Promise.all([loadSiteContent(), loadFields("_shared#process")]);
   return (
     <section className="relative overflow-hidden bg-night text-white">
       <div className="dot-grid pointer-events-none absolute inset-0" />
       <div className="orb pointer-events-none absolute -top-32 left-1/3 h-96 w-96 rounded-full bg-violet/25 blur-3xl" />
       <div className="relative mx-auto w-full max-w-[92rem] px-5 py-10 sm:px-8 md:py-14 xl:px-12">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <Eyebrow light>Our Innovative Ideology</Eyebrow>
+          <Eyebrow light>{copy.eyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            {title} <span className="text-gradient">{accent}</span>
+            {copy.title} <span className="text-gradient">{copy.accent}</span>
           </h2>
-          <p className="mt-4 text-base text-white/65">
-            That makes us a top performer in the industry.
-          </p>
+          <p className="mt-4 text-base text-white/65">{copy.text}</p>
         </Reveal>
 
         <div className="relative mt-10">
@@ -158,13 +148,14 @@ export function ProcessSection({
   );
 }
 
-export function TestimonialsSection() {
+export async function TestimonialsSection() {
+  const copy = await loadFields("_shared#testimonials");
   return (
     <section className="px-5 sm:px-8">
       <div className="hero-mesh relative mx-auto max-w-[92rem] overflow-hidden rounded-[2rem] px-5 py-7 [overflow-anchor:none] sm:px-10 sm:py-8 lg:px-12">
         <div className="dot-grid pointer-events-none absolute inset-0" />
         <div className="relative">
-          <Eyebrow light>Words of appreciation from our clients</Eyebrow>
+          <Eyebrow light>{copy.eyebrow}</Eyebrow>
           <div className="mt-5">
             <TestimonialSlider />
           </div>
@@ -174,15 +165,19 @@ export function TestimonialsSection() {
   );
 }
 
-export function ContactSection({
-  title = "Let's build something",
-  accent = "remarkable",
+/** Which page the contact block is on; each has its own heading in the admin. */
+export type ContactPlacement = "Home" | "Services" | "ServicePages" | "Portfolio" | "CaseStudies";
+
+export async function ContactSection({
+  placement = "Home",
   defaultService,
 }: {
-  title?: string;
-  accent?: string;
+  placement?: ContactPlacement;
   defaultService?: string;
 }) {
+  const [{ company }, copy] = await Promise.all([loadSiteContent(), loadFields("_shared#contact_form")]);
+  const title = copy[`title${placement}`];
+  const accent = copy[`accent${placement}`];
   return (
     <section id="contact" className="scroll-mt-24 px-5 py-10 sm:px-8 md:py-14 xl:px-12">
       <div className="relative mx-auto grid max-w-[92rem] gap-8 overflow-hidden rounded-[2.5rem] bg-night px-6 py-12 text-white sm:px-14 sm:py-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
@@ -190,36 +185,29 @@ export function ContactSection({
         <div className="orb orb-b pointer-events-none absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />
         <Reveal className="relative flex h-full min-h-0 flex-col">
           <div className="shrink-0">
-            <Eyebrow light>Contact us</Eyebrow>
+            <Eyebrow light>{copy.eyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
               {title} <span className="text-gradient">{accent}</span>
             </h2>
-            <p className="mt-5 max-w-md text-base leading-7 text-white/70">
-              Tell us about your project, budget, and timeline. We&apos;ll review your inquiry
-              and get back with next steps.
-            </p>
+            <p className="mt-5 max-w-md text-base leading-7 text-white/70">{copy.text}</p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               <div className="glass rounded-2xl px-5 py-4">
                 <p className="text-xs font-bold tracking-[0.16em] text-brand-2 uppercase">
-                  Avg. response
+                  {copy.card1Label}
                 </p>
-                <p className="mt-2 text-2xl font-extrabold">Under 24 hrs</p>
+                <p className="mt-2 text-2xl font-extrabold">{copy.card1Value}</p>
               </div>
               <div className="glass rounded-2xl px-5 py-4">
                 <p className="text-xs font-bold tracking-[0.16em] text-brand-2 uppercase">
-                  Free consult
+                  {copy.card2Label}
                 </p>
-                <p className="mt-2 text-2xl font-extrabold">No obligation</p>
+                <p className="mt-2 text-2xl font-extrabold">{copy.card2Value}</p>
               </div>
             </div>
 
             <ul className="mt-6 space-y-3 text-sm text-white/75">
-              {[
-                "Mobile, web, UI/UX & marketing under one roof",
-                "Dedicated project manager from day one",
-                "Transparent timelines and milestone updates",
-              ].map((point) => (
+              {copy.points.map((point) => (
                 <li key={point} className="flex gap-3">
                   <span
                     className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-2"
@@ -231,30 +219,30 @@ export function ContactSection({
             </ul>
 
             <dl className="mt-8 space-y-4">
-              <ContactRow label="Phone">
+              <ContactRow label={copy.phoneLabel}>
                 <a href={company.phoneHref} className="hover:text-brand-2">
                   {company.phone}
                 </a>
               </ContactRow>
-              <ContactRow label="Email">
+              <ContactRow label={copy.emailLabel}>
                 <a href={`mailto:${company.email}`} className="hover:text-brand-2">
                   {company.email}
                 </a>
               </ContactRow>
-              <ContactRow label="Address">{company.address}</ContactRow>
+              <ContactRow label={copy.addressLabel}>{company.address}</ContactRow>
             </dl>
 
             <a
               href={company.phoneHref}
               className="btn-sheen bg-brand-gradient mt-8 inline-flex w-fit items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5"
             >
-              Call {company.phone}
+              {copy.callButton} {company.phone}
             </a>
           </div>
           <div className="relative mt-8 min-h-[14rem] flex-1 overflow-hidden rounded-[2rem] border border-white/10 lg:min-h-0">
             <Image
-              src="/images/pages/alet-india-contact-us.png"
-              alt="Contact ALET India"
+              src={copy.image.src}
+              alt={copy.image.alt}
               fill
               sizes="(min-width: 1024px) 42vw, 100vw"
               className="bg-white object-contain object-center"

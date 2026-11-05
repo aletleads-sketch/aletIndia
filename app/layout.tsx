@@ -4,8 +4,16 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { InquireModalProvider } from "@/components/inquire-modal";
 import { NavigationProgress } from "@/components/navigation-progress";
-import { jsonLd, NOINDEX, organizationJsonLd, SITE_URL } from "@/lib/seo";
+import { SiteContentProvider } from "@/components/site-content-provider";
+import { loadSiteContent } from "@/lib/site-content";
+import { NOINDEX, SITE_URL } from "@/lib/seo";
 import "./globals.css";
+import { JsonLd } from "@/components/json-ld";
+import { resolveGeneral } from "@/lib/seo-general-shared";
+import { shareImageUrl } from "@/lib/seo-overrides";
+import { loadSchemaSettings } from "@/lib/seo-schema";
+import { loadSeoSettings } from "@/lib/seo-settings";
+import { organizationSchema, type OrganizationData } from "@/lib/seo-schema-shared";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -44,28 +52,49 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(`${SITE_URL}/`),
-  title: "Alet India | Mobile App & Web Development Company",
-  description:
-    "Alet India is a New Delhi technology partner for mobile apps, web applications, UI and graphic design, and digital marketing. Established in 2017.",
-  ...(NOINDEX ? { robots: { index: false, follow: false } } : {}),
-};
+// Site-wide defaults; the admin's SEO Settings screen can change them (row 'general' of seo_settings).
+export async function generateMetadata(): Promise<Metadata> {
+  const general = resolveGeneral((await loadSeoSettings()).general);
+  return {
+    metadataBase: new URL(`${SITE_URL}/`),
+    title: "Alet India | Mobile App & Web Development Company",
+    description: general.defaultDescription,
+    openGraph: {
+      type: "website",
+      locale: "en_IN",
+      siteName: general.siteName,
+      images: [{ url: shareImageUrl(general.defaultShareImage) }],
+    },
+    ...(general.googleVerification || general.bingVerification
+      ? {
+          verification: {
+            ...(general.googleVerification ? { google: general.googleVerification } : {}),
+            ...(general.bingVerification ? { other: { "msvalidate.01": general.bingVerification } } : {}),
+          },
+        }
+      : {}),
+    ...(NOINDEX ? { robots: { index: false, follow: false } } : {}),
+  };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const [schema, content] = await Promise.all([loadSchemaSettings(), loadSiteContent()]);
+  const { company, services, caseStudies, testimonials, careers, showcase, inquireForm } = content;
   return (
     <html
       lang="en"
       className={`${jakarta.variable} ${syne.variable} ${space.variable} ${archivo.variable} ${sacramento.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white font-sans text-ink">
-        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(organizationJsonLd)} />
+        <JsonLd items={schema.organization.enabled ? [organizationSchema(schema.organization.data as OrganizationData)] : []} />
         <NavigationProgress />
-        <InquireModalProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </InquireModalProvider>
+        <SiteContentProvider value={{ company, services, caseStudies, testimonials, careers, showcase, inquireForm }}>
+          <InquireModalProvider>
+            <Header navigation={content.navigation} />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </InquireModalProvider>
+        </SiteContentProvider>
       </body>
     </html>
   );

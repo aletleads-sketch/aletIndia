@@ -26,6 +26,8 @@ export const blogPosts: BlogPost[] = importedPosts
   .map(withHdImages)
   .sort((a, b) => b.date.localeCompare(a.date));
 
+const codePosts = blogPosts;
+
 function blockPlainText(block: BlogBlock): string {
   switch (block.type) {
     case "p":
@@ -51,8 +53,8 @@ export function readingMinutes(post: BlogPost) {
   return Math.max(3, Math.round(words / 180));
 }
 
-export function getBlogPost(slug: string) {
-  return blogPosts.find((post) => post.slug === slug);
+export function getBlogPost(slug: string, posts: BlogPost[] = blogPosts) {
+  return posts.find((post) => post.slug === slug);
 }
 
 /** Display helper — data stays ISO (`YYYY-MM-DD`). */
@@ -66,8 +68,8 @@ export function formatBlogDate(date: string) {
   });
 }
 
-export function relatedPosts(slug: string) {
-  const current = getBlogPost(slug);
+export function relatedPosts(slug: string, blogPosts: BlogPost[] = codePosts) {
+  const current = getBlogPost(slug, blogPosts);
   if (!current) return blogPosts.slice(0, 3);
 
   const shared = blogPosts

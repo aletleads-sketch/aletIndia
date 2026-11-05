@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { CMS_SECTIONS } from "@/lib/cms-sections";
+import { Loader } from "@/components/admin/loader";
+import { SEO_NAV } from "@/lib/seo-admin";
 import { getSupabase } from "@/lib/supabase-browser";
 import { initials, memberName, type Profile } from "@/lib/leads";
 import {
@@ -18,6 +20,7 @@ import {
   InboxIcon,
   LayoutIcon,
   MenuIcon,
+  SearchIcon,
   TeamIcon,
   UsersIcon,
   XIcon,
@@ -47,7 +50,10 @@ const NAV = [
   { label: "Clients", href: "/admin/clients", icon: ClientIcon, soon: true },
   { label: "Projects", href: null, icon: FolderIcon, soon: true },
   { label: "Enquiries", href: null, icon: InboxIcon, soon: true },
+  { label: "Website Content", href: "/admin/website", icon: LayoutIcon, contentOnly: true },
+  { label: "Website Lists", href: "/admin/lists", icon: FolderIcon, contentOnly: true },
   { label: "Content (CMS)", href: null, icon: LayoutIcon, children: CMS_SECTIONS, soon: true },
+  { label: "SEO", href: null, icon: SearchIcon, group: SEO_NAV, adminOnly: true },
   { label: "Reports", href: "/admin/reports", icon: ChartIcon, soon: true },
   { label: "Team", href: "/admin/team", icon: TeamIcon, adminOnly: true },
   { label: "Settings", href: null, icon: GearIcon, soon: true },
@@ -104,7 +110,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   let content: ReactNode;
   if (session === undefined || (session && !profile && !problem)) {
-    content = <CenteredNote>Loading your workspace…</CenteredNote>;
+    content = <Loader label="Loading your workspace…" className="h-full" />;
   } else if (!session) {
     content = <SignIn />;
   } else if (problem || !profile) {
@@ -125,7 +131,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }
 
   // The public site's header and footer still render underneath; the admin covers them.
-  return <div className="fixed inset-0 z-[100] overflow-hidden bg-[#eef2f8] font-sans text-[#0f1b33]">{content}</div>;
+  return <div className="admin-root fixed inset-0 z-[100] overflow-hidden bg-[#eef2f8] font-sans text-[#0f1b33]">{content}</div>;
 }
 
 /** Active members, used for assignee pickers and author names. */
@@ -140,6 +146,8 @@ function Frame({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const inCms = Boolean(pathname?.includes("/admin/content"));
   const [cmsOpen, setCmsOpen] = useState(inCms);
+  const inSeo = Boolean(pathname?.includes("/admin/seo"));
+  const [seoOpen, setSeoOpen] = useState(inSeo);
 
   return (
     <div className="flex h-full">
@@ -153,10 +161,11 @@ function Frame({ children }: { children: ReactNode }) {
             <XIcon />
           </button>
         </div>
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3">
+        <nav className="admin-scroll-dark flex-1 space-y-1 overflow-y-auto px-3">
           {NAV.map((item) => {
             const { label, href, icon: Icon } = item;
             if ("adminOnly" in item && item.adminOnly && profile.role !== "admin") return null;
+            if ("contentOnly" in item && item.contentOnly && !["admin", "editor", "marketing"].includes(profile.role)) return null;
             if ("soon" in item && item.soon) {
               return (
                 <span key={label} aria-disabled="true" className={`${NAV_ITEM} cursor-not-allowed text-white/40`} title="Coming soon">
@@ -164,6 +173,44 @@ function Frame({ children }: { children: ReactNode }) {
                   <span className="truncate">{label}</span>
                   <span className="ml-auto shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[10px] tracking-wide whitespace-nowrap uppercase">Coming soon</span>
                 </span>
+              );
+            }
+            if ("group" in item) {
+              const expanded = seoOpen || inSeo;
+              return (
+                <div key={label}>
+                  <button
+                    type="button"
+                    aria-expanded={expanded}
+                    onClick={() => setSeoOpen(!expanded)}
+                    className={`${NAV_ITEM} ${inSeo ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/10"}`}
+                  >
+                    <Icon />
+                    {label}
+                    <ChevronDownIcon className={`ml-auto h-4 w-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
+                  </button>
+                  {expanded ? (
+                    <div className="mt-1 mb-2 ml-6 space-y-0.5 border-l border-white/15 pl-3">
+                      {item.group.map((entry) =>
+                        entry.href ? (
+                          <Link
+                            key={entry.label}
+                            href={entry.href}
+                            onClick={() => setOpen(false)}
+                            className={`block rounded-lg px-3 py-2 text-sm font-medium ${pathname?.endsWith(entry.href) ? "bg-[#1a63e8] text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+                          >
+                            {entry.label}
+                          </Link>
+                        ) : (
+                          <span key={entry.label} aria-disabled="true" title="Coming soon" className="flex cursor-not-allowed items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white/35">
+                            <span className="truncate">{entry.label}</span>
+                            <span className="ml-auto shrink-0 rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] tracking-wide uppercase">Soon</span>
+                          </span>
+                        ),
+                      )}
+                    </div>
+                  ) : null}
+                </div>
               );
             }
             if ("children" in item) {

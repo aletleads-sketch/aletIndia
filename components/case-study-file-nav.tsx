@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { caseStudyFileNav } from "@/lib/case-study-sections";
+import { useEffect, useMemo, useState } from "react";
+import { caseStudyFileNav as defaultNav } from "@/lib/case-study-sections";
+type FileNavId = string;
+type NavItem = { id: string; label: string };
 
-type FileNavId = (typeof caseStudyFileNav)[number]["id"];
 
-function asFileNavId(id: string): FileNavId | undefined {
-  return caseStudyFileNav.find((item) => item.id === id)?.id;
-}
 
-export function CaseStudyFileNav() {
+export function CaseStudyFileNav({ title = "In this file", items }: { title?: string; items?: NavItem[] }) {
+  const caseStudyFileNav: NavItem[] = useMemo(() => (items?.length ? items : [...defaultNav]), [items]);
   const [activeId, setActiveId] = useState<FileNavId>(caseStudyFileNav[0]?.id ?? "challenge");
 
   useEffect(() => {
+    const asFileNavId = (id: string): FileNavId | undefined => caseStudyFileNav.find((item) => item.id === id)?.id;
     const ids = caseStudyFileNav.map((item) => item.id);
     const elements = ids
       .map((id) => document.getElementById(id))
@@ -50,11 +50,11 @@ export function CaseStudyFileNav() {
 
     for (const el of elements) observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [caseStudyFileNav]);
 
   return (
     <nav aria-label="On this page" className="min-w-0 max-w-full lg:sticky lg:top-28 lg:self-start">
-      <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">In this file</p>
+      <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">{title}</p>
       <ul className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 text-sm font-bold [scrollbar-width:none] lg:mx-0 lg:flex-col lg:gap-2 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden">
         {caseStudyFileNav.map((item) => {
           const active = activeId === item.id;

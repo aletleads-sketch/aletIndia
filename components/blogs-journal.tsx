@@ -20,29 +20,32 @@ const PAGE_SIZE = 9;
 
 type BlogsJournalProps = {
   posts: BlogPost[];
+  copy?: { categories: string[]; read: string; empty: string; loadMore: string };
 };
 
-export function BlogsJournal({ posts }: BlogsJournalProps) {
+export function BlogsJournal({ posts, copy }: BlogsJournalProps) {
+  const categories: string[] = copy?.categories?.length ? copy.categories : [...BLOG_FILTER_CATEGORIES];
+  const allLabel = categories[0];
   const sorted = useMemo(
     () => [...posts].sort((a, b) => b.date.localeCompare(a.date)),
     [posts],
   );
-  const [category, setCategory] = useState<(typeof BLOG_FILTER_CATEGORIES)[number]>("All");
+  const [category, setCategory] = useState<string>(allLabel);
   const [visible, setVisible] = useState(PAGE_SIZE);
 
   const filtered = useMemo(() => {
-    if (category === "All") return sorted;
+    if (category === allLabel) return sorted;
     return sorted.filter(
       (post) => post.categories.includes(category) || post.tag === category,
     );
-  }, [sorted, category]);
+  }, [sorted, category, allLabel]);
 
   const featured = filtered[0];
   const rest = filtered.slice(1);
   const shown = rest.slice(0, Math.max(0, visible - 1));
   const canLoadMore = shown.length < rest.length;
 
-  const selectCategory = (next: (typeof BLOG_FILTER_CATEGORIES)[number]) => {
+  const selectCategory = (next: string) => {
     setCategory(next);
     setVisible(PAGE_SIZE);
   };
@@ -50,7 +53,7 @@ export function BlogsJournal({ posts }: BlogsJournalProps) {
   return (
     <section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
       <div className="flex flex-wrap gap-2">
-        {BLOG_FILTER_CATEGORIES.map((item) => {
+        {categories.map((item) => {
           const active = category === item;
           return (
             <button
@@ -101,7 +104,7 @@ export function BlogsJournal({ posts }: BlogsJournalProps) {
                   {formatBlogDate(featured.date)} · {readingMinutes(featured)} min
                 </span>
                 <span className="inline-flex items-center gap-2 font-extrabold text-brand-2">
-                  Read
+                  {copy?.read ?? "Read"}
                   <span className="transition group-hover:translate-x-1.5">
                     <Arrow />
                   </span>
@@ -111,7 +114,7 @@ export function BlogsJournal({ posts }: BlogsJournalProps) {
           </Link>
         </Reveal>
       ) : (
-        <p className="mt-10 text-base text-muted">No articles in this category yet.</p>
+        <p className="mt-10 text-base text-muted">{copy?.empty ?? "No articles in this category yet."}</p>
       )}
 
       {shown.length > 0 ? (
@@ -156,7 +159,7 @@ export function BlogsJournal({ posts }: BlogsJournalProps) {
             onClick={() => setVisible((count) => count + PAGE_SIZE)}
             className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
           >
-            Load more
+            {copy?.loadMore ?? "Load more"}
             <Arrow />
           </button>
         </div>

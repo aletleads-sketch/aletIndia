@@ -949,3 +949,44 @@ details[open] .faq-icon {
     transition: none;
   }
 }
+
+/* Admin: the panel covers the public page, so stop the page behind it from scrolling (no second scrollbar). */
+html:has(.admin-root),
+html:has(.admin-root) body {
+  overflow: hidden;
+}
+
+/* Admin: slim, quiet scrollbars instead of the browser's default grey bars with arrows. */
+.admin-root,
+.admin-root * {
+  scrollbar-width: thin;
+  scrollbar-color: #c3ccda transparent;
+}
+
+.admin-root .admin-scroll-dark {
+  scrollbar-color: rgb(255 255 255 / 0.22) transparent;
+}
+
+.admin-root ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.admin-root ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-root ::-webkit-scrollbar-thumb {
+  background: #c3ccda;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.admin-root ::-webkit-scrollbar-thumb:hover {
+  background-color: #9aa8bf;
+}
+
+.admin-root .admin-scroll-dark::-webkit-scrollbar-thumb {
+  background-color: rgb(255 255 255 / 0.22);
+}
