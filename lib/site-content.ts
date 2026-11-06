@@ -6,7 +6,8 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "@/lib/cms-client";
 import { caseStudyIndexEntries, demoCaseStudiesResolved, indexFrom, type CaseStudyIndexEntry, type CaseStudyIndexItem, type DemoCaseStudy } from "@/lib/case-study-data";
 import { blogPosts as codeBlogPosts, type BlogPost } from "@/lib/blogs";
 import { mergeFields, type SectionId, type SectionValues } from "@/lib/section-fields";
-import { SITE_CONTENT_TAG } from "@/lib/site-content-shared";
+import { CUSTOM_PAGE_TYPE } from "@/lib/custom-pages";
+import { DEFAULT_BRAND, SITE_CONTENT_TAG } from "@/lib/site-content-shared";
 import type { MenuLink, PageSection, SiteContent } from "@/lib/site-content-shared";
 
 export { SITE_CONTENT_TAG };
@@ -77,6 +78,9 @@ type SectionRow = PageSection & { page_path: string };
 
 type CompanyData = typeof code.company & {
   careers_email?: string;
+  logo?: string;
+  logo_light?: string;
+  favicon?: string;
   stats?: typeof code.stats;
   badges?: typeof code.achievements;
 };
@@ -96,7 +100,7 @@ async function loadAll(): Promise<SiteContent> {
     read<IndustryRow>("industries", `select=name,image_url&${published}`),
     read<CareerRow>("careers", `select=slug,title,department,employment_type,location,experience,image_url,summary,description&${published}`),
     read<MenuRow>("menu_items", "select=id,menu,label,href,parent_id,sort_order,visible&order=sort_order.asc"),
-    read<SectionRow>("page_sections", `select=page_path,section_key,label,shared_key,collections,content&${published}`),
+    read<SectionRow>("page_sections", `select=page_path,section_key,label,shared_key,collections,hidden,sort_order,content&${published}`),
   ]);
 
   const sections = new Map<string, PageSection>();
@@ -104,7 +108,7 @@ async function loadAll(): Promise<SiteContent> {
   const data = (pagePath: string, key: string) => sections.get(`${pagePath}#${key}`)?.content?.data as Record<string, unknown> | undefined;
 
   const companyData = (data("_shared", "company") ?? {}) as Partial<CompanyData>;
-  const { careers_email, stats, badges, ...companyFields } = companyData;
+  const { careers_email, stats, badges, logo, logo_light, favicon, ...companyFields } = companyData;
   const company = { ...code.company, ...companyFields };
 
   const services = serviceRows
@@ -212,6 +216,7 @@ async function loadAll(): Promise<SiteContent> {
     legalLinks: menuLinks(menuRows, "footer_legal", code.legalLinks),
     portals: menuLinks(menuRows, "portals", code.portals),    inquireForm: mergeFields("_shared#inquire_form", inquireRow?.content.fields),
     sections: Object.fromEntries(sections),
+    brand: { logo: logo || DEFAULT_BRAND.logo, logoLight: logo_light || DEFAULT_BRAND.logoLight, favicon: favicon || DEFAULT_BRAND.favicon },
   };
 }
 
@@ -224,6 +229,22 @@ export async function loadSection(pagePath: string, key: string): Promise<PageSe
   const row = sections[`${pagePath}#${key}`];
   if (!row) return null;
   return row.shared_key ? (sections[`_shared#${row.shared_key}`] ?? row) : row;
+}
+
+/**
+ * The order and visibility of a page's sections as set in the admin: the keys to show, in order.
+ * Keys the database does not know keep the code's order, after the known ones.
+ */
+export async function loadSectionLayout(pagePath: string, codeOrder: string[]): Promise<string[]> {
+  const { sections } = await loadSiteContent();
+  const prefix = `${pagePath}#`;
+  const rows = Object.entries(sections)
+    .filter(([id]) => id.startsWith(prefix))
+    .map(([, row]) => row)
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  if (!rows.length) return codeOrder;
+  const known = new Set(rows.map((row) => row.section_key));
+  return [...rows.filter((row) => !row.hidden && codeOrder.includes(row.section_key)).map((row) => row.section_key), ...codeOrder.filter((key) => !known.has(key))];
 }
 
 /** The editable fields of one wired section: stored values over the website's own copy. */
@@ -307,4 +328,28 @@ export const loadCaseStudies = cache(async (): Promise<{ studies: DemoCaseStudy[
   // A study is on the index only when its card has a title (the admin clears it to hide one).
   const previews = new Map(rows.filter((row) => row.preview?.previewTitle).map((row) => [row.slug, { ...row.preview!, slug: row.slug }]));
   return { studies, index: indexFrom(studies, previews, projects) };
+});
+
+type CustomPageRow = { path: string; name: string };
+type CustomBlockRow = { section_key: string; hidden: boolean; content: { kind?: string; fields?: Record<string, unknown> } };
+
+/** A page made in the admin (Pages → Add Page), with its visible blocks in order; null when there is none. */
+export const loadCustomPage = cache(async (path: string) => {
+  const address = encodeURIComponent(path);
+  const [pages, blocks] = await Promise.all([
+    read<CustomPageRow>("site_pages", `select=path,name&path=eq.${address}&page_type=eq.${CUSTOM_PAGE_TYPE}&status=eq.published`),
+    read<CustomBlockRow>("page_sections", `select=section_key,hidden,content&page_path=eq.${address}&${published}`),
+  ]);
+  const page = pages?.[0];
+  if (!page) return null;
+  return {
+    name: page.name,
+    blocks: (blocks ?? []).filter((block) => !block.hidden && block.content?.kind).map((block) => ({ key: block.section_key, kind: block.content.kind as string, fields: block.content.fields ?? {} })),
+  };
+});
+
+/** Addresses of the published pages made in the admin (for the sitemap). */
+export const loadCustomPagePaths = cache(async () => {
+  const rows = await read<{ path: string; updated_at: string }>("site_pages", `select=path,updated_at&page_type=eq.${CUSTOM_PAGE_TYPE}&status=eq.published`);
+  return rows ?? [];
 });

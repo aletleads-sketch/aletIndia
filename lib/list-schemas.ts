@@ -29,9 +29,15 @@ export type ListSchema = {
   page: (row: Record<string, unknown>) => string;
   /** Extra warning shown above the form. */
   note?: string;
+  /** Column holding the picture shown in the list, and how it fits. */
+  thumb?: string;
+  thumbFit?: "cover" | "contain";
 };
 
-const status: Spec = { key: "status", label: "Shown on the website?", type: "select", options: ["published", "draft", "archived"], hint: "Only “published” rows appear on the website." };
+/** Lists shown together as tabs, because the sidebar groups them. */
+export const LIST_GROUPS = [["projects", "case_studies"], ["faqs", "testimonials", "client_logos", "industries"]];
+
+const status: Spec = { key: "status", label: "Shown on the website?", type: "select", options: ["published", "draft", "review", "archived"], hint: "Only “published” rows appear on the website. “review” means waiting for someone to check it." };
 const order: Spec = { key: "sort_order", label: "Order", type: "number", hint: "Smaller numbers come first." };
 
 const caseBlocks = {
@@ -57,7 +63,7 @@ const blogBlocks = {
 
 export const LIST_SCHEMAS: ListSchema[] = [
   {
-    table: "services",
+    table: "services", thumb: "hero_image_url",
     label: "Services",
     noun: "service",
     title: "name",
@@ -113,7 +119,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     ],
   },
   {
-    table: "projects",
+    table: "projects", thumb: "logo_url", thumbFit: "contain",
     label: "Portfolio projects",
     noun: "project",
     title: "name",
@@ -140,7 +146,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     ],
   },
   {
-    table: "case_studies",
+    table: "case_studies", thumb: "cover_image_url",
     label: "Case studies",
     noun: "case study",
     title: "client",
@@ -201,9 +207,9 @@ export const LIST_SCHEMAS: ListSchema[] = [
     ],
   },
   {
-    table: "blogs",
+    table: "blogs", thumb: "cover_image_url",
     label: "Blogs",
-    noun: "article",
+    noun: "blog post",
     title: "title",
     subtitle: "category",
     order: "published_at.desc",
@@ -251,7 +257,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     ],
   },
   {
-    table: "testimonials",
+    table: "testimonials", thumb: "image_url",
     label: "Testimonials",
     noun: "testimonial",
     title: "client_name",
@@ -270,7 +276,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     ],
   },
   {
-    table: "client_logos",
+    table: "client_logos", thumb: "logo_url", thumbFit: "contain",
     label: "Client logos",
     noun: "logo",
     title: "client_name",
@@ -285,7 +291,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     ],
   },
   {
-    table: "industries",
+    table: "industries", thumb: "image_url",
     label: "Industries",
     noun: "industry",
     title: "name",
@@ -300,7 +306,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     ],
   },
   {
-    table: "careers",
+    table: "careers", thumb: "image_url",
     label: "Jobs",
     noun: "job",
     title: "title",

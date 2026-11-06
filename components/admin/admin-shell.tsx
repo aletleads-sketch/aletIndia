@@ -3,25 +3,26 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type FormEvent, type ReactNode, type SVGProps } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { CMS_SECTIONS } from "@/lib/cms-sections";
 import { Loader } from "@/components/admin/loader";
 import { SEO_NAV } from "@/lib/seo-admin";
 import { getSupabase } from "@/lib/supabase-browser";
 import { initials, memberName, type Profile } from "@/lib/leads";
 import {
-  ChartIcon,
+  BlogIcon,
+  BriefcaseIcon,
   ChevronDownIcon,
+  ChevronRightIcon,
   ClientIcon,
-  FolderIcon,
   GearIcon,
   HomeIcon,
   InboxIcon,
-  LayoutIcon,
+  ImageIcon,
+  LayersIcon,
   MenuIcon,
+  QuoteIcon,
   SearchIcon,
-  TeamIcon,
   UsersIcon,
   XIcon,
 } from "@/components/admin/icons";
@@ -43,21 +44,69 @@ export function useAdmin() {
 
 export const canManageLeads = (profile: Profile) => profile.role === "admin" || profile.role === "sales";
 
-// `soon` items show as disabled "Coming soon" entries; drop the flag to open one up.
-const NAV = [
-  { label: "Dashboard", href: null, icon: HomeIcon, soon: true },
-  { label: "Leads", href: "/admin/leads", icon: UsersIcon },
-  { label: "Clients", href: "/admin/clients", icon: ClientIcon, soon: true },
-  { label: "Projects", href: null, icon: FolderIcon, soon: true },
-  { label: "Enquiries", href: null, icon: InboxIcon, soon: true },
-  { label: "Website Content", href: "/admin/website", icon: LayoutIcon, contentOnly: true },
-  { label: "Website Lists", href: "/admin/lists", icon: FolderIcon, contentOnly: true },
-  { label: "Content (CMS)", href: null, icon: LayoutIcon, children: CMS_SECTIONS, soon: true },
-  { label: "SEO", href: null, icon: SearchIcon, group: SEO_NAV, adminOnly: true },
-  { label: "Reports", href: "/admin/reports", icon: ChartIcon, soon: true },
-  { label: "Team", href: "/admin/team", icon: TeamIcon, adminOnly: true },
-  { label: "Settings", href: null, icon: GearIcon, soon: true },
-] as const;
+type NavLink = { label: string; href: string | null; also?: string[] };
+type NavItem = {
+  label: string;
+  icon: (props: SVGProps<SVGSVGElement>) => ReactNode;
+  href?: string;
+  /** Other paths that light this item up. */
+  also?: string[];
+  children?: readonly NavLink[];
+  adminOnly?: boolean;
+};
+
+/** The Content Studio menu, in the order of the client's mockup. */
+const CONTENT_NAV: NavItem[] = [
+  { label: "Dashboard", href: "/admin", icon: HomeIcon, also: ["/admin/activity"] },
+  {
+    label: "Homepage",
+    icon: HomeIcon,
+    children: [
+      { label: "Edit homepage", href: "/admin/homepage" },
+      { label: "Shared sections", href: "/admin/website?page=_shared" },
+    ],
+  },
+  {
+    label: "Pages & Services",
+    icon: LayersIcon,
+    children: [
+      { label: "All pages", href: "/admin/pages", also: ["/admin/website"] },
+      { label: "Services", href: "/admin/lists/services" },
+    ],
+  },
+  {
+    label: "Portfolio",
+    icon: BriefcaseIcon,
+    children: [
+      { label: "Projects", href: "/admin/lists/projects" },
+      { label: "Case studies", href: "/admin/lists/case_studies" },
+      { label: "Client logos", href: "/admin/lists/client_logos" },
+      { label: "Industries", href: "/admin/lists/industries" },
+    ],
+  },
+  { label: "Blogs", href: "/admin/lists/blogs", icon: BlogIcon },
+  { label: "Media Library", href: "/admin/media", icon: ImageIcon },
+  { label: "SEO Manager", icon: SearchIcon, children: SEO_NAV, adminOnly: true },
+  { label: "FAQs & Testimonials", href: "/admin/lists/faqs", icon: QuoteIcon, also: ["/admin/lists/testimonials"] },
+  { label: "Careers", href: "/admin/lists/careers", icon: UsersIcon },
+  {
+    label: "Site Settings",
+    icon: GearIcon,
+    children: [
+      { label: "General", href: "/admin/settings" },
+      { label: "Menus", href: "/admin/lists/menu_items" },
+    ],
+  },
+];
+
+const BUSINESS_NAV: NavItem[] = [
+  { label: "Leads", href: "/admin/leads", icon: InboxIcon },
+  { label: "Users & Roles", href: "/admin/team", icon: ClientIcon, adminOnly: true },
+];
+
+/** Opens the menu on phones and folds it away on wide screens (the header's ☰ button). */
+const NavToggleContext = createContext<() => void>(() => {});
+export const useNavToggle = () => useContext(NavToggleContext);
 
 const NAV_ITEM = "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-medium";
 const NAV_ACTIVE = "bg-[#1a63e8] text-white shadow-lg shadow-blue-900/40";
@@ -140,133 +189,115 @@ async function loadTeam() {
   return (data as Profile[] | null)?.sort((a, b) => memberName(a).localeCompare(memberName(b))) ?? null;
 }
 
+const isActive = (pathname: string | null, href: string | null | undefined) =>
+  Boolean(href && pathname && (href === "/admin" ? /\/admin\/?$/.test(pathname) : pathname.endsWith(href) || pathname.includes(`${href}/`)));
+
 function Frame({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { profile } = useAdmin();
   const [open, setOpen] = useState(false);
-  const inCms = Boolean(pathname?.includes("/admin/content"));
-  const [cmsOpen, setCmsOpen] = useState(inCms);
-  const inSeo = Boolean(pathname?.includes("/admin/seo"));
-  const [seoOpen, setSeoOpen] = useState(inSeo);
+  const [folded, setFolded] = useState(false);
+  const toggleNav = useCallback(() => {
+    if (window.matchMedia("(min-width: 1024px)").matches) setFolded((value) => !value);
+    else setOpen(true);
+  }, []);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const content = ["admin", "editor", "marketing"].includes(profile.role);
+  const allowed = (item: NavItem) => !item.adminOnly || profile.role === "admin";
+  const groups = [
+    { title: "Website", items: content ? CONTENT_NAV.filter(allowed) : [] },
+    { title: "Business", items: BUSINESS_NAV.filter(allowed) },
+  ].filter((group) => group.items.length);
+
+  const renderItem = (item: NavItem) => {
+    const { label, icon: Icon } = item;
+    if (item.children) {
+      const linkActive = (child: NavLink) => isActive(pathname, child.href) || Boolean(child.also?.some((path) => isActive(pathname, path)));
+      const childActive = item.children.some(linkActive);
+      const isOpen = expanded[label] ?? childActive;
+      return (
+        <div key={label}>
+          <button
+            type="button"
+            aria-expanded={isOpen}
+            onClick={() => setExpanded((current) => ({ ...current, [label]: !isOpen }))}
+            className={`${NAV_ITEM} ${childActive ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/10"}`}
+          >
+            <Icon />
+            <span className="truncate">{label}</span>
+            <ChevronRightIcon className={`ml-auto h-4 w-4 transition-transform ${isOpen ? "rotate-90" : ""}`} />
+          </button>
+          {isOpen ? (
+            <div className="mt-1 mb-2 ml-6 space-y-0.5 border-l border-white/15 pl-3">
+              {item.children.map((entry) =>
+                entry.href ? (
+                  <Link
+                    key={entry.label}
+                    href={entry.href}
+                    onClick={() => setOpen(false)}
+                    className={`block rounded-lg px-3 py-2 text-sm font-medium ${linkActive(entry) ? "bg-[#1a63e8] text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+                  >
+                    {entry.label}
+                  </Link>
+                ) : (
+                  <span key={entry.label} aria-disabled="true" title="Coming soon" className="flex cursor-not-allowed items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white/35">
+                    <span className="truncate">{entry.label}</span>
+                    <span className="ml-auto shrink-0 rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] tracking-wide uppercase">Soon</span>
+                  </span>
+                ),
+              )}
+            </div>
+          ) : null}
+        </div>
+      );
+    }
+    const active = isActive(pathname, item.href) || Boolean(item.also?.some((path) => isActive(pathname, path)));
+    return (
+      <Link key={label} href={item.href ?? "/admin"} onClick={() => setOpen(false)} className={`${NAV_ITEM} ${active ? NAV_ACTIVE : "text-white/80 hover:bg-white/10"}`}>
+        <Icon />
+        <span className="truncate">{label}</span>
+      </Link>
+    );
+  };
 
   return (
     <div className="flex h-full">
       {open ? <button type="button" aria-label="Close menu" className="fixed inset-0 z-20 bg-black/40 lg:hidden" onClick={() => setOpen(false)} /> : null}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-[#0b1f3f] text-white transition-transform lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-gradient-to-b from-[#0b1f3f] to-[#081732] text-white transition-transform lg:static lg:translate-x-0 ${folded ? "lg:hidden" : ""} ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex items-center justify-between px-6 pt-6 pb-8">
-          <Image src="/images/logo-white.png" alt="ALET India" width={322} height={90} className="h-11 w-auto" />
-          <button type="button" aria-label="Close menu" className="lg:hidden" onClick={() => setOpen(false)}>
-            <XIcon />
-          </button>
+        <div className="px-6 pt-6 pb-5">
+          <div className="flex items-center justify-between">
+            <Image src="/images/logo-white.png" alt="ALET India" width={322} height={90} className="h-11 w-auto" />
+            <button type="button" aria-label="Close menu" className="lg:hidden" onClick={() => setOpen(false)}>
+              <XIcon />
+            </button>
+          </div>
+          <p className="mt-4 flex items-center gap-3 text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
+            <span className="h-px flex-1 bg-white/20" />
+            {content ? "Content Studio" : "Workspace"}
+            <span className="h-px flex-1 bg-white/20" />
+          </p>
         </div>
-        <nav className="admin-scroll-dark flex-1 space-y-1 overflow-y-auto px-3">
-          {NAV.map((item) => {
-            const { label, href, icon: Icon } = item;
-            if ("adminOnly" in item && item.adminOnly && profile.role !== "admin") return null;
-            if ("contentOnly" in item && item.contentOnly && !["admin", "editor", "marketing"].includes(profile.role)) return null;
-            if ("soon" in item && item.soon) {
-              return (
-                <span key={label} aria-disabled="true" className={`${NAV_ITEM} cursor-not-allowed text-white/40`} title="Coming soon">
-                  <Icon />
-                  <span className="truncate">{label}</span>
-                  <span className="ml-auto shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[10px] tracking-wide whitespace-nowrap uppercase">Coming soon</span>
-                </span>
-              );
-            }
-            if ("group" in item) {
-              const expanded = seoOpen || inSeo;
-              return (
-                <div key={label}>
-                  <button
-                    type="button"
-                    aria-expanded={expanded}
-                    onClick={() => setSeoOpen(!expanded)}
-                    className={`${NAV_ITEM} ${inSeo ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/10"}`}
-                  >
-                    <Icon />
-                    {label}
-                    <ChevronDownIcon className={`ml-auto h-4 w-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
-                  </button>
-                  {expanded ? (
-                    <div className="mt-1 mb-2 ml-6 space-y-0.5 border-l border-white/15 pl-3">
-                      {item.group.map((entry) =>
-                        entry.href ? (
-                          <Link
-                            key={entry.label}
-                            href={entry.href}
-                            onClick={() => setOpen(false)}
-                            className={`block rounded-lg px-3 py-2 text-sm font-medium ${pathname?.endsWith(entry.href) ? "bg-[#1a63e8] text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
-                          >
-                            {entry.label}
-                          </Link>
-                        ) : (
-                          <span key={entry.label} aria-disabled="true" title="Coming soon" className="flex cursor-not-allowed items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white/35">
-                            <span className="truncate">{entry.label}</span>
-                            <span className="ml-auto shrink-0 rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] tracking-wide uppercase">Soon</span>
-                          </span>
-                        ),
-                      )}
-                    </div>
-                  ) : null}
-                </div>
-              );
-            }
-            if ("children" in item) {
-              const expanded = cmsOpen || inCms;
-              return (
-                <div key={label}>
-                  <button
-                    type="button"
-                    aria-expanded={expanded}
-                    onClick={() => setCmsOpen(!expanded)}
-                    className={`${NAV_ITEM} ${inCms ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/10"}`}
-                  >
-                    <Icon />
-                    {label}
-                    <ChevronDownIcon className={`ml-auto h-4 w-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
-                  </button>
-                  {expanded ? (
-                    <div className="mt-1 mb-2 ml-6 space-y-0.5 border-l border-white/15 pl-3">
-                      {item.children.map((section) => {
-                        const active = pathname?.endsWith(`/admin/content/${section.slug}`);
-                        return (
-                          <Link
-                            key={section.slug}
-                            href={`/admin/content/${section.slug}`}
-                            onClick={() => setOpen(false)}
-                            className={`block rounded-lg px-3 py-2 text-sm font-medium ${active ? "bg-[#1a63e8] text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
-                          >
-                            {section.label}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  ) : null}
-                </div>
-              );
-            }
-            const active = href ? pathname?.endsWith(href) : false;
-            return href ? (
-              <Link key={label} href={href} onClick={() => setOpen(false)} className={`${NAV_ITEM} ${active ? NAV_ACTIVE : "text-white/80 hover:bg-white/10"}`}>
-                <Icon />
-                {label}
-              </Link>
-            ) : null;
-          })}
+        <nav className="admin-scroll-dark flex-1 space-y-5 overflow-y-auto px-3 pb-6">
+          {groups.map((group) => (
+            <div key={group.title} className="space-y-1">
+              {group.title !== "Website" ? <p className="px-4 pb-1 text-[11px] font-bold tracking-[0.14em] text-white/40 uppercase">{group.title}</p> : null}
+              {group.items.map(renderItem)}
+            </div>
+          ))}
         </nav>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <button
           type="button"
           aria-label="Open menu"
-          className="absolute top-5 left-4 z-10 rounded-lg bg-white p-2 shadow lg:hidden"
+          className="absolute top-3 left-4 z-10 rounded-lg bg-white p-2 shadow lg:hidden"
           onClick={() => setOpen(true)}
         >
           <MenuIcon />
         </button>
-        {children}
+        <NavToggleContext.Provider value={toggleNav}>{children}</NavToggleContext.Provider>
       </div>
     </div>
   );

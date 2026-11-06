@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CustomPage } from "@/components/custom-page";
 import { PermanentClientRedirect } from "@/components/permanent-client-redirect";
 import blogSlugs from "@/lib/blog-slugs.json";
 import { getBlogPost } from "@/lib/blogs";
+import { canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
+import { loadCustomPage } from "@/lib/site-content";
 import { assetPath } from "@/lib/site-path";
 
 const slugSet = new Set(blogSlugs as string[]);
@@ -18,7 +22,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  if (!slugSet.has(slug)) return { title: "Not found — Alet India" };
+  if (!slugSet.has(slug)) {
+    // A page made in the admin (Pages → Add Page).
+    const page = await loadCustomPage(`/${slug}`);
+    if (!page) return { title: "Not found — Alet India" };
+    const hero = page.blocks.find((block) => block.kind === "hero")?.fields as { text?: string } | undefined;
+    return withSeoOverrides(`/${slug}`, { title: `${page.name} — Alet India`, description: hero?.text || undefined, alternates: canonical(`/${slug}`) });
+  }
   const post = getBlogPost(slug);
   return {
     title: post ? `${post.title} — Alet India` : "Article — Alet India",
@@ -38,7 +48,11 @@ export default async function LegacyBlogSlugRedirect({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  if (!slugSet.has(slug)) notFound();
+  if (!slugSet.has(slug)) {
+    const page = await loadCustomPage(`/${slug}`);
+    if (!page) notFound();
+    return <CustomPage name={page.name} blocks={page.blocks} />;
+  }
 
   const href = assetPath(`/blogs/${slug}`);
 

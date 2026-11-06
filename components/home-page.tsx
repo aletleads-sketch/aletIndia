@@ -12,24 +12,34 @@ import {
 } from "@/components/sections";
 import { Arrow, Eyebrow } from "@/components/ui";
 import { WordRotator } from "@/components/word-rotator";
-import { loadFields, loadSiteContent } from "@/lib/site-content";
+import { loadFields, loadSectionLayout, loadSiteContent } from "@/lib/site-content";
 
-export function HomePage() {
+/** The homepage's sections by their key in public.page_sections, in the code's order. */
+const SECTIONS = {
+  hero: Hero,
+  stats_bar: StatsBar,
+  client_logos: ClientMarquee,
+  services: Services,
+  journey_timeline: JourneyTimeline,
+  solution_lifecycle: WhyAlet,
+  work: Work,
+  process: ProcessSection,
+  industries: Industries,
+  testimonials: TestimonialsSection,
+  about: About,
+  faqs: Faq,
+  contact_form: ContactSection,
+} as const;
+
+/** The admin's Edit Homepage screen can reorder these sections and switch them off. */
+export async function HomePage() {
+  const keys = await loadSectionLayout("/", Object.keys(SECTIONS));
   return (
     <div id="top">
-      <Hero />
-      <StatsBar />
-      <ClientMarquee />
-      <Services />
-      <JourneyTimeline />
-      <WhyAlet />
-      <Work />
-      <ProcessSection />
-      <Industries />
-      <TestimonialsSection />
-      <About />
-      <Faq />
-      <ContactSection />
+      {keys.map((key) => {
+        const Section = SECTIONS[key as keyof typeof SECTIONS];
+        return <Section key={key} />;
+      })}
     </div>
   );
 }

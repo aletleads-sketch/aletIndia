@@ -20,12 +20,19 @@ export type SectionBlock = {
   blocks?: SectionBlock[];
 };
 
+export type Brand = { logo: string; logoLight: string; favicon: string };
+
+export const DEFAULT_BRAND: Brand = { logo: "/images/logo-dark.png", logoLight: "/images/logo-white.png", favicon: "" };
+
 /** A row of public.page_sections. */
 export type PageSection = {
   section_key: string;
   label: string;
   shared_key: string | null;
   collections: string[];
+  /** Switched off in the admin: the website leaves the section out. */
+  hidden?: boolean;
+  sort_order?: number;
   content: {
     eyebrow?: string | null;
     heading?: string | null;
@@ -84,6 +91,8 @@ export type SiteContent = {
   legalLinks: MenuLink[];
   portals: MenuLink[];  /** Copy of the Inquire Now popup and form. */
   inquireForm: SectionValues<"_shared#inquire_form">;
+  /** Logos and browser-tab icon, set in the admin's Site Settings (the design's files by default). */
+  brand: Brand;
   /** "page path#section key" → section row */
   sections: Record<string, PageSection>;
 };

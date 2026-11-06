@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
+import { MediaPicker } from "@/components/admin/media-library";
 import { uploadImage } from "@/lib/content-admin";
 import { siteHref } from "@/lib/seo-admin";
 
@@ -106,11 +107,13 @@ export function ParagraphsInput({ value, onChange, addLabel = "Add a line" }: { 
 /** Shows a site path through this admin's origin, and full links as they are. */
 const previewSrc = (src: string) => (src.startsWith("/") ? siteHref(src) : src);
 
-export function ImageInput({ value, onChange }: { value: Image; onChange: (value: Image) => void }) {
+/** `stacked`: the picture full width on top, for a narrow side column. */
+export function ImageInput({ value, onChange, stacked = false }: { value: Image; onChange: (value: Image) => void; stacked?: boolean }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
   const [broken, setBroken] = useState(false);
+  const [picking, setPicking] = useState(false);
   const upload = async (file: File | undefined) => {
     if (!file) return;
     setUploading(true);
@@ -122,12 +125,12 @@ export function ImageInput({ value, onChange }: { value: Image; onChange: (value
     onChange({ ...value, src: url });
   };
   return (
-    <div className="grid gap-3 sm:grid-cols-[8rem_minmax(0,1fr)]">
-      <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-lg border border-[#dfe5ef] bg-[#e9eef6]">
+    <div className={`grid gap-3 ${stacked ? "" : "sm:grid-cols-[8rem_minmax(0,1fr)]"}`}>
+      <div className={`grid place-items-center overflow-hidden rounded-xl border border-[#dfe5ef] bg-[#e9eef6] ${stacked ? "aspect-[4/3] p-2" : "aspect-[4/3]"}`}>
         {value.src && !broken ? (
           // A plain img: the preview must show exactly the stored file.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={previewSrc(value.src)} alt={value.alt} onError={() => setBroken(true)} className="h-full w-full object-cover" />
+          <img src={previewSrc(value.src)} alt={value.alt} onError={() => setBroken(true)} className={`h-full w-full ${stacked ? "object-contain" : "object-cover"}`} />
         ) : (
           <span className="px-2 text-center text-xs text-[#5b6b85]">{broken ? "Picture not found" : "No picture"}</span>
         )}
@@ -143,14 +146,27 @@ export function ImageInput({ value, onChange }: { value: Image; onChange: (value
           className={`${inputClass} font-mono text-xs`}
         />
         <input value={value.alt} onChange={(event) => onChange({ ...value, alt: event.target.value })} placeholder="Short description of the picture (for Google and screen readers)" className={inputClass} />
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button type="button" className={smallButton} disabled={uploading} onClick={() => fileRef.current?.click()}>
             {uploading ? "Uploading…" : "Upload a new picture"}
+          </button>
+          <button type="button" className={smallButton} onClick={() => setPicking(true)}>
+            Choose from library
           </button>
           <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={(event) => void upload(event.target.files?.[0])} />
           {problem ? <span className="text-xs text-[#a12020]">{problem}</span> : null}
         </div>
       </div>
+      {picking ? (
+        <MediaPicker
+          onClose={() => setPicking(false)}
+          onPick={(url) => {
+            setPicking(false);
+            setBroken(false);
+            onChange({ ...value, src: url });
+          }}
+        />
+      ) : null}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { SiteContentProvider } from "@/components/site-content-provider";
 import { loadSiteContent } from "@/lib/site-content";
 import { NOINDEX, SITE_URL } from "@/lib/seo";
 import "./globals.css";
+import { Analytics } from "@/components/analytics";
 import { JsonLd } from "@/components/json-ld";
 import { resolveGeneral } from "@/lib/seo-general-shared";
 import { shareImageUrl } from "@/lib/seo-overrides";
@@ -54,8 +55,11 @@ const montserrat = Montserrat({
 
 // Site-wide defaults; the admin's SEO Settings screen can change them (row 'general' of seo_settings).
 export async function generateMetadata(): Promise<Metadata> {
-  const general = resolveGeneral((await loadSeoSettings()).general);
+  const [settings, { brand }] = await Promise.all([loadSeoSettings(), loadSiteContent()]);
+  const general = resolveGeneral(settings.general);
   return {
+    // A favicon uploaded in Site Settings replaces the design's app/icon.png.
+    ...(brand.favicon ? { icons: { icon: brand.favicon, apple: brand.favicon } } : {}),
     metadataBase: new URL(`${SITE_URL}/`),
     title: "Alet India | Mobile App & Web Development Company",
     description: general.defaultDescription,
@@ -78,17 +82,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [schema, content] = await Promise.all([loadSchemaSettings(), loadSiteContent()]);
-  const { company, services, caseStudies, testimonials, careers, showcase, inquireForm } = content;
+  const [schema, content, seoSettings] = await Promise.all([loadSchemaSettings(), loadSiteContent(), loadSeoSettings()]);
+  const { company, services, caseStudies, testimonials, careers, showcase, inquireForm, brand } = content;
   return (
     <html
       lang="en"
       className={`${jakarta.variable} ${syne.variable} ${space.variable} ${archivo.variable} ${sacramento.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white font-sans text-ink">
+        {/* Analytics only on the real website: the noindex dev and preview sites would skew the numbers. */}
+        {NOINDEX ? null : <Analytics settings={seoSettings.analytics} />}
         <JsonLd items={schema.organization.enabled ? [organizationSchema(schema.organization.data as OrganizationData)] : []} />
         <NavigationProgress />
-        <SiteContentProvider value={{ company, services, caseStudies, testimonials, careers, showcase, inquireForm }}>
+        <SiteContentProvider value={{ company, services, caseStudies, testimonials, careers, showcase, inquireForm, brand }}>
           <InquireModalProvider>
             <Header navigation={content.navigation} />
             <main className="flex-1">{children}</main>

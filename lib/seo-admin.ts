@@ -74,12 +74,12 @@ export async function loadSitemapPaths(): Promise<string[]> {
 }
 
 /** Loads one row of `public.seo_settings` ({} when nobody has saved it yet). */
-export async function loadSeoSetting<T>(key: "sitemap" | "robots" | "general") {
+export async function loadSeoSetting<T>(key: "sitemap" | "robots" | "general" | "analytics") {
   const { data, error } = await getSupabase().from("seo_settings").select("value").eq("key", key).maybeSingle();
   return { value: ((data as { value: T } | null)?.value ?? {}) as T, error: error?.message ?? null };
 }
 
-export async function saveSeoSetting(key: "sitemap" | "robots" | "general", value: object) {
+export async function saveSeoSetting(key: "sitemap" | "robots" | "general" | "analytics", value: object) {
   const { error } = await getSupabase().from("seo_settings").upsert({ key, value });
   return error?.message ?? null;
 }

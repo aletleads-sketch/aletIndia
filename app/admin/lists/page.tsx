@@ -1,11 +1,8 @@
-import type { Metadata } from "next";
-import { WebsiteListsWorkspace } from "@/components/admin/website-lists";
+import { redirect } from "next/navigation";
+import { getListSchema } from "@/lib/list-schemas";
 
-export const metadata: Metadata = {
-  title: "Website Lists | ALET India Admin",
-};
-
-export default async function AdminWebsiteListsPage({ searchParams }: { searchParams: Promise<{ list?: string }> }) {
+/** Old links used ?list=…; each list now has its own address. */
+export default async function AdminListsPage({ searchParams }: { searchParams: Promise<{ list?: string }> }) {
   const { list } = await searchParams;
-  return <WebsiteListsWorkspace initialTable={list} />;
+  redirect(`/admin/lists/${list && getListSchema(list) ? list : "services"}`);
 }
