@@ -8,14 +8,14 @@ import { BASE_PATH } from "@/lib/site-path";
 
 /** SEO screens in the sidebar, in mockup order. `href: null` shows as "Soon" until that screen is built. */
 export const SEO_NAV = [
-  { label: "SEO Dashboard", href: null },
+  { label: "SEO Dashboard", href: "/admin/seo/dashboard" },
   { label: "Meta Tags", href: "/admin/seo/meta-tags" },
-  { label: "Keywords Tracking", href: null },
+  { label: "Keywords Tracking", href: "/admin/seo/keywords" },
   { label: "Sitemap & Robots", href: "/admin/seo/sitemap" },
   { label: "Redirects", href: "/admin/seo/redirects" },
   { label: "Schema Markup", href: "/admin/seo/schema" },
   { label: "SEO Audit", href: "/admin/seo/audit" },
-  { label: "Reports", href: null },
+  { label: "Reports", href: "/admin/seo/reports" },
   { label: "SEO Settings", href: "/admin/seo/settings" },
 ] as const;
 
@@ -74,12 +74,12 @@ export async function loadSitemapPaths(): Promise<string[]> {
 }
 
 /** Loads one row of `public.seo_settings` ({} when nobody has saved it yet). */
-export async function loadSeoSetting<T>(key: "sitemap" | "robots" | "general" | "analytics") {
+export async function loadSeoSetting<T>(key: "sitemap" | "robots" | "general" | "analytics" | "google") {
   const { data, error } = await getSupabase().from("seo_settings").select("value").eq("key", key).maybeSingle();
   return { value: ((data as { value: T } | null)?.value ?? {}) as T, error: error?.message ?? null };
 }
 
-export async function saveSeoSetting(key: "sitemap" | "robots" | "general" | "analytics", value: object) {
+export async function saveSeoSetting(key: "sitemap" | "robots" | "general" | "analytics" | "google", value: object) {
   const { error } = await getSupabase().from("seo_settings").upsert({ key, value });
   return error?.message ?? null;
 }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { UserMenu, useAdmin } from "@/components/admin/admin-shell";
 import { Loader } from "@/components/admin/loader";
+import { GoogleConnectionCard } from "@/components/admin/seo-google-connection";
 import { pageUrl } from "@/lib/seo";
 import { loadSeoSetting, publicUrl, publishSeoChanges, saveSeoSetting, SEO_LIMITS, siteHref } from "@/lib/seo-admin";
 import { GENERAL_DEFAULTS, resolveGeneral, shareImageProblem, verificationCode, type GeneralSeoSettings } from "@/lib/seo-general-shared";
@@ -230,6 +231,7 @@ export function SeoSettingsWorkspace() {
             </div>
           </form>
         ) : null}
+        {form && effective ? <GoogleConnectionCard /> : null}
       </div>
     </div>
   );
