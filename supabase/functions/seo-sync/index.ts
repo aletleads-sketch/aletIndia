@@ -6,7 +6,8 @@
 //
 // Function secrets:
 //   GOOGLE_SERVICE_ACCOUNT_JSON  the service account key file (JSON) from Google Cloud
-//   SEO_SYNC_SECRET              random string the cron job sends as `x-seo-sync-secret`
+// The nightly pg_cron job sends the Vault secret `seo_sync_secret` as `x-seo-sync-secret`
+// (read through public.seo_secret; SEO_SYNC_SECRET is an optional fallback).
 // Which site and GA4 property to read comes from seo_settings key 'google' (set in SEO Settings):
 //   { searchConsoleSite: "https://aletindia.com/aletindia/" | "sc-domain:aletindia.com",
 //     ga4PropertyId: "123456789", pathPrefix: "/aletindia" }
@@ -297,7 +298,13 @@ Deno.serve(async (request) => {
   })
   const body = (await request.json().catch(() => ({}))) as { action?: string; days?: number }
 
-  const scheduled = safeEqual(request.headers.get('x-seo-sync-secret') ?? '', Deno.env.get('SEO_SYNC_SECRET') ?? '')
+  const sent = request.headers.get('x-seo-sync-secret') ?? ''
+  let scheduled = false
+  if (sent) {
+    // The nightly job reads this value from Vault; SEO_SYNC_SECRET is only a fallback.
+    const { data: vaultSecret } = await db.rpc('seo_secret', { p_name: 'seo_sync_secret' })
+    scheduled = safeEqual(sent, (vaultSecret as string | null) ?? Deno.env.get('SEO_SYNC_SECRET') ?? '')
+  }
   if (!scheduled) {
     const jwt = (request.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '')
     const { data: caller } = await db.auth.getUser(jwt)
