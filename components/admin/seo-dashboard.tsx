@@ -143,7 +143,7 @@ export function SeoDashboardWorkspace() {
                         onClick={() => setMetric(item.key)}
                         className={`rounded-md px-3 py-1 font-semibold ${metric === item.key ? "bg-[#1a63e8] text-white" : "text-[#4a5a75]"}`}
                       >
-                        {item.label.replace("Organic ", "")}
+                        {item.label === "Organic sessions" ? "Sessions" : item.label}
                       </button>
                     ))}
                   </div>

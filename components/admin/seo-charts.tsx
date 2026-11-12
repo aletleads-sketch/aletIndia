@@ -46,7 +46,9 @@ export function LineChart({
 
   const { max, min } = useMemo(() => {
     const values = points.flatMap((point) => [point.value, point.previous ?? point.value]).filter((value) => Number.isFinite(value));
-    const high = niceMax(Math.max(0, ...values));
+    // Whole-number series (clicks, sessions) get a top divisible by 4, so the five gridlines land on whole numbers.
+    const whole = !invert && values.every((value) => Number.isInteger(value));
+    const high = whole ? Math.max(4, Math.ceil(niceMax(Math.max(0, ...values)) / 4) * 4) : niceMax(Math.max(0, ...values));
     return { max: high, min: invert ? Math.max(1, Math.floor(Math.min(...values, high))) : 0 };
   }, [points, invert]);
 

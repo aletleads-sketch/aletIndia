@@ -254,7 +254,7 @@ export function SeoKeywordsWorkspace() {
                     <li key={row.query} className="flex flex-wrap items-center gap-3 py-2">
                       <span className="mr-auto font-semibold">{row.query}</span>
                       <span className="text-[#5b6b85] tabular-nums">
-                        {number(row.clicks)} clicks · {number(row.impressions)} impressions · position {row.position?.toFixed(1) ?? "—"}
+                        {number(row.clicks)} {row.clicks === 1 ? "click" : "clicks"} · {number(row.impressions)} {row.impressions === 1 ? "impression" : "impressions"} · position {row.position?.toFixed(1) ?? "—"}
                       </span>
                       <button type="button" onClick={() => void add([row.query], [])} className="rounded-lg border border-[#d4dbe7] px-2.5 py-1 text-xs font-semibold">
                         Track
