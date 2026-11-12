@@ -25,7 +25,7 @@ import {
   type NoteKind,
 } from "@/lib/leads";
 import { clientFromLead } from "@/lib/clients";
-import { getSupabase } from "@/lib/supabase-browser";
+import { getSupabase, subscribeLive } from "@/lib/supabase-browser";
 
 const STATUS_BADGE: Record<LeadStatus, string> = {
   new: "bg-[#e3ecfd] text-[#1a4fb8]",
@@ -141,16 +141,15 @@ export function LeadDetail({
   }
 
   // Follow-ups and files added by teammates appear without a refresh.
-  useEffect(() => {
-    const channel = supabase
-      .channel(`lead-${lead.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "lead_notes", filter: `lead_id=eq.${lead.id}` }, () => void loadNotes())
-      .on("postgres_changes", { event: "*", schema: "public", table: "lead_attachments", filter: `lead_id=eq.${lead.id}` }, () => void loadAttachments())
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [lead.id, loadAttachments, loadNotes, supabase]);
+  useEffect(
+    () =>
+      subscribeLive(`lead-${lead.id}`, (channel) =>
+        channel
+          .on("postgres_changes", { event: "*", schema: "public", table: "lead_notes", filter: `lead_id=eq.${lead.id}` }, () => void loadNotes())
+          .on("postgres_changes", { event: "*", schema: "public", table: "lead_attachments", filter: `lead_id=eq.${lead.id}` }, () => void loadAttachments()),
+      ),
+    [lead.id, loadAttachments, loadNotes],
+  );
 
   // Opening a lead marks it as read for everyone.
   useEffect(() => {

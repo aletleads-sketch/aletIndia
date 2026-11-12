@@ -18,7 +18,7 @@ import {
   type LeadSort,
   type LeadTab,
 } from "@/lib/leads";
-import { getSupabase } from "@/lib/supabase-browser";
+import { getSupabase, subscribeLive } from "@/lib/supabase-browser";
 
 const TAB_STYLE: Record<LeadTab, { icon: typeof UsersIcon; tone: string; badge: string }> = {
   new: { icon: UsersIcon, tone: "text-[#1a63e8]", badge: "bg-[#e3ecfd] text-[#1a4fb8]" },
@@ -91,9 +91,8 @@ export function LeadsWorkspace() {
   useEffect(() => {
     if (!allowed) return;
     const supabase = getSupabase();
-    const channel = supabase
-      .channel("leads-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, async (payload) => {
+    return subscribeLive("leads-live", (channel) =>
+      channel.on("postgres_changes", { event: "*", schema: "public", table: "leads" }, async (payload) => {
         if (payload.eventType === "DELETE") {
           const id = (payload.old as { id?: string }).id;
           if (id) setLeads((current) => current.filter((lead) => lead.id !== id));
@@ -113,11 +112,8 @@ export function LeadsWorkspace() {
         if (isNew && payload.eventType === "INSERT" && row.owner_id !== profile.id) {
           showToast(`New lead: ${row.company_name || row.full_name}`);
         }
-      })
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(channel);
-    };
+      }),
+    );
   }, [allowed, profile.id, showToast]);
 
   useEffect(() => {

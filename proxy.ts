@@ -30,13 +30,15 @@ async function refresh() {
   }
 }
 
-/** Rules for this request. After the first load, stale rules are served while fresh ones load in the background. */
+/**
+ * Rules for this request, re-read once they are older than TTL_MS. The request waits for the
+ * re-read (at most 2 s, once a minute per server): a refresh left running in the background is
+ * paused when the response is sent on Vercel, so it never finished and new redirects never applied.
+ */
 async function currentRules() {
-  if (!rules) {
+  if (!rules || Date.now() - fetchedAt > TTL_MS) {
     refreshing ??= refresh();
     await refreshing;
-  } else if (Date.now() - fetchedAt > TTL_MS) {
-    refreshing ??= refresh();
   }
   return rules ?? new Map<string, Rule>();
 }
