@@ -2,7 +2,8 @@
 //
 // Callers:
 //   - the nightly pg_cron job, with the `x-seo-sync-secret` header (action "sync" only);
-//   - the admin SEO screens, with the signed-in user's JWT (active admins only).
+//   - the admin SEO screens, with the signed-in user's JWT (active admins only);
+//   - the admin Visitor Analytics screen (actions "visitors" and "realtime": admins and Marketing).
 //
 // Function secrets:
 //   GOOGLE_SERVICE_ACCOUNT_JSON  the service account key file (JSON) from Google Cloud
@@ -13,6 +14,7 @@
 //     ga4PropertyId: "123456789", pathPrefix: "/aletindia" }
 //
 // Actions (POST JSON body): { action: "status" } | { action: "sync", days?: number } | { action: "submit_sitemap" }
+//   | { action: "visitors", days?: number, site?: "live" | "dev" | "all" } | { action: "realtime" }
 
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
 
@@ -83,15 +85,21 @@ async function googleToken(account: ServiceAccount) {
 }
 
 async function google<T>(token: string, url: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
-  const response = await fetch(url, {
-    method: init.method ?? 'GET',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: init.body === undefined ? undefined : JSON.stringify(init.body),
-  })
-  const text = await response.text()
-  const body = text ? JSON.parse(text) : {}
-  if (!response.ok) throw new Error(body?.error?.message ?? `Google returned ${response.status}`)
-  return body as T
+  for (let attempt = 0; ; attempt += 1) {
+    const response = await fetch(url, {
+      method: init.method ?? 'GET',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: init.body === undefined ? undefined : JSON.stringify(init.body),
+    })
+    const text = await response.text()
+    const body = text ? JSON.parse(text) : {}
+    if (response.ok) return body as T
+    const message: string = body?.error?.message ?? `Google returned ${response.status}`
+    // GA4 allows about 10 requests at once per property: when it is busy, wait a moment and try again.
+    const busy = response.status === 429 || /concurrent requests quota/i.test(message)
+    if (!busy || attempt >= 4) throw new Error(message)
+    await new Promise((resolve) => setTimeout(resolve, 800 * (attempt + 1)))
+  }
 }
 
 // ---------- Dates and paths ----------
@@ -247,6 +255,110 @@ async function sync(db: SupabaseClient, token: string, settings: GoogleSettings,
   return daily.size + pages.size + queries.length
 }
 
+// ---------- Visitor analytics: read live from GA4 for the admin Visitor Analytics screen ----------
+
+type GaReport = { dimensionHeaders?: { name: string }[]; metricHeaders?: { name: string }[]; rows?: GaRow[] }
+type ReportSpec = { name: string; dimensions: string[]; metrics: string[]; limit?: number; compare?: boolean; byDimension?: boolean }
+
+/** Which website's visits to count: GA4 gets hits from the live site and from the dev site. */
+const SITE_HOSTS: Record<string, string[]> = {
+  live: ['aletindia.com', 'www.aletindia.com'],
+  dev: ['aletindia-dev.vercel.app'],
+}
+
+const VISITOR_REPORTS: ReportSpec[] = [
+  {
+    name: 'totals',
+    dimensions: [],
+    metrics: ['activeUsers', 'newUsers', 'sessions', 'screenPageViews', 'averageSessionDuration', 'engagementRate', 'bounceRate', 'engagedSessions'],
+    compare: true,
+  },
+  { name: 'trend', dimensions: ['date'], metrics: ['activeUsers', 'sessions', 'screenPageViews'], compare: true, byDimension: true, limit: 1000 },
+  { name: 'countries', dimensions: ['country', 'countryId'], metrics: ['activeUsers', 'sessions', 'newUsers'], limit: 250 },
+  { name: 'regions', dimensions: ['region', 'country'], metrics: ['activeUsers', 'sessions'], limit: 50 },
+  { name: 'cities', dimensions: ['city', 'country'], metrics: ['activeUsers', 'sessions'], limit: 50 },
+  { name: 'devices', dimensions: ['deviceCategory'], metrics: ['activeUsers', 'sessions', 'engagementRate'] },
+  { name: 'os', dimensions: ['operatingSystem'], metrics: ['activeUsers', 'sessions'], limit: 20 },
+  { name: 'browsers', dimensions: ['browser'], metrics: ['activeUsers', 'sessions'], limit: 20 },
+  { name: 'brands', dimensions: ['mobileDeviceBranding'], metrics: ['activeUsers'], limit: 20 },
+  { name: 'screens', dimensions: ['screenResolution'], metrics: ['activeUsers'], limit: 20 },
+  { name: 'languages', dimensions: ['language'], metrics: ['activeUsers'], limit: 20 },
+  { name: 'channels', dimensions: ['sessionDefaultChannelGroup'], metrics: ['sessions', 'activeUsers', 'engagementRate'] },
+  { name: 'sources', dimensions: ['sessionSource', 'sessionMedium'], metrics: ['sessions', 'activeUsers'], limit: 30 },
+  { name: 'pages', dimensions: ['pagePath'], metrics: ['screenPageViews', 'activeUsers', 'userEngagementDuration'], limit: 50 },
+  { name: 'landing', dimensions: ['landingPage'], metrics: ['sessions', 'engagementRate', 'newUsers'], limit: 30 },
+  { name: 'visitorType', dimensions: ['newVsReturning'], metrics: ['activeUsers', 'sessions'] },
+  { name: 'hours', dimensions: ['dayOfWeek', 'hour'], metrics: ['sessions'], limit: 200 },
+  { name: 'events', dimensions: ['eventName'], metrics: ['eventCount', 'activeUsers'], limit: 25 },
+]
+
+/** GA4 rows as plain objects: dimension names → text, metric names → numbers. */
+function tidy(report: GaReport) {
+  const dimensions = (report.dimensionHeaders ?? []).map((header) => header.name)
+  const metrics = (report.metricHeaders ?? []).map((header) => header.name)
+  return (report.rows ?? []).map((row) => {
+    const out: Record<string, string | number> = {}
+    dimensions.forEach((name, index) => (out[name] = row.dimensionValues[index]?.value ?? ''))
+    metrics.forEach((name, index) => (out[name] = Number(row.metricValues[index]?.value ?? 0)))
+    return out
+  })
+}
+
+/** Every visitor report for the last `days` days (today included, in the GA4 property's time zone) and the same length before. */
+async function visitors(token: string, property: string, days: number, site: string) {
+  const hosts = SITE_HOSTS[site]
+  const filter = hosts ? { filter: { fieldName: 'hostName', inListFilter: { values: hosts } } } : undefined
+  const current = { startDate: `${days - 1}daysAgo`, endDate: 'today', name: 'current' }
+  const previous = { startDate: `${2 * days - 1}daysAgo`, endDate: `${days}daysAgo`, name: 'previous' }
+  const requests = VISITOR_REPORTS.map((spec) => ({
+    dateRanges: spec.compare ? [current, previous] : [current],
+    dimensions: spec.dimensions.map((name) => ({ name })),
+    metrics: spec.metrics.map((name) => ({ name })),
+    ...(filter ? { dimensionFilter: filter } : {}),
+    limit: spec.limit ?? 100,
+    orderBys: spec.byDimension
+      ? spec.dimensions.map((dimensionName) => ({ dimension: { dimensionName } }))
+      : [{ metric: { metricName: spec.metrics[0] }, desc: true }],
+  }))
+  const url = `https://analyticsdata.googleapis.com/v1beta/properties/${encodeURIComponent(property)}:batchRunReports`
+  // GA4 takes at most 5 reports per batch and about 10 at once per property, so the batches go one after another.
+  const reports: GaReport[] = []
+  for (let index = 0; index < requests.length; index += 5) {
+    const answer = await google<{ reports?: GaReport[] }>(token, url, { method: 'POST', body: { requests: requests.slice(index, index + 5) } })
+    reports.push(...(answer.reports ?? []))
+  }
+  return Object.fromEntries(VISITOR_REPORTS.map((spec, index) => [spec.name, tidy(reports[index] ?? {})]))
+}
+
+/** Who is on the website in the last 30 minutes (GA4 realtime counts every site on the property). */
+async function realtime(token: string, property: string) {
+  const url = `https://analyticsdata.googleapis.com/v1beta/properties/${encodeURIComponent(property)}:runRealtimeReport`
+  const run = (dimensions: string[], limit: number) =>
+    google<GaReport>(token, url, {
+      method: 'POST',
+      body: {
+        dimensions: dimensions.map((name) => ({ name })),
+        metrics: [{ name: 'activeUsers' }],
+        limit,
+        orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+      },
+    })
+  // Two requests: a visitor has one country and one device, so country × device rows add up to the total.
+  const [places, pages] = await Promise.all([run(['country', 'deviceCategory'], 250), run(['unifiedScreenName'], 10)])
+  const rows = tidy(places)
+  const sumBy = (key: string) => {
+    const totals = new Map<string, number>()
+    for (const row of rows) totals.set(String(row[key]), (totals.get(String(row[key])) ?? 0) + Number(row.activeUsers))
+    return [...totals].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([value, activeUsers]) => ({ [key]: value, activeUsers }))
+  }
+  return {
+    activeUsers: rows.reduce((sum, row) => sum + Number(row.activeUsers), 0),
+    countries: sumBy('country'),
+    devices: sumBy('deviceCategory'),
+    pages: tidy(pages),
+  }
+}
+
 // ---------- Status and sitemap ----------
 
 async function status(token: string | null, settings: GoogleSettings, account: ServiceAccount | null, signInError: string | null) {
@@ -296,7 +408,9 @@ Deno.serve(async (request) => {
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
     auth: { persistSession: false, autoRefreshToken: false },
   })
-  const body = (await request.json().catch(() => ({}))) as { action?: string; days?: number }
+  const body = (await request.json().catch(() => ({}))) as { action?: string; days?: number; site?: string }
+  // The visitor screens are open to Marketing too; everything else here is admin-only.
+  const visitorAction = body.action === 'visitors' || body.action === 'realtime'
 
   const sent = request.headers.get('x-seo-sync-secret') ?? ''
   let scheduled = false
@@ -310,7 +424,8 @@ Deno.serve(async (request) => {
     const { data: caller } = await db.auth.getUser(jwt)
     if (!caller.user) return reply({ error: 'Please sign in again.' }, 401)
     const { data: profile } = await db.from('profiles').select('role,active').eq('id', caller.user.id).single()
-    if (!profile?.active || profile.role !== 'admin') return reply({ error: 'Only admins can manage SEO.' }, 403)
+    const allowed = profile?.active && (profile.role === 'admin' || (visitorAction && profile.role === 'marketing'))
+    if (!allowed) return reply({ error: visitorAction ? 'Only Admin and Marketing can see visitor analytics.' : 'Only admins can manage SEO.' }, 403)
   }
   const action = scheduled ? 'sync' : body.action ?? 'status'
 
@@ -329,6 +444,19 @@ Deno.serve(async (request) => {
 
   if (action === 'status') return reply(await status(token, settings, account, signInError))
   if (!token) return reply({ error: signInError ?? 'Google is not connected yet: GOOGLE_SERVICE_ACCOUNT_JSON is not set.' }, 400)
+
+  if (visitorAction) {
+    const property = settings.ga4PropertyId?.trim()
+    if (!property) return reply({ error: 'Add the GA4 property in SEO Settings first.' }, 400)
+    try {
+      if (action === 'realtime') return reply(await realtime(token, property))
+      const days = Math.min(Math.max(Math.floor(Number(body.days) || 28), 1), 400)
+      const site = body.site === 'dev' || body.site === 'all' ? body.site : 'live'
+      return reply({ days, site, reports: await visitors(token, property, days, site) })
+    } catch (error) {
+      return reply({ error: (error as Error).message }, 400)
+    }
+  }
 
   if (action === 'submit_sitemap') {
     const site = settings.searchConsoleSite?.trim()

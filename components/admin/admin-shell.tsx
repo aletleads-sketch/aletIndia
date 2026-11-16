@@ -12,6 +12,7 @@ import { initials, memberName, type Profile } from "@/lib/leads";
 import {
   BlogIcon,
   BriefcaseIcon,
+  ChartIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   ClientIcon,
@@ -53,6 +54,8 @@ type NavItem = {
   also?: string[];
   children?: readonly NavLink[];
   adminOnly?: boolean;
+  /** Only these roles see the item. */
+  roles?: readonly Profile["role"][];
 };
 
 /** The Content Studio menu, in the order of the client's mockup. */
@@ -101,6 +104,7 @@ const CONTENT_NAV: NavItem[] = [
 
 const BUSINESS_NAV: NavItem[] = [
   { label: "Leads", href: "/admin/leads", icon: InboxIcon },
+  { label: "Visitor Analytics", href: "/admin/analytics", icon: ChartIcon, roles: ["admin", "marketing"] },
   { label: "Users & Roles", href: "/admin/team", icon: ClientIcon, adminOnly: true },
 ];
 
@@ -117,6 +121,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [team, setTeam] = useState<Profile[]>([]);
   const [problem, setProblem] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Opening the admin from a public page keeps the page's Google Analytics tag: switch it off so admin work is not counted as visits.
+    const tags = document.querySelectorAll<HTMLScriptElement>('script[src*="googletagmanager.com/gtag/js?id="]');
+    tags.forEach((tag) => {
+      const id = new URL(tag.src).searchParams.get("id");
+      if (id) (window as unknown as Record<string, boolean>)[`ga-disable-${id}`] = true;
+    });
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -203,7 +216,7 @@ function Frame({ children }: { children: ReactNode }) {
   }, []);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const content = ["admin", "editor", "marketing"].includes(profile.role);
-  const allowed = (item: NavItem) => !item.adminOnly || profile.role === "admin";
+  const allowed = (item: NavItem) => (!item.adminOnly || profile.role === "admin") && (!item.roles || item.roles.includes(profile.role));
   const groups = [
     { title: "Website", items: content ? CONTENT_NAV.filter(allowed) : [] },
     { title: "Business", items: BUSINESS_NAV.filter(allowed) },

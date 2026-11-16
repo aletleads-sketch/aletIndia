@@ -12,7 +12,8 @@ export function Analytics({ settings }: { settings: AnalyticsSettings }) {
         <>
           <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga}`} strategy="afterInteractive" />
           <Script id="ga-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga}');`}
+            {/* Admin screens and local testing are not website visitors: GA's own switch turns them off. */}
+            {`if(/\\/admin(\\/|$)/.test(location.pathname)||/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)){window['ga-disable-${ga}']=true;}window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga}');`}
           </Script>
         </>
       ) : null}
