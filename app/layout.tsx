@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { Archivo, Montserrat, Plus_Jakarta_Sans, Sacramento, Space_Grotesk, Syne } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { InquireModalProvider } from "@/components/inquire-modal";
 import { NavigationProgress } from "@/components/navigation-progress";
+import { PreviewBar } from "@/components/preview-bar";
 import { SiteContentProvider } from "@/components/site-content-provider";
 import { loadSiteContent } from "@/lib/site-content";
 import { NOINDEX, SITE_URL } from "@/lib/seo";
@@ -82,7 +84,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [schema, content, seoSettings] = await Promise.all([loadSchemaSettings(), loadSiteContent(), loadSeoSettings()]);
+  const [schema, content, seoSettings, draft] = await Promise.all([loadSchemaSettings(), loadSiteContent(), loadSeoSettings(), draftMode()]);
   const { company, services, caseStudies, testimonials, careers, showcase, inquireForm, brand } = content;
   return (
     <html
@@ -100,6 +102,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <main className="flex-1">{children}</main>
             <Footer />
           </InquireModalProvider>
+          {draft.isEnabled ? <PreviewBar /> : null}
         </SiteContentProvider>
       </body>
     </html>

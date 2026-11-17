@@ -2,15 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CustomPage } from "@/components/custom-page";
+import { ServicePage, serviceMetadata } from "@/components/service-page";
 import { PermanentClientRedirect } from "@/components/permanent-client-redirect";
 import blogSlugs from "@/lib/blog-slugs.json";
 import { getBlogPost } from "@/lib/blogs";
 import { canonical } from "@/lib/seo";
 import { withSeoOverrides } from "@/lib/seo-overrides";
-import { loadCustomPage } from "@/lib/site-content";
+import { loadCustomPage, loadSiteContent } from "@/lib/site-content";
 import { assetPath } from "@/lib/site-path";
 
 const slugSet = new Set(blogSlugs as string[]);
+
+/** A service added in the admin whose page address has no hand-built page (those win, being more specific). */
+async function findService(slug: string) {
+  const { services } = await loadSiteContent();
+  return services.find((service) => service.slug === slug) ?? null;
+}
 
 export function generateStaticParams() {
   return (blogSlugs as string[]).map((slug) => ({ slug }));
@@ -23,6 +30,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   if (!slugSet.has(slug)) {
+    const service = await findService(slug);
+    if (service) return withSeoOverrides(`/${slug}`, await serviceMetadata(service.id));
     // A page made in the admin (Pages → Add Page).
     const page = await loadCustomPage(`/${slug}`);
     if (!page) return { title: "Not found — Alet India" };
@@ -49,6 +58,8 @@ export default async function LegacyBlogSlugRedirect({
 }) {
   const { slug } = await params;
   if (!slugSet.has(slug)) {
+    const service = await findService(slug);
+    if (service) return <ServicePage id={service.id} />;
     const page = await loadCustomPage(`/${slug}`);
     if (!page) notFound();
     return <CustomPage name={page.name} blocks={page.blocks} />;

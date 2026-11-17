@@ -7,7 +7,7 @@ import { FieldShell, ImageInput, LinkInput, ListEditor, ParagraphsInput, TextInp
 import { EyeIcon, GripIcon, PlusIcon, SaveIcon, TrashIcon } from "@/components/admin/icons";
 import { Loader } from "@/components/admin/loader";
 import { Notice, StatusPill, StudioHeader, card, formatDate, formatTime, primaryButton, secondaryButton, selectClass } from "@/components/admin/studio-ui";
-import { CONTENT_ROLES, publishContent } from "@/lib/content-admin";
+import { CONTENT_ROLES, openPreview, publishContent } from "@/lib/content-admin";
 import { BLOCKS, type Button, type Picture } from "@/lib/custom-pages";
 import { blockTitle, deleteCustomPage, loadCustomPageForEdit, newBlock, saveBlocks, saveCustomPageInfo, type CustomPageInfo, type EditableBlock } from "@/lib/custom-pages-admin";
 import { siteHref } from "@/lib/seo-admin";
@@ -217,7 +217,7 @@ export function CustomPageEditor({ path }: { path: string }) {
           subtitle={`Manage the content and sections of this page. Address: ${path}`}
           actions={
             <>
-              <a href={siteHref(path)} target="_blank" rel="noreferrer" className={secondaryButton}>
+              <a href={siteHref(path)} target="_blank" rel="noreferrer" onClick={(event) => { event.preventDefault(); void openPreview(siteHref(path), changed); }} className={secondaryButton}>
                 <EyeIcon className="h-4 w-4" /> Preview
               </a>
               <button type="button" onClick={() => void submit()} disabled={!changed || busy} className={primaryButton}>

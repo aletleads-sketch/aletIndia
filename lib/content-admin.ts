@@ -123,6 +123,22 @@ export async function uploadMedia(file: File): Promise<{ url: string | null; err
   return { url: storage.getPublicUrl(data.path).data.publicUrl, error: null };
 }
 
+/**
+ * Opens a website page in a new tab in preview mode, so it also shows drafts and rows waiting for
+ * review (only in this browser). Call it straight from the click, so the browser allows the new tab.
+ * `unsaved`: the editor has changes the preview cannot show yet; ask first.
+ */
+export async function openPreview(href: string, unsaved = false) {
+  if (unsaved && !window.confirm("The preview shows what is saved, and you have unsaved changes. Save first to see them (keep the status on “draft” to keep it off the website). Open the preview anyway?")) return;
+  const tab = window.open("", "_blank");
+  if (tab) tab.opener = null;
+  const { data } = await getSupabase().auth.getSession();
+  const token = data.session?.access_token;
+  if (token) await fetch(`${BASE_PATH}/api/content/preview`, { method: "POST", headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
+  if (tab) tab.location.href = href;
+  else window.open(href, "_blank", "noopener");
+}
+
 /** Where to look at a section on the website. */
 export function previewPath(pagePath: string) {
   if (pagePath === "_shared") return "/";

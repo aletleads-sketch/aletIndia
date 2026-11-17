@@ -8,7 +8,7 @@ import { ArrowLeftIcon, CheckIcon, EyeIcon, PencilIcon, PlusIcon, SearchIcon, Tr
 import { Loader } from "@/components/admin/loader";
 import { RowMenu } from "@/components/admin/studio-dashboard";
 import { Notice, StatusPill, StudioHeader, Thumb, card, formatDate, formatTime, primaryButton, secondaryButton, selectClass } from "@/components/admin/studio-ui";
-import { CONTENT_ROLES, publishContent } from "@/lib/content-admin";
+import { CONTENT_ROLES, openPreview, publishContent } from "@/lib/content-admin";
 import { LIST_GROUPS, LIST_SCHEMAS, type ListSchema, type Spec } from "@/lib/list-schemas";
 import { siteHref } from "@/lib/seo-admin";
 import { getSupabase } from "@/lib/supabase-browser";
@@ -59,7 +59,8 @@ function SpecInput({ spec, value, onChange, options }: { spec: Spec; value: unkn
       );
     }
     case "image":
-      return <ImageInput value={{ src: String(value ?? ""), alt: "" }} onChange={(next) => onChange(next.src || null)} />;
+      // A picture with a description column is drawn by fieldInput; here there is nowhere to keep one.
+      return <ImageInput value={{ src: String(value ?? ""), alt: "" }} onChange={(next) => onChange(next.src || null)} noAlt />;
     case "lines":
       return <ParagraphsInput value={asArray<string>(value)} onChange={onChange} />;
     case "images":
@@ -69,7 +70,7 @@ function SpecInput({ spec, value, onChange, options }: { spec: Spec; value: unkn
           onChange={onChange}
           blank={() => ""}
           addLabel="Add a picture"
-          render={(item, update) => <ImageInput value={{ src: item, alt: "" }} onChange={(next) => update(next.src)} />}
+          render={(item, update) => <ImageInput value={{ src: item, alt: "" }} onChange={(next) => update(next.src)} noAlt />}
         />
       ) : (
         <ListEditor
@@ -184,7 +185,10 @@ export function WebsiteListsWorkspace({ table, initialId, startNew, initialStatu
   const [busy, setBusy] = useState(false);
   const [picked, setPicked] = useState<Set<string>>(new Set());
 
-  const columns = useMemo(() => ["id", "updated_at", ...schema.fields.map((field) => field.key)].join(","), [schema]);
+  const columns = useMemo(
+    () => ["id", "updated_at", ...schema.fields.flatMap((field) => (field.type === "image" && field.alt ? [field.key, field.alt] : [field.key]))].join(","),
+    [schema],
+  );
 
   const setUrl = (id: string | null) => window.history.replaceState(null, "", `${window.location.pathname}${id ? `?id=${id}` : ""}`);
 
@@ -369,18 +373,21 @@ export function WebsiteListsWorkspace({ table, initialId, startNew, initialStatu
   const draftTitle = draft ? (draft.id ? String(draft[schema.title] || "(no name)") : `New ${schema.noun}`) : "";
   const mainFields = schema.fields.filter((field) => !SIDE_KEYS.has(field.key));
   const sideFields = schema.fields.filter((field) => SIDE_KEYS.has(field.key));
+  const edit = (values: Row) => {
+    setNotice(null);
+    setError(null);
+    setDraft((current) => (current ? { ...current, ...values } : current));
+  };
   const fieldInput = (field: Spec) => (
     <Field key={field.key} spec={field}>
-      <SpecInput
-        spec={field}
-        value={draft?.[field.key]}
-        options={options}
-        onChange={(next) => {
-          setNotice(null);
-          setError(null);
-          setDraft((current) => (current ? { ...current, [field.key]: next } : current));
-        }}
-      />
+      {field.type === "image" && field.alt ? (
+        <ImageInput
+          value={{ src: String(draft?.[field.key] ?? ""), alt: String(draft?.[field.alt] ?? "") }}
+          onChange={(next) => edit({ [field.key]: next.src || null, [field.alt!]: next.alt || null })}
+        />
+      ) : (
+        <SpecInput spec={field} value={draft?.[field.key]} options={options} onChange={(next) => edit({ [field.key]: next })} />
+      )}
     </Field>
   );
 
@@ -397,7 +404,7 @@ export function WebsiteListsWorkspace({ table, initialId, startNew, initialStatu
                 <ArrowLeftIcon className="h-4 w-4" /> All {schema.label}
               </button>
               {draft.id ? (
-                <a href={siteHref(schema.page(draft))} target="_blank" rel="noreferrer" className={secondaryButton}>
+                <a href={siteHref(schema.page(draft))} target="_blank" rel="noreferrer" onClick={(event) => { event.preventDefault(); void openPreview(siteHref(schema.page(draft)), changed); }} className={secondaryButton}>
                   <EyeIcon className="h-4 w-4" /> Preview
                 </a>
               ) : null}

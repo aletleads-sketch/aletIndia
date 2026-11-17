@@ -3,7 +3,9 @@
  * A spec describes one value: a column of the row, or a part of a JSON column.
  */
 export type Spec =
-  | { key: string; label: string; type: "text" | "textarea" | "html" | "number" | "boolean" | "image" | "lines" | "date"; hint?: string }
+  | { key: string; label: string; type: "text" | "textarea" | "html" | "number" | "boolean" | "lines" | "date"; hint?: string }
+  /** A picture path; `alt` names the column that stores its description (no description box without one). */
+  | { key: string; label: string; type: "image"; alt?: string; hint?: string }
   | { key: string; label: string; type: "select"; options: string[]; hint?: string }
   | { key: string; label: string; type: "object"; fields: Spec[]; hint?: string }
   | { key: string; label: string; type: "list"; fields: Spec[]; titleKey?: string; hint?: string }
@@ -75,12 +77,11 @@ export const LIST_SCHEMAS: ListSchema[] = [
     fields: [
       { key: "name", label: "Name", type: "text" },
       { key: "nav_label", label: "Name in menus", type: "text" },
-      { key: "slug", label: "Page address", type: "text", hint: "e.g. mobile-app-development → /mobile-app-development. A new service also needs its page built by a developer." },
+      { key: "slug", label: "Page address", type: "text", hint: "e.g. mobile-app-development → /mobile-app-development. A new service gets its page automatically." },
       { key: "service_key", label: "Internal key", type: "text", hint: "Used by the code; do not change for existing services." },
       { key: "group_name", label: "Group", type: "select", options: ["Development", "Designing", "Digital Marketing"] },
       { key: "summary", label: "Short description (cards)", type: "textarea" },
-      { key: "hero_image_url", label: "Card picture", type: "image" },
-      { key: "hero_image_alt", label: "Card picture description", type: "text" },
+      { key: "hero_image_url", label: "Card picture", type: "image", alt: "hero_image_alt" },
       { key: "channels", label: "Sub-services (footer and cards)", type: "lines" },
       {
         key: "body",
@@ -160,7 +161,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
       { key: "industry", label: "Industry", type: "text" },
       { key: "title", label: "Heading", type: "text" },
       { key: "summary", label: "Summary", type: "textarea" },
-      { key: "cover_image_url", label: "Cover picture", type: "image" },
+      { key: "cover_image_url", label: "Cover picture", type: "image", alt: "cover_image_alt" },
       {
         key: "data",
         label: "Study",
@@ -223,8 +224,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
       { key: "author_name", label: "Author", type: "text" },
       { key: "category", label: "Main category", type: "text" },
       { key: "categories", label: "Categories (used by the filters)", type: "lines" },
-      { key: "cover_image_url", label: "Cover picture", type: "image" },
-      { key: "cover_image_alt", label: "Cover picture description", type: "text" },
+      { key: "cover_image_url", label: "Cover picture", type: "image", alt: "cover_image_alt" },
       {
         key: "content",
         label: "Article",
@@ -285,7 +285,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     blank: { status: "draft", sort_order: 100 },
     fields: [
       { key: "client_name", label: "Client", type: "text" },
-      { key: "logo_url", label: "Logo", type: "image" },
+      { key: "logo_url", label: "Logo", type: "image", alt: "logo_alt" },
       status,
       order,
     ],
@@ -300,7 +300,7 @@ export const LIST_SCHEMAS: ListSchema[] = [
     blank: { status: "draft", sort_order: 100 },
     fields: [
       { key: "name", label: "Name", type: "text" },
-      { key: "image_url", label: "Picture", type: "image" },
+      { key: "image_url", label: "Picture", type: "image", alt: "image_alt" },
       status,
       order,
     ],

@@ -22,6 +22,7 @@ import { aliDifferenceMarkup } from "@/lib/ali-difference-html";
 import {
   CONTENT_ROLES,
   loadEditablePages,
+  openPreview,
   previewPath,
   publishContent,
   saveCompanyData,
@@ -458,7 +459,7 @@ export function WebsiteContentWorkspace({ initialPage = "/", initialSection, fix
                 </select>
               ) : null}
               {!settings ? (
-                <a href={siteHref(previewPath(page?.path ?? "/"))} target="_blank" rel="noreferrer" className={secondaryButton}>
+                <a href={siteHref(previewPath(page?.path ?? "/"))} target="_blank" rel="noreferrer" onClick={(event) => { event.preventDefault(); void openPreview(siteHref(previewPath(page?.path ?? "/")), changed); }} className={secondaryButton}>
                   <EyeIcon className="h-4 w-4" /> Preview
                 </a>
               ) : null}

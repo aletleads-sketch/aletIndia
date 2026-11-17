@@ -107,8 +107,8 @@ export function ParagraphsInput({ value, onChange, addLabel = "Add a line" }: { 
 /** Shows a site path through this admin's origin, and full links as they are. */
 const previewSrc = (src: string) => (src.startsWith("/") ? siteHref(src) : src);
 
-/** `stacked`: the picture full width on top, for a narrow side column. */
-export function ImageInput({ value, onChange, stacked = false }: { value: Image; onChange: (value: Image) => void; stacked?: boolean }) {
+/** `stacked`: the picture full width on top, for a narrow side column. `noAlt`: hide the description box (nowhere to store it). */
+export function ImageInput({ value, onChange, stacked = false, noAlt = false }: { value: Image; onChange: (value: Image) => void; stacked?: boolean; noAlt?: boolean }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -145,7 +145,9 @@ export function ImageInput({ value, onChange, stacked = false }: { value: Image;
           placeholder="/images/… or https://…"
           className={`${inputClass} font-mono text-xs`}
         />
-        <input value={value.alt} onChange={(event) => onChange({ ...value, alt: event.target.value })} placeholder="Short description of the picture (for Google and screen readers)" className={inputClass} />
+        {noAlt ? null : (
+          <input value={value.alt ?? ""} onChange={(event) => onChange({ ...value, alt: event.target.value })} placeholder="Short description of the picture (for Google and screen readers)" className={inputClass} />
+        )}
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" className={smallButton} disabled={uploading} onClick={() => fileRef.current?.click()}>
             {uploading ? "Uploading…" : "Upload a new picture"}
@@ -246,7 +248,7 @@ export function ItemsInput({ value, template, onChange }: { value: Card[]; templ
               return (
                 <div key={key}>
                   <p className="mb-1 text-xs font-semibold text-[#5b6b85]">{label}</p>
-                  <ImageInput value={{ src: String(part ?? ""), alt: "" }} onChange={(next) => update({ ...card, [key]: next.src })} />
+                  <ImageInput value={{ src: String(part ?? ""), alt: "" }} onChange={(next) => update({ ...card, [key]: next.src })} noAlt />
                 </div>
               );
             }

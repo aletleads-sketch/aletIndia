@@ -1,3 +1,4 @@
+import { cookies, draftMode } from "next/headers";
 import { cache } from "react";
 import * as code from "@/lib/content";
 import { careers as codeCareers, serviceDetails as codeServiceDetails, serviceVisuals as codeServiceVisuals } from "@/lib/pages";
@@ -7,6 +8,7 @@ import { caseStudyIndexEntries, demoCaseStudiesResolved, indexFrom, type CaseStu
 import { blogPosts as codeBlogPosts, type BlogPost } from "@/lib/blogs";
 import { mergeFields, type SectionId, type SectionValues } from "@/lib/section-fields";
 import { CUSTOM_PAGE_TYPE } from "@/lib/custom-pages";
+import { PREVIEW_COOKIE } from "@/lib/preview-shared";
 import { DEFAULT_BRAND, SITE_CONTENT_TAG } from "@/lib/site-content-shared";
 import type { MenuLink, PageSection, SiteContent } from "@/lib/site-content-shared";
 
@@ -19,17 +21,40 @@ export { SITE_CONTENT_TAG };
  * so the website never shows a blank section.
  */
 async function read<T>(table: string, query: string): Promise<T[] | null> {
+  const preview = await previewToken();
+  if (preview) {
+    // Preview: drafts and rows waiting for review too, read with the editor's sign-in (the database
+    // shows those only to content editors). Falls back to the public read if the sign-in has run out.
+    const rows = await readFrom<T>(table, query.replace("status=eq.published", "status=in.(published,draft,review)"), preview);
+    if (rows !== undefined) return rows;
+  }
+  return (await readFrom<T>(table, query, null)) ?? null;
+}
+
+/** The editor's access token while the admin's preview mode is on in this browser, else null. */
+async function previewToken() {
+  try {
+    if (!(await draftMode()).isEnabled) return null;
+    return (await cookies()).get(PREVIEW_COOKIE)?.value ?? null;
+  } catch {
+    // Outside a request (build time): no preview.
+    return null;
+  }
+}
+
+/** Rows of a table (null when there are none), or undefined when the request failed. */
+async function readFrom<T>(table: string, query: string, token: string | null): Promise<T[] | null | undefined> {
   try {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
-      headers: { apikey: SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}` },
-      next: { revalidate: 3600, tags: [SITE_CONTENT_TAG] },
+      headers: { apikey: SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${token ?? SUPABASE_PUBLISHABLE_KEY}` },
+      ...(token ? { cache: "no-store" as const } : { next: { revalidate: 3600, tags: [SITE_CONTENT_TAG] } }),
       signal: AbortSignal.timeout(5000),
     });
-    if (!response.ok) return null;
+    if (!response.ok) return token ? undefined : null;
     const rows = (await response.json()) as T[];
     return Array.isArray(rows) && rows.length ? rows : null;
   } catch {
-    return null;
+    return token ? undefined : null;
   }
 }
 
@@ -90,6 +115,40 @@ const menuLinks = (rows: MenuRow[] | null, menu: string, fallback: MenuLink[]): 
   return links.length ? links.map((row) => ({ label: row.label, href: row.href ?? "/" })) : fallback;
 };
 
+const strings = (value: unknown) => (Array.isArray(value) ? value.filter((item): item is string => typeof item === "string" && item.trim() !== "") : []);
+
+/** A service's page text, with every part present (an admin-made service may leave some empty). */
+function completeDetail(detail: Partial<ServiceDetail> | undefined, row: ServiceRow): ServiceDetail {
+  return {
+    eyebrow: detail?.eyebrow || row.name,
+    headline: detail?.headline || row.name,
+    accent: detail?.accent ?? "",
+    intro: detail?.intro || row.summary || "",
+    sections: (Array.isArray(detail?.sections) ? detail.sections : []).map((section) => ({ title: section?.title ?? "", body: strings(section?.body) })),
+    highlights: strings(detail?.highlights),
+    stack: strings(detail?.stack),
+  };
+}
+
+const SERVICE_LAYOUTS = ["split", "immersive", "editorial"] as const;
+const FALLBACK_PICTURE = "/images/pages/developers.jpg";
+
+/** A service's page design, with a layout, two colours, three pictures and a badge always set. */
+function completeVisual(visual: Partial<ServiceVisual> | undefined, row: ServiceRow): ServiceVisual {
+  const pictures = strings(visual?.gallery);
+  const first = pictures[0] || row.hero_image_url || FALLBACK_PICTURE;
+  const theme = strings(visual?.theme);
+  const screens = strings(visual?.screens);
+  return {
+    ...visual,
+    layout: SERVICE_LAYOUTS.includes(visual?.layout as ServiceVisual["layout"]) ? (visual!.layout as ServiceVisual["layout"]) : "split",
+    theme: [theme[0] || "#4f46e5", theme[1] || theme[0] || "#06b6d4"],
+    gallery: [first, pictures[1] || first, pictures[2] || pictures[1] || first],
+    screens: screens.length ? screens : undefined,
+    stat: { value: visual?.stat?.value ?? "", label: visual?.stat?.label ?? "" },
+  };
+}
+
 async function loadAll(): Promise<SiteContent> {
   const [serviceRows, projectRows, faqRows, testimonialRows, logoRows, industryRows, careerRows, menuRows, sectionRows] = await Promise.all([
     read<ServiceRow>("services", `select=service_key,slug,name,nav_label,group_name,summary,hero_image_url,hero_image_alt,channels,body,visual&${published}`),
@@ -128,8 +187,9 @@ async function loadAll(): Promise<SiteContent> {
   const serviceVisuals: Record<string, ServiceVisual> = { ...codeServiceVisuals };
   for (const row of serviceRows ?? []) {
     const id = row.service_key ?? row.slug;
-    if (row.body) serviceDetails[id] = row.body;
-    if (row.visual) serviceVisuals[id] = row.visual;
+    // A service added in the admin may leave parts empty; fill them so its page always renders.
+    serviceDetails[id] = completeDetail(row.body ?? serviceDetails[id], row);
+    serviceVisuals[id] = completeVisual(row.visual ?? serviceVisuals[id], row);
   }
 
   const caseStudies = projectRows
