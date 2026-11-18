@@ -7,6 +7,8 @@ export type Profile = {
   full_name: string | null;
   role: AppRole;
   active: boolean;
+  /** Owners are the only admins who can change other admins (set by a developer). */
+  is_owner?: boolean;
 };
 
 export const ROLE_LABELS: Record<AppRole, string> = {
@@ -247,4 +249,10 @@ export function followUpState(lead: Pick<Lead, "next_follow_up_at" | "status" | 
   if (due < now && due.toDateString() !== now.toDateString()) return "overdue";
   if (due <= endOfToday) return "today";
   return "upcoming";
+}
+
+/** True when the lead has a follow-up due today or already late (what the "Follow-ups due" counter counts). */
+export function followUpDue(lead: Pick<Lead, "next_follow_up_at" | "status" | "deleted_at">, now = new Date()) {
+  const state = followUpState(lead, now);
+  return state === "overdue" || state === "today";
 }

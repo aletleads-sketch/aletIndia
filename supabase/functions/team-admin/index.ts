@@ -44,7 +44,7 @@ Deno.serve(async (request) => {
   const token = (request.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '')
   const { data: caller } = await admin.auth.getUser(token)
   if (!caller.user) return reply({ error: 'Please sign in again.' }, 401)
-  const { data: callerProfile } = await admin.from('profiles').select('role,active').eq('id', caller.user.id).single()
+  const { data: callerProfile } = await admin.from('profiles').select('role,active,is_owner').eq('id', caller.user.id).single()
   if (!callerProfile?.active || callerProfile.role !== 'admin') return reply({ error: 'Only admins can manage the team.' }, 403)
 
   const body = (await request.json().catch(() => null)) as Body | null
@@ -74,7 +74,7 @@ Deno.serve(async (request) => {
       .from('profiles')
       .update({ full_name: fullName, role, active: true })
       .eq('id', created.user.id)
-      .select('id,email,full_name,role,active')
+      .select('id,email,full_name,role,active,is_owner')
       .single()
     if (profileError) return reply({ error: profileError.message }, 500)
     return reply({ member })
@@ -82,6 +82,15 @@ Deno.serve(async (request) => {
 
   if (!body.id) return reply({ error: 'Missing member.' }, 400)
   const isSelf = body.id === caller.user.id
+
+  // Another admin can be switched off, demoted or given a new password only by an owner,
+  // and an owner account only by a developer (so no admin can lock the owners out).
+  if (!isSelf) {
+    const { data: target } = await admin.from('profiles').select('role,is_owner').eq('id', body.id).single()
+    if (!target) return reply({ error: 'Member not found.' }, 404)
+    if (target.is_owner) return reply({ error: 'Owner accounts can only be changed by a developer.' }, 403)
+    if (target.role === 'admin' && !callerProfile.is_owner) return reply({ error: 'Only an owner can change another admin.' }, 403)
+  }
 
   if (body.action === 'update') {
     const patch: Record<string, unknown> = {}
@@ -100,7 +109,7 @@ Deno.serve(async (request) => {
       .from('profiles')
       .update(patch)
       .eq('id', body.id)
-      .select('id,email,full_name,role,active')
+      .select('id,email,full_name,role,active,is_owner')
       .single()
     // Switched-off members keep their session but lose all data access: RLS checks `active`.
     if (error) return reply({ error: error.message }, 400)

@@ -6,6 +6,7 @@ import { Avatar, useAdmin } from "@/components/admin/admin-shell";
 import { ArrowLeftIcon, ChatIcon, ChevronDownIcon, DotsIcon, MailIcon, PaperclipIcon, PhoneIcon, XIcon } from "@/components/admin/icons";
 import { AttachmentChip, AttachmentsPanel, fetchAttachments, removeLeadFiles, uploadLeadFiles } from "@/components/admin/lead-attachments";
 import {
+  followUpDue,
   fullDateTime,
   LEAD_COLUMNS,
   leadTab,
@@ -166,7 +167,9 @@ export function LeadDetail({
   function changeStatus(status: LeadStatus) {
     if (status === lead.status) return;
     if (status === "lost") return setAskLostReason(true);
-    void update({ status, lost_reason: null });
+    // Moving a lead on means the team got back to them, so a follow-up that was due is done.
+    const contacted = status === "contacted" || status === "qualified" || status === "proposal";
+    void update({ status, lost_reason: null, ...(contacted && followUpDue(lead) ? { next_follow_up_at: null } : {}) });
   }
 
   async function deleteForever() {
@@ -279,6 +282,7 @@ export function LeadDetail({
             notes={notes}
             attachments={attachments}
             error={notesError}
+            onUpdate={update}
             onAdded={async () => {
               await Promise.all([loadNotes(), loadAttachments()]);
             }}
@@ -463,6 +467,7 @@ function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch)
         </Field>
         <Field label="Next follow-up">
           <input
+            key={lead.next_follow_up_at ?? "none"}
             type="datetime-local"
             defaultValue={toLocalInput(lead.next_follow_up_at)}
             onBlur={(event) => {
@@ -471,6 +476,11 @@ function Overview({ lead, onUpdate }: { lead: Lead; onUpdate: (patch: LeadPatch)
             }}
             className="rounded-lg border border-[#d4dbe7] px-2 py-1.5 text-sm"
           />
+          {followUpDue(lead) ? (
+            <button type="button" onClick={() => void onUpdate({ next_follow_up_at: null })} className="ml-2 rounded-lg border border-[#1c8a43] px-2.5 py-1.5 text-xs font-semibold text-[#1c7a3e] hover:bg-[#eaf7ef]">
+              Mark done
+            </button>
+          ) : null}
         </Field>
         <Field label="Received">{fullDateTime(lead.created_at)}</Field>
         {lead.won_at ? <Field label="Won on">{fullDateTime(lead.won_at)}</Field> : null}
@@ -523,17 +533,20 @@ function FollowUps({
   notes,
   attachments,
   error,
+  onUpdate,
   onAdded,
 }: {
   lead: Lead;
   notes: LeadNote[];
   attachments: LeadAttachment[];
   error: string | null;
+  onUpdate: (patch: LeadPatch) => Promise<boolean>;
   onAdded: () => Promise<void>;
 }) {
   const { profile, team } = useAdmin();
   const [kind, setKind] = useState<NoteKind>("comment");
   const [body, setBody] = useState("");
+  const [nextFollowUp, setNextFollowUp] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -562,10 +575,15 @@ function FollowUps({
       return setSaveError(insertError?.message ?? "Couldn’t add the follow-up.");
     }
     const uploadErrors = files.length ? await uploadLeadFiles(lead.id, profile.id, files, note.id) : [];
+    // A call, e-mail, meeting or reply is the follow-up itself: it clears a due one, or sets the next date given.
+    const reached = kind !== "comment";
+    if (nextFollowUp) await onUpdate({ next_follow_up_at: new Date(nextFollowUp).toISOString() });
+    else if (reached && followUpDue(lead)) await onUpdate({ next_follow_up_at: null });
     setBusy(false);
     setSaveError(uploadErrors.length ? uploadErrors.join(" ") : null);
     setBody("");
     setKind("comment");
+    setNextFollowUp("");
     setFiles([]);
     await onAdded();
   }
@@ -671,6 +689,15 @@ function FollowUps({
                 setFiles((current) => [...current, ...picked]);
                 event.target.value = "";
               }}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-xs font-semibold text-[#5b6b85]" title="Optional: when to get back to them next">
+            Next follow-up
+            <input
+              type="datetime-local"
+              value={nextFollowUp}
+              onChange={(event) => setNextFollowUp(event.target.value)}
+              className="rounded-xl border border-[#d4dbe7] px-3 py-2.5 text-sm font-normal text-[#0f1b33]"
             />
           </label>
           <button

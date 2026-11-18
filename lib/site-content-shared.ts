@@ -59,7 +59,8 @@ export type CaseStudyItem = {
   mockup?: boolean;
 };
 
-export type NavigationItem = CmsMenuItem & { children: CmsMenuItem[] };
+/** `group` (Development, Designing, Digital Marketing) is set on services added to the menu automatically. */
+export type NavigationItem = CmsMenuItem & { children: (CmsMenuItem & { group?: string })[] };
 
 export type SiteContent = {
   company: typeof code.company;

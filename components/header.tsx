@@ -37,9 +37,10 @@ function groupServiceLinks(children: CmsMenuItem[]) {
     ["Digital Marketing", []],
   ]);
 
-  children.forEach((child) => {
+  children.forEach((child: CmsMenuItem & { group?: string }) => {
     const text = `${child.label} ${child.href}`.toLowerCase();
-    const group = /graphic|ux\/?ui|ui\/?ux|design/.test(text)
+    // Services added in the admin carry their own group; menu rows are grouped by their words.
+    const group = child.group && groups.has(child.group) ? child.group : /graphic|ux\/?ui|ui\/?ux|design/.test(text)
       ? "Designing"
       : /marketing|seo|social|ppc/.test(text)
         ? "Digital Marketing"

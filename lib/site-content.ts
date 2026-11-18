@@ -225,6 +225,13 @@ async function loadAll(): Promise<SiteContent> {
     : codeCareers.openings;
 
   const header = (menuRows ?? []).filter((row) => row.menu === "header" && row.visible);
+  // A service added in the admin shows under Services in the menu without editing Menus.
+  // One already in the menu, shown or hidden there, is left as the menu has it.
+  const inMenu = new Set((menuRows ?? []).filter((row) => row.menu === "header").map((row) => row.href));
+  const missingServiceLinks = (parentId: string) =>
+    services
+      .filter((service) => !inMenu.has(`/${service.slug}`))
+      .map((service, index) => ({ id: `service-${service.id}`, label: service.nav, href: `/${service.slug}`, parent_id: parentId, sort_order: 1000 + index, visible: true, group: service.group }));
   const navigation = header.length
     ? header
         .filter((row) => !row.parent_id)
@@ -235,7 +242,10 @@ async function loadAll(): Promise<SiteContent> {
           parent_id: null,
           sort_order: row.sort_order,
           visible: true,
-          children: header.filter((child) => child.parent_id === row.id).map((child) => ({ id: child.id, label: child.label, href: child.href, parent_id: child.parent_id, sort_order: child.sort_order, visible: child.visible })),
+          children: [
+            ...header.filter((child) => child.parent_id === row.id).map((child) => ({ id: child.id, label: child.label, href: child.href, parent_id: child.parent_id, sort_order: child.sort_order, visible: child.visible })),
+            ...(row.href === "/services" ? missingServiceLinks(row.id) : []),
+          ],
         }))
     : null;  const homeData = (key: string) => data("/", key) ?? {};
   const inquireRow = sections.get("_shared#inquire_form");

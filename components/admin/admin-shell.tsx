@@ -104,6 +104,7 @@ const CONTENT_NAV: NavItem[] = [
 
 const BUSINESS_NAV: NavItem[] = [
   { label: "Leads", href: "/admin/leads", icon: InboxIcon },
+  { label: "Job applications", href: "/admin/applications", icon: BriefcaseIcon, adminOnly: true },
   { label: "Visitor Analytics", href: "/admin/analytics", icon: ChartIcon, roles: ["admin", "marketing"] },
   { label: "Users & Roles", href: "/admin/team", icon: ClientIcon, adminOnly: true },
 ];
@@ -143,7 +144,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     (async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id,email,full_name,role,active")
+        .select("id,email,full_name,role,active,is_owner")
         .eq("id", session.user.id)
         .single();
       if (cancelled) return;
@@ -198,7 +199,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
 /** Active members, used for assignee pickers and author names. */
 async function loadTeam() {
-  const { data } = await getSupabase().from("profiles").select("id,email,full_name,role,active").eq("active", true);
+  const { data } = await getSupabase().from("profiles").select("id,email,full_name,role,active,is_owner").eq("active", true);
   return (data as Profile[] | null)?.sort((a, b) => memberName(a).localeCompare(memberName(b))) ?? null;
 }
 

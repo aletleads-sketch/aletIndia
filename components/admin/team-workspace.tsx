@@ -32,7 +32,7 @@ async function callTeamAdmin(body: TeamAction) {
 }
 
 async function fetchMembers() {
-  const { data, error } = await getSupabase().from("profiles").select("id,email,full_name,role,active");
+  const { data, error } = await getSupabase().from("profiles").select("id,email,full_name,role,active,is_owner");
   const rows = (data as Profile[] | null)?.sort((a, b) => Number(b.active) - Number(a.active) || memberName(a).localeCompare(memberName(b)));
   return { rows: rows ?? null, error: error?.message ?? null };
 }
@@ -110,6 +110,15 @@ export function TeamWorkspace() {
                 key={member.id}
                 member={member}
                 isSelf={member.id === profile.id}
+                lockedReason={
+                  member.id === profile.id
+                    ? null
+                    : member.is_owner
+                      ? "Owner accounts can only be changed by a developer"
+                      : member.role === "admin" && !profile.is_owner
+                        ? "Only an owner can change another admin"
+                        : null
+                }
                 onSave={save}
                 onPassword={() => {
                   setError(null);
@@ -155,18 +164,23 @@ export function TeamWorkspace() {
 function MemberRow({
   member,
   isSelf,
+  lockedReason,
   onSave,
   onPassword,
 }: {
   member: Profile;
   isSelf: boolean;
+  /** Why the viewer may not change this member (another admin, or an owner); null when they may. */
+  lockedReason: string | null;
   onSave: (body: TeamAction, done: string) => Promise<boolean>;
   onPassword: () => void;
 }) {
   const name = memberName(member);
   const [draftName, setDraftName] = useState(member.full_name ?? "");
 
+  const locked = Boolean(lockedReason);
   const saveName = () => {
+    if (locked) return;
     const next = draftName.trim();
     if (next === (member.full_name ?? "")) return;
     void onSave({ action: "update", id: member.id, full_name: next || null }, `Name saved for ${next || member.email}.`);
@@ -184,20 +198,23 @@ function MemberRow({
             if (event.key === "Enter") event.currentTarget.blur();
           }}
           placeholder="Add a name"
+          readOnly={locked}
+          title={lockedReason ?? undefined}
           aria-label={`Name for ${member.email}`}
           className="w-full rounded-lg border border-transparent px-2 py-1 font-semibold outline-none hover:border-[#d4dbe7] focus:border-[#1a63e8]"
         />
         <p className="px-2 text-sm text-[#5b6b85]">
           {member.email}
           {isSelf ? " · You" : ""}
+          {member.is_owner ? <span className="ml-2 rounded-full bg-[#fff4dc] px-2 py-0.5 text-[11px] font-semibold text-[#8a5a00]">Owner</span> : null}
         </p>
       </div>
       <label className="text-sm">
         <span className="sr-only">Role</span>
         <select
           value={member.role}
-          disabled={isSelf}
-          title={isSelf ? "You can’t change your own role" : ROLE_HINTS[member.role]}
+          disabled={isSelf || locked}
+          title={isSelf ? "You can’t change your own role" : (lockedReason ?? ROLE_HINTS[member.role])}
           onChange={(event) => {
             const role = event.target.value as AppRole;
             void onSave({ action: "update", id: member.id, role }, `${name} is now ${ROLE_LABELS[role]}.`);
@@ -214,20 +231,23 @@ function MemberRow({
       <button
         type="button"
         onClick={onPassword}
-        className="rounded-lg border border-[#d4dbe7] px-3 py-2 text-sm font-semibold hover:border-[#b9c6db]"
+        disabled={locked}
+        title={lockedReason ?? undefined}
+        className="rounded-lg border border-[#d4dbe7] px-3 py-2 text-sm font-semibold hover:border-[#b9c6db] disabled:cursor-not-allowed disabled:opacity-50"
       >
         Set password
       </button>
       <button
         type="button"
-        disabled={isSelf}
+        disabled={isSelf || locked}
+        title={lockedReason ?? undefined}
         onClick={() =>
           void onSave(
             { action: "update", id: member.id, active: !member.active },
             member.active ? `${name} is switched off and can’t see any data.` : `${name} can sign in again.`,
           )
         }
-        className={`w-28 rounded-lg px-3 py-2 text-sm font-semibold disabled:invisible ${member.active ? "border border-[#f3c2c2] text-[#c62828] hover:bg-[#fdecec]" : "bg-[#1c8a43] text-white hover:bg-[#177538]"}`}
+        className={`w-28 rounded-lg px-3 py-2 text-sm font-semibold ${isSelf ? "invisible" : "disabled:cursor-not-allowed disabled:opacity-40"} ${member.active ? "border border-[#f3c2c2] text-[#c62828] hover:bg-[#fdecec]" : "bg-[#1c8a43] text-white hover:bg-[#177538]"}`}
       >
         {member.active ? "Switch off" : "Switch on"}
       </button>
