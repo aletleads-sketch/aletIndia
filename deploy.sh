@@ -6,6 +6,9 @@
 set -euo pipefail
 
 HOST="${DEPLOY_HOST:-ubuntu@13.62.47.220}"
+# The production Supabase project (client account). The publishable key is public by design.
+PROD_SUPABASE_URL="https://hzzlddyxpukwcabrmdyg.supabase.co"
+PROD_SUPABASE_KEY="sb_publishable_SyxLEsWl1_d2a6zKEvXDZw_iglDvZAD"
 PEM="${PEM_PATH:-$HOME/Documents/all_deliveries.pem}"
 REMOTE_DIR="/var/www/aletindia"
 SERVICE="aletindia"
@@ -32,7 +35,7 @@ rsync -az --delete \
   "${ROOT}/" "${HOST}:${REMOTE_DIR}/"
 
 echo "Installing dependencies and building for https://aletindia.com"
-"${SSH[@]}" "$HOST" "cd '$REMOTE_DIR' && npm ci && NEXT_PUBLIC_BASE_PATH= NEXT_PUBLIC_SITE_URL=https://aletindia.com NODE_OPTIONS='--max-old-space-size=1536' npm run build"
+"${SSH[@]}" "$HOST" "cd '$REMOTE_DIR' && npm ci && NEXT_PUBLIC_BASE_PATH= NEXT_PUBLIC_SITE_URL=https://aletindia.com NEXT_PUBLIC_SUPABASE_URL=${PROD_SUPABASE_URL} NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PROD_SUPABASE_KEY} NODE_OPTIONS='--max-old-space-size=1536' npm run build"
 
 echo "Serving https://aletindia.com from the Next.js app"
 "${SSH[@]}" "$HOST" 'cat > /tmp/aletindia-root.py' << 'PY'

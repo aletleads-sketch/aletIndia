@@ -86,8 +86,13 @@ export type CmsSiteSection = {
   body: string | null;
 };
 
-export const SUPABASE_URL = "https://seegtwkfeolpjlgjlbyd.supabase.co";
-export const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_AB_9PH5k_kHBDsXIr2IhAA_6VznqX81";
+/**
+ * Which Supabase project the site and the admin use. Set at build time:
+ * production (aletindia.com, deploy.sh) builds with the production project;
+ * without the variables (the test site, local dev) the test project is used.
+ */
+export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://seegtwkfeolpjlgjlbyd.supabase.co";
+export const SUPABASE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_AB_9PH5k_kHBDsXIr2IhAA_6VznqX81";
 
 async function publicSelect<T>(table: string, params: URLSearchParams): Promise<T[]> {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params.toString()}`, {

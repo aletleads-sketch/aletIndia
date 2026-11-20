@@ -1,10 +1,11 @@
 "use client";
 
 import { useSiteContent } from "@/components/site-content-provider";
+import { SUPABASE_URL } from "@/lib/cms-client";
 import { useCallback, useEffect, useState } from "react";
 
 const CAPTCHA_ENDPOINT =
-  "https://seegtwkfeolpjlgjlbyd.supabase.co/functions/v1/captcha-challenge";
+  `${SUPABASE_URL}/functions/v1/captcha-challenge`;
 
 export type CaptchaResponse = {
   id: string;

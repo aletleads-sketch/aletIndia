@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { CountryCodeSelect } from "@/components/country-code-select";
 import { CustomCaptcha, type CaptchaResponse } from "@/components/custom-captcha";
 import { useSiteContent } from "@/components/site-content-provider";
+import { SUPABASE_URL } from "@/lib/cms-client";
 
 const fieldClass =
   "w-full rounded-full border border-[#d8dde8] bg-white px-5 py-3.5 text-[0.95rem] text-ink outline-none transition placeholder:text-[#9aa3b5] focus:border-ink/40 focus:ring-4 focus:ring-ink/5";
@@ -41,7 +42,7 @@ export function InquireForm({ defaultService }: { defaultService?: string } = {}
     setError("");
     try {
       const response = await fetch(
-        "https://seegtwkfeolpjlgjlbyd.supabase.co/functions/v1/lead-intake-secure",
+        `${SUPABASE_URL}/functions/v1/lead-intake-secure`,
         {
           method: "POST",
           headers: { "content-type": "application/json" },
