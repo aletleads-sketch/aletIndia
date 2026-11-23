@@ -2,15 +2,17 @@ import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Arrow } from "@/components/ui";
+import { loadFields } from "@/lib/site-content";
 
-export function Breadcrumb({ crumb, className = "" }: { crumb: string; className?: string }) {
+export async function Breadcrumb({ crumb, className = "" }: { crumb: string; className?: string }) {
+  const copy = await loadFields("_shared#hero_buttons");
   return (
     <nav
       aria-label="Breadcrumb"
       className={`glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold tracking-wide text-white/80 ${className}`}
     >
       <Link href="/" className="hover:text-white">
-        Home
+        {copy.homeCrumb}
       </Link>
       <span aria-hidden="true" className="text-white/40">
         /
@@ -33,21 +35,22 @@ export function Wave({ className = "fill-white" }: { className?: string }) {
   );
 }
 
-export function HeroActions({ center = false }: { center?: boolean }) {
+export async function HeroActions({ center = false }: { center?: boolean }) {
+  const copy = await loadFields("_shared#hero_buttons");
   return (
     <div className={`rise d3 mt-9 flex flex-wrap gap-3 ${center ? "justify-center" : ""}`}>
       <Link
-        href="/contact-us"
+        href={copy.primary.href}
         className="btn-sheen bg-brand-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_40px_-8px_rgb(79_70_229_/_0.8)] transition hover:-translate-y-0.5"
       >
-        Get a Free Consultation
+        {copy.primary.label}
         <Arrow />
       </Link>
       <Link
-        href="/portfolio"
+        href={copy.secondary.href}
         className="glass inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/15"
       >
-        View Our Work
+        {copy.secondary.label}
       </Link>
     </div>
   );

@@ -2,11 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { CaseStudyCard } from "@/components/case-study-card";
-import { caseStudies } from "@/lib/content";
+import { useSiteContent } from "@/components/site-content-provider";
 
 const SPEED = 0.35; // px per frame ~ slow continuous scroll
 
 export function PortfolioSlider() {
+  const { caseStudies } = useSiteContent();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const resumeTimer = useRef<number | null>(null);

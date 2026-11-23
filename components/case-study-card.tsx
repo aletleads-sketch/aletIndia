@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { caseStudies } from "@/lib/content";
+import type { CaseStudyItem } from "@/lib/site-content-shared";
 
 export const cardColors = [
   "bg-[#5b4bdb]",
@@ -20,45 +20,84 @@ export function CaseStudyCard({
   className = "",
   hidden = false,
 }: {
-  study: (typeof caseStudies)[number];
+  study: CaseStudyItem;
   colorIndex: number;
   className?: string;
   hidden?: boolean;
 }) {
   const landscape = "landscape" in study && study.landscape;
   const framed = "framed" in study && study.framed;
+  const mockup = "mockup" in study && study.mockup;
   const single = study.screens.length === 1;
+  const browserPreview = landscape && study.name === "All Deliveries" && !mockup;
   return (
     <article
       className={`hover-glow overflow-hidden rounded-[2rem] border border-line bg-white shadow-[0_20px_60px_-30px_rgb(30_27_75_/_0.35)] ${className}`}
       aria-hidden={hidden || undefined}
     >
       <div
-        className={`flex h-72 justify-center px-5 ${
-          landscape
-            ? `flex-col items-center gap-2 ${single ? "justify-center py-6" : "py-4"}`
-            : "items-end gap-3 pt-10"
-        } ${cardColors[colorIndex % cardColors.length]}`}
+        className={`flex h-72 justify-center ${
+          mockup
+            ? "items-center bg-[#0d7c8c] px-3 py-4"
+            : landscape
+              ? `flex-col items-center gap-2 px-5 ${single ? "justify-center py-6" : "py-4"}`
+              : "items-end gap-3 px-5 pt-10"
+        } ${mockup ? "" : cardColors[colorIndex % cardColors.length]}`}
       >
-        {landscape ? (
+        {mockup ? (
+          <Image
+            src={study.screens[0]}
+            alt={`${study.name} website screenshot`}
+            width={1200}
+            height={700}
+            draggable={false}
+            className="max-h-full w-full object-contain drop-shadow-[0_16px_28px_rgb(0_0_0_/_0.28)]"
+          />
+        ) : landscape ? (
           <>
-            <Image
-              src={study.screens[0]}
-              alt=""
-              width={960}
-              height={540}
-              draggable={false}
-              className={`h-auto w-full rounded-xl object-cover shadow-[0_12px_28px_-16px_rgb(0_0_0_/_0.45)] ${
-                single ? "max-h-60" : "max-h-32"
+            <div
+              className={`relative w-full overflow-hidden rounded-[1.35rem] border-[8px] border-[#161b27] bg-[#161b27] p-1.5 shadow-[0_18px_35px_-18px_rgb(0_0_0_/_0.7)] ${
+                single ? "max-w-[29rem]" : "max-w-[22rem]"
               }`}
-            />
+            >
+              <span
+                className="absolute top-[0.32rem] left-1/2 z-10 h-1.5 w-10 -translate-x-1/2 rounded-full bg-[#080b12]"
+                aria-hidden="true"
+              />
+              {browserPreview ? (
+                <div className="relative z-10 flex h-8 items-end bg-[#dfe3ea] px-2 pt-1.5">
+                  <span className="flex h-6 min-w-36 items-center rounded-t-lg bg-white px-3 text-[0.55rem] font-semibold text-[#3b4352] shadow-[0_-1px_3px_rgb(0_0_0_/_0.08)]">
+                    <span className="mr-1.5 h-2 w-2 rounded-full bg-[#f04438]" aria-hidden="true" />
+                    Courier &amp; Logistics
+                  </span>
+                </div>
+              ) : null}
+              <div
+                className={`relative overflow-hidden rounded-[0.85rem] bg-[#aab5c8] ${
+                  browserPreview ? "aspect-[16/8.5] rounded-t-none" : "aspect-video"
+                }`}
+              >
+                <Image
+                  src={study.screens[0]}
+                  alt={`${study.name} website screenshot`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 30rem"
+                  draggable={false}
+                  className={`object-cover ${
+                    browserPreview
+                      ? "scale-[1.11] -translate-y-[4.7%]"
+                      : "object-center"
+                  }`}
+                />
+              </div>
+            </div>
             {study.screens.length > 1 ? (
               <div className="flex items-end justify-center gap-2">
                 {study.screens.slice(1).map((src) => (
                   <Image
                     key={src}
                     src={src}
-                    alt=""
+                    alt={`${study.name} app screen`}
                     width={280}
                     height={560}
                     draggable={false}
@@ -73,7 +112,7 @@ export function CaseStudyCard({
             <Image
               key={src}
               src={src}
-              alt=""
+              alt={`${study.name} app screen`}
               width={280}
               height={560}
               draggable={false}
@@ -91,7 +130,7 @@ export function CaseStudyCard({
           <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white p-1.5">
             <Image
               src={study.logo}
-              alt=""
+              alt={`${study.name} logo`}
               width={60}
               height={60}
               draggable={false}

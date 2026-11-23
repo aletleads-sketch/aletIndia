@@ -6,20 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import:blogs": "node scripts/import-wp-blogs.mjs",
+    "sync:blog-redirects": "node scripts/sync-blog-redirects.mjs",
+    "deploy:dev": "vercel link --yes --project aletindia-dev && vercel deploy --prod --yes --local-config vercel.dev.json"
   },
   "dependencies": {
-    "next": "^16.4.3",
+    "@supabase/supabase-js": "^2.57.0",
+    "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cheerio": "^1.2.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
-    "eslint-config-next": "^16.4.3",
+    "eslint-config-next": "16.4.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

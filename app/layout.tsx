@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
-import { Archivo, Plus_Jakarta_Sans, Space_Grotesk, Syne } from "next/font/google";
+import { draftMode } from "next/headers";
+import { Archivo, Montserrat, Plus_Jakarta_Sans, Sacramento, Space_Grotesk, Syne } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { InquireModalProvider } from "@/components/inquire-modal";
+import { NavigationProgress } from "@/components/navigation-progress";
+import { PreviewBar } from "@/components/preview-bar";
+import { SiteContentProvider } from "@/components/site-content-provider";
+import { loadSiteContent } from "@/lib/site-content";
+import { NOINDEX, SITE_URL } from "@/lib/seo";
 import "./globals.css";
+import { Analytics } from "@/components/analytics";
+import { JsonLd } from "@/components/json-ld";
+import { resolveGeneral } from "@/lib/seo-general-shared";
+import { shareImageUrl } from "@/lib/seo-overrides";
+import { loadSchemaSettings } from "@/lib/seo-schema";
+import { loadSeoSettings } from "@/lib/seo-settings";
+import { organizationSchema, type OrganizationData } from "@/lib/seo-schema-shared";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -28,22 +42,68 @@ const archivo = Archivo({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Alet India — Inspired by Technology",
-  description:
-    "Alet India is a New Delhi technology partner for mobile apps, web applications, UI and graphic design, and digital marketing. Established in 2017.",
-};
+const sacramento = Sacramento({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-sacramento",
+  display: "swap",
+});
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
+
+// Site-wide defaults; the admin's SEO Settings screen can change them (row 'general' of seo_settings).
+export async function generateMetadata(): Promise<Metadata> {
+  const [settings, { brand }] = await Promise.all([loadSeoSettings(), loadSiteContent()]);
+  const general = resolveGeneral(settings.general);
+  return {
+    // A favicon uploaded in Site Settings replaces the design's app/icon.png.
+    ...(brand.favicon ? { icons: { icon: brand.favicon, apple: brand.favicon } } : {}),
+    metadataBase: new URL(`${SITE_URL}/`),
+    title: "Alet India | Mobile App & Web Development Company",
+    description: general.defaultDescription,
+    openGraph: {
+      type: "website",
+      locale: "en_IN",
+      siteName: general.siteName,
+      images: [{ url: shareImageUrl(general.defaultShareImage) }],
+    },
+    ...(general.googleVerification || general.bingVerification
+      ? {
+          verification: {
+            ...(general.googleVerification ? { google: general.googleVerification } : {}),
+            ...(general.bingVerification ? { other: { "msvalidate.01": general.bingVerification } } : {}),
+          },
+        }
+      : {}),
+    ...(NOINDEX ? { robots: { index: false, follow: false } } : {}),
+  };
+}
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const [schema, content, seoSettings, draft] = await Promise.all([loadSchemaSettings(), loadSiteContent(), loadSeoSettings(), draftMode()]);
+  const { company, services, caseStudies, testimonials, careers, showcase, inquireForm, brand } = content;
   return (
     <html
       lang="en"
-      className={`${jakarta.variable} ${syne.variable} ${space.variable} ${archivo.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${syne.variable} ${space.variable} ${archivo.variable} ${sacramento.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white font-sans text-ink">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {/* Analytics only on the real website: the noindex dev and preview sites would skew the numbers. */}
+        {NOINDEX ? null : <Analytics settings={seoSettings.analytics} />}
+        <JsonLd items={schema.organization.enabled ? [organizationSchema(schema.organization.data as OrganizationData)] : []} />
+        <NavigationProgress />
+        <SiteContentProvider value={{ company, services, caseStudies, testimonials, careers, showcase, inquireForm, brand }}>
+          <InquireModalProvider>
+            <Header navigation={content.navigation} />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </InquireModalProvider>
+          {draft.isEnabled ? <PreviewBar /> : null}
+        </SiteContentProvider>
       </body>
     </html>
   );

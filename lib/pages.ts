@@ -42,7 +42,7 @@ export const serviceDetails: Record<string, ServiceDetail> = {
     stack: ["Kotlin", "Java", "Swift", "React Native", "Flutter", "Firebase"],
   },
   "cross-platform": {
-    eyebrow: "Cross-functional Application Development",
+    eyebrow: "Cross-platform App Development",
     headline: "One codebase,",
     accent: "every platform",
     intro:
@@ -345,7 +345,13 @@ export type ServiceVisual = {
   layout: ServiceLayout;
   theme: [string, string];
   gallery: [string, string, string];
+  /** Use contain for illustration assets that include important copy near their edges. */
+  galleryFit?: ["cover" | "contain", "cover" | "contain", "cover" | "contain"];
+  /** Fit for the sticky “What we deliver” image (editorial). Defaults to galleryFit[0]. */
+  deliverFit?: "cover" | "contain";
   screens?: string[];
+  /** Screen assets that already include a device mockup — don't wrap them in extra chrome. */
+  screensMockup?: boolean;
   stat: { value: string; label: string };
 };
 
@@ -353,7 +359,8 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "mobile-apps": {
     layout: "split",
     theme: ["#4f46e5", "#06b6d4"],
-    gallery: ["/images/Android.jpeg", "/images/ios.jpeg", "/images/pages/developers.jpg"],
+    gallery: ["/images/services/android-app-development.jpg", "/images/services/ios-app-development.jpg", "/images/pages/developers.jpg"],
+    galleryFit: ["cover", "cover", "cover"],
     screens: [
       "/images/work/tajika-1.png",
       "/images/all_deliveries_home.png",
@@ -366,15 +373,20 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "cross-platform": {
     layout: "immersive",
     theme: ["#0d9488", "#22d3ee"],
-    gallery: ["/images/pages/developers.jpg", "/images/hybrid_app.jpeg", "/images/same_code_different_architecture.jpeg"],
-    screens: ["/images/work/app-1.png", "/images/QUICK-SAWARI-2.png", "/images/work/app-3.png"],
+    gallery: ["/images/pages/developers.jpg", "/images/services/hybrid-app-development.jpg", "/images/same_code_different_architecture.jpeg"],
+    galleryFit: ["cover", "contain", "contain"],
+    screens: ["/images/work/all-deliveries-app-home.png", "/images/QUICK-SAWARI-2.png", "/images/work/all-deliveries-app-menu.png"],
     stat: { value: "1", label: "Codebase for every device" },
   },
   "web-apps": {
     layout: "editorial",
     theme: ["#2563eb", "#7c3aed"],
-    gallery: ["/images/services/web-apps.jpg", "/images/pages/typing.jpg", "/images/pages/developer-woman.jpg"],
-    screens: ["/images/ALL-DEIVERIES.png"],
+    gallery: ["/images/pages/web-app-development-2.jpeg", "/images/pages/web-app-development-3.jpeg", "/images/pages/web-app-development.jpeg"],
+    // Hero trio stays filled; deliver section shows the full illustration without edge crop.
+    galleryFit: ["cover", "cover", "cover"],
+    deliverFit: "contain",
+    screens: ["/images/all-deliveries-web-live.png"],
+    screensMockup: true,
     stat: { value: "100%", label: "Responsive builds" },
   },
   "graphic-design": {
@@ -387,7 +399,7 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
     layout: "immersive",
     theme: ["#7c3aed", "#ec4899"],
     gallery: ["/images/services/ui-design.jpg", "/images/pages/women-coding.jpg", "/images/pages/meeting.jpg"],
-    screens: ["/images/GURI-HOUSES.png", "/images/REFULT-2.png", "/images/GURI-HOUSES-2.png"],
+    screens: ["/images/work/guri-houses-left.png", "/images/REFULT-2.png", "/images/work/guri-houses-right.png"],
     stat: { value: "Figma", label: "Prototype before code" },
   },
   "digital-marketing": {
@@ -399,7 +411,8 @@ export const serviceVisuals: Record<string, ServiceVisual> = {
   "ai-data": {
     layout: "split",
     theme: ["#0891b2", "#8b5cf6"],
-    gallery: ["/images/pages/ai-abstract.jpg", "/images/services/ai-data.jpg", "/images/industries/ai.jpg"],
+    gallery: ["/images/pages/ai-chatbots-assistants.jpg", "/images/pages/data-dashboards-reports.jpg", "/images/pages/process-automation.jpg"],
+    galleryFit: ["contain", "contain", "contain"],
     stat: { value: "24/7", label: "AI assistants" },
   },
   salesforce: {
@@ -585,8 +598,8 @@ export const privacyPolicy: LegalSection[] = [
   {
     heading: "Objective",
     paragraphs: [
-      "This Privacy Statement sets out the privacy and data protection standards followed by Alet India Pvt Limited (\"Alet India\") and its entities around the world for the personal information of its clients, partners, employees (current or former employees and trainees), applicants, contractors, prospects, vendors, and current or former members of the Board of Directors whose personal information is processed by Alet India (\"Data Subjects\").",
-      "This Privacy Statement explains the use and protection of personal information collected by Alet India. It applies to any personal information you provide to Alet India and, subject to local law, any personal information we collect from other sources. Throughout this Privacy Statement, \"Alet India\" refers to Alet India Pvt Limited, including its affiliates and subsidiaries (also referred to as \"we\", \"us\", or \"our\").",
+      "This Privacy Statement sets out the privacy and data protection standards followed by Alet India Softwares (\"Alet India\") and its entities around the world for the personal information of its clients, partners, employees (current or former employees and trainees), applicants, contractors, prospects, vendors, and current or former members of the Board of Directors whose personal information is processed by Alet India (\"Data Subjects\").",
+      "This Privacy Statement explains the use and protection of personal information collected by Alet India. It applies to any personal information you provide to Alet India and, subject to local law, any personal information we collect from other sources. Throughout this Privacy Statement, \"Alet India\" refers to Alet India Softwares, including its affiliates and subsidiaries (also referred to as \"we\", \"us\", or \"our\").",
     ],
   },
   {
@@ -625,7 +638,7 @@ export const privacyPolicy: LegalSection[] = [
   {
     heading: "Anti-spam policy",
     paragraphs: [
-      "Alet India treats the receipt, transmission, or distribution of spam (unsolicited bulk email) as a significant concern and has taken reasonable measures to limit spam in our computing environment. All email received by Alet India is subject to spam checks. Email identified as spam is rejected with sufficient information to the sender. Alet India reserves the right to reject and report suspicious spam to the relevant authorities.",
+      "Alet India treats the receipt, transmission, or distribution of spam (unsolicited bulk email) as a significant concern and has taken reasonable measures to limit spam in our computing environment. All email received by Alet India is subject to spam checks. Email identified as spam is rejected, and the sender is given sufficient information. Alet India reserves the right to reject and report suspicious spam to the relevant authorities.",
     ],
   },
   {

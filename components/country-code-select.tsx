@@ -52,6 +52,8 @@ export function CountryCodeSelect({
   return (
     <div ref={rootRef} className="relative min-w-0">
       <input type="hidden" name={name} value={selected.dial} />
+      <input type="hidden" name="country" value={selected.name} />
+      <input type="hidden" name="countryIso" value={selected.iso} />
       <button
         type="button"
         aria-haspopup="listbox"

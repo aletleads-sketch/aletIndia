@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "npm ci",
+  "buildCommand": "NEXT_PUBLIC_BASE_PATH= NEXT_PUBLIC_SITE_URL=https://aletindia.com NEXT_PUBLIC_NOINDEX=1 next build",
+  "outputDirectory": ".next"
+}

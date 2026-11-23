@@ -407,7 +407,7 @@ export function Home2Page() {
             Seeking partners who want to stand out
           </h2>
           <p className="mt-7 text-base leading-8 text-teal-800/65 sm:text-lg">
-            {about.paragraphs[0].split(". ").slice(0, 2).join(". ")}.
+            {about.paragraphs[0].split(". ").slice(0, 2).join(". ").replace(/\.$/, "")}.
           </p>
         </Reveal>
       </section>

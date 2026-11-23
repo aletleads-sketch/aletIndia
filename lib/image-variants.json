@@ -1,0 +1,471 @@
+{
+ "/images/ALL-DEIVERIES.png": [
+  480,
+  960,
+  1600,
+  1920
+ ],
+ "/images/GURI-HOUSES-2.png": [
+  480,
+  941
+ ],
+ "/images/GURI-HOUSES.png": [
+  480,
+  941
+ ],
+ "/images/LUDO-ZONE.png": [
+  480,
+  941
+ ],
+ "/images/QUICK-SAWARI-2.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/QUICK-SAWARI-3.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/QUICK-SAWARI.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/REFULT-2.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/REFULT-3.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/ROMBA-MOBILE-PRODUCT-DETAIL.png": [
+  480,
+  768
+ ],
+ "/images/ROMBA-MOBILE-SHOPPING-APP.png": [
+  480,
+  941
+ ],
+ "/images/Refult.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/all-deliveries-app-menu.png": [
+  460
+ ],
+ "/images/all-deliveries-login.png": [
+  480,
+  502
+ ],
+ "/images/all-deliveries-tech-stack.jpg": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/all-deliveries-tech-stack.png": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/all-deliveries-track.png": [
+  455
+ ],
+ "/images/all-deliveries-web-live.png": [
+  480,
+  960,
+  1012
+ ],
+ "/images/all-deliveries-website.png": [
+  480,
+  960,
+  1024
+ ],
+ "/images/all_deliveries_home.png": [
+  480,
+  887
+ ],
+ "/images/blogs/how-artificial-intelligence-is-boosting-growth-of-organizations-in-the-digital-era/AI-1.png": [
+  480,
+  940
+ ],
+ "/images/blogs/why-augmented-reality-ar-is-highly-important-for-businesses/AR.png": [
+  400
+ ],
+ "/images/clients/guri-houses.png": [
+  480,
+  899
+ ],
+ "/images/clients/ludo-zone.png": [
+  358
+ ],
+ "/images/clients/ramba.png": [
+  480,
+  960,
+  1024
+ ],
+ "/images/cricket-fantasybuzz-1.png": [
+  480,
+  768
+ ],
+ "/images/cricket-fantasybuzz-2.png": [
+  480,
+  576
+ ],
+ "/images/guri-houses-tech-stack.jpg": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/guri-houses-tech-stack.png": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/hero-technologies.jpg": [
+  480,
+  960,
+  1280
+ ],
+ "/images/hybrid_app.jpeg": [
+  480,
+  960,
+  1324
+ ],
+ "/images/industries/ai.jpg": [
+  480,
+  960,
+  1000
+ ],
+ "/images/industries/crm.jpg": [
+  480,
+  960,
+  1000
+ ],
+ "/images/industries/logistics.jpg": [
+  480,
+  960,
+  1000
+ ],
+ "/images/industries/salesforce.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/industries/travel.jpg": [
+  480,
+  960,
+  1000
+ ],
+ "/images/pages/ai-abstract.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/ai-chatbots-assistants.jpg": [
+  480,
+  960,
+  1024
+ ],
+ "/images/pages/alet-india-contact-us.png": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/blog-laptop.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/brainstorm.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/code.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/contact-desk.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/contact-us-office.jpg": [
+  480,
+  960,
+  1024
+ ],
+ "/images/pages/contact-us-wide.png": [
+  480,
+  960,
+  1600
+ ],
+ "/images/pages/contact-us.jpg": [
+  480,
+  960,
+  1024
+ ],
+ "/images/pages/coworking.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/data-dashboards-reports.jpg": [
+  480,
+  960,
+  1024
+ ],
+ "/images/pages/design-desk.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/developer-woman.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/developers.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/meeting.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/next-chapter.jpg": [
+  480,
+  960,
+  1305
+ ],
+ "/images/pages/office-2.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/office.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/phone-apps.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/phone-mockup.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/presentation.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/process-automation.jpg": [
+  480,
+  960,
+  1024
+ ],
+ "/images/pages/retro-gaming.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/security.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/signing.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/team-laptops.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/team-meeting.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/team-table.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/video-call.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/web-app-development-3.jpeg": [
+  480,
+  960,
+  1080
+ ],
+ "/images/pages/web-app-development.jpeg": [
+  480,
+  960,
+  1080
+ ],
+ "/images/pages/women-coding.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/pages/writing.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/quick-savaari-tech-stack.jpg": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/quick-savaari-tech-stack.png": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/same_code_different_architecture.jpeg": [
+  480,
+  960,
+  1304
+ ],
+ "/images/services/ai-data.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/services/cross-platform.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/services/digital-marketing.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/services/gaming.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/services/graphic-design.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/services/mobile-apps.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/services/salesforce.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/services/web-apps.jpg": [
+  480,
+  960,
+  1400
+ ],
+ "/images/sniper-game.png": [
+  480,
+  960,
+  1600,
+  1920
+ ],
+ "/images/tajika-tech-stack.jpg": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/tajika-tech-stack.png": [
+  480,
+  960,
+  1600,
+  2400,
+  2560
+ ],
+ "/images/work/all-deliveries-app-home.png": [
+  460
+ ],
+ "/images/work/all-deliveries-app-menu.png": [
+  460
+ ],
+ "/images/work/guri-houses-booking.png": [
+  480,
+  512
+ ],
+ "/images/work/guri-houses-left.png": [
+  460
+ ],
+ "/images/work/guri-houses-property.png": [
+  480,
+  512
+ ],
+ "/images/work/guri-houses-right.png": [
+  460
+ ],
+ "/images/work/ksd-1.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/work/ksd-2.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/work/ksd-3.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/work/tajika-1.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/work/tajika-2.png": [
+  480,
+  960,
+  1242
+ ],
+ "/images/work/tajika-3.png": [
+  480,
+  960,
+  1242
+ ]
+}

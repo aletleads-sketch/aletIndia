@@ -1,163 +1,232 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ApproachSteps, ScreenSwitcher } from "@/components/case-study-panels";
+import { CaseStudyScreens } from "@/components/case-study-demo";
+import { CaseStudyFileNav } from "@/components/case-study-file-nav";
+import { Wave } from "@/components/page-hero";
 import { Arrow } from "@/components/ui";
-import { caseStudies, getCaseStudy } from "@/lib/case-studies";
+import { nextStudy } from "@/lib/case-study-data";
+import { loadCaseStudies, loadFields } from "@/lib/site-content";
+import { type CaseStudyContentBlock } from "@/lib/case-study-sections";
+import { breadcrumbJsonLd, canonical } from "@/lib/seo";
+import { withSeoOverrides } from "@/lib/seo-overrides";
+import { JsonLd } from "@/components/json-ld";
+import { loadSchemaSettings } from "@/lib/seo-schema";
 
-export function generateStaticParams() {
-  return caseStudies.map((study) => ({ slug: study.slug }));
+/** Intrinsic sizes for tech-stack diagrams (avoids stretch from a shared wrong ratio). */
+const NARRATIVE_IMAGE_SIZE: Record<string, { width: number; height: number }> = {
+  "/images/all-deliveries-tech-stack.png": { width: 2560, height: 1705 },
+  "/images/guri-houses-tech-stack.png": { width: 2560, height: 1440 },
+  "/images/tajika-tech-stack.png": { width: 2560, height: 1705 },
+  "/images/quick-savaari-tech-stack.png": { width: 2560, height: 1440 },
+};
+
+type Props = { params: Promise<{ slug: string }> };
+
+export async function generateStaticParams() {
+  return (await loadCaseStudies()).studies.map(({ slug }) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const study = getCaseStudy(slug);
-  if (!study) return { title: "Case study — Alet India" };
-  return {
-    title: `${study.client} case study — Alet India`,
-    description: study.summary,
-  };
+  const caseStudy = (await loadCaseStudies()).studies.find((study) => study.slug === slug);
+  return caseStudy
+    ? withSeoOverrides(`/case-studies/${caseStudy.slug}`, {
+        title: `${caseStudy.client} case study — Alet India`,
+        description: caseStudy.summary,
+        alternates: canonical(`/case-studies/${caseStudy.slug}`),
+      })
+    : {};
 }
 
-export const instant = false;
-
-export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const study = getCaseStudy(slug);
-  if (!study) notFound();
-
-  const index = caseStudies.findIndex((item) => item.slug === study.slug);
-  const next = caseStudies[(index + 1) % caseStudies.length];
-
+function NarrativeBlocks({ blocks }: { blocks: CaseStudyContentBlock[] }) {
   return (
-    <article className="font-space bg-[#e7f0e4] text-[#10210a]">
-      <header className="bg-[#07140c] text-white">
-        <div className="mx-auto w-full max-w-[92rem] px-5 pt-36 pb-16 sm:px-8 lg:pt-40 xl:px-12">
-          <nav aria-label="Breadcrumb" className="text-xs font-bold tracking-[0.16em] text-white/55 uppercase">
-            <Link href="/" className="hover:text-white">
-              Home
-            </Link>
-            <span className="px-2 text-white/30">/</span>
-            <Link href="/case-studies" className="hover:text-white">
-              Case Studies
-            </Link>
-          </nav>
-          <p className="mt-8 text-xs font-bold tracking-[0.28em] text-[#d6ff4a] uppercase">
-            {study.industry} · Demo study
-          </p>
-          <h1 className="font-syne mt-4 max-w-4xl text-4xl leading-[1.02] font-extrabold tracking-tight text-balance sm:text-6xl">
-            {study.title}
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">{study.summary}</p>
-          <dl className="mt-10 grid gap-4 sm:grid-cols-3">
-            {study.facts.map((fact) => (
-              <div key={fact.label} className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
-                <dt className="text-xs font-bold tracking-[0.16em] text-white/45 uppercase">{fact.label}</dt>
-                <dd className="mt-2 text-lg font-extrabold">{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </header>
-
-      <div className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:py-16 xl:px-12">
-        <nav aria-label="On this page" className="lg:sticky lg:top-32 lg:self-start">
-          <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">In this file</p>
-          <ul className="mt-4 space-y-2 text-sm font-bold">
-            {[
-              ["screens", "Screens"],
-              ["challenge", "The brief"],
-              ["approach", "How we worked"],
-              ["built", "What shipped"],
-              ["outcome", "Where it landed"],
-            ].map(([id, label]) => (
-              <li key={id}>
-                <a href={`#${id}`} className="block rounded-full px-3 py-2 hover:bg-[#10210a] hover:text-[#d6ff4a]">
-                  {label}
-                </a>
-              </li>
+    <div className="mt-5 space-y-4">
+      {blocks.map((block, index) => {
+        if (block.type === "p") {
+          return (
+            <p
+              key={`p-${index}-${block.text.slice(0, 24)}`}
+              className="text-[1.05rem] leading-8 text-[#10210a]/80"
+            >
+              {block.text}
+            </p>
+          );
+        }
+        if (block.type === "h3") {
+          return (
+            <h3
+              key={`h3-${index}-${block.text}`}
+              className="pt-2 text-xl font-extrabold tracking-tight text-[#10210a]"
+            >
+              {block.text}
+            </h3>
+          );
+        }
+        if (block.type === "image") {
+          const size = NARRATIVE_IMAGE_SIZE[block.src] ?? { width: 2560, height: 1440 };
+          return (
+            <figure
+              key={`img-${index}-${block.src}`}
+              className="my-2 w-full max-w-full min-w-0 overflow-hidden rounded-[1.4rem] bg-white ring-1 ring-[#10210a]/10"
+            >
+              <Image
+                src={block.src}
+                alt={block.alt}
+                width={size.width}
+                height={size.height}
+                sizes="(max-width: 1024px) 100vw, min(100vw, 72rem)"
+                quality={100}
+                className="h-auto w-full object-contain object-center"
+                style={{ width: "100%", height: "auto" }}
+                priority={index < 2}
+              />
+            </figure>
+          );
+        }
+        return (
+          <ul
+            key={`ul-${index}`}
+            className="list-disc space-y-2 pl-5 text-[1.05rem] leading-8 text-[#10210a]/80"
+          >
+            {block.items.map((item) => (
+              <li key={item}>{item}</li>
             ))}
           </ul>
-        </nav>
+        );
+      })}
+    </div>
+  );
+}
 
-        <div className="space-y-16">
-          <section id="screens" className="scroll-mt-32">
-            <h2 className="font-syne text-3xl font-extrabold tracking-tight">Walk the screens</h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-[#10210a]/70">
-              Tap a frame to bring that screen forward. These are the product views from the build.
-            </p>
-            <div className="mt-6">
-              <ScreenSwitcher study={study} />
-            </div>
-          </section>
+export default async function CaseStudyDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const [{ studies, index }, copy] = await Promise.all([loadCaseStudies(), loadFields("/case-studies/[slug]#study")]);
+  const study = studies.find((item) => item.slug === slug);
+  if (!study) notFound();
 
-          <section id="challenge" className="scroll-mt-32">
-            <h2 className="font-syne text-3xl font-extrabold tracking-tight">The brief</h2>
-            <div className="mt-5 space-y-4">
-              {study.challenge.map((paragraph) => (
-                <p key={paragraph.slice(0, 40)} className="text-[1.05rem] leading-8 text-[#10210a]/80">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </section>
+  const next = nextStudy(studies, slug, index.map((entry) => entry.slug));
+  const sections = study.sections ?? [];
 
-          <section id="approach" className="scroll-mt-32">
-            <h2 className="font-syne text-3xl font-extrabold tracking-tight">How we worked</h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-[#10210a]/70">
-              Choose a step. Each one is a decision we made while shaping {study.client}.
-            </p>
-            <ApproachSteps steps={study.approach} />
-          </section>
+  const schema = await loadSchemaSettings();
+  const breadcrumb = breadcrumbJsonLd([
+    { name: "Case Studies", path: "/case-studies" },
+    { name: study.client, path: `/case-studies/${study.slug}` },
+  ]);
 
-          <section id="built" className="scroll-mt-32">
-            <h2 className="font-syne text-3xl font-extrabold tracking-tight">What shipped</h2>
-            <ul className="mt-6 grid gap-3 sm:grid-cols-3">
-              {study.built.map((item, itemIndex) => (
-                <li key={item} className="rounded-[1.4rem] bg-white p-5 ring-1 ring-[#10210a]/10">
-                  <span className="font-syne text-2xl font-extrabold text-[#3d6b12]">
-                    {String(itemIndex + 1).padStart(2, "0")}
-                  </span>
-                  <p className="mt-3 text-sm leading-6 font-semibold">{item}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section id="outcome" className="scroll-mt-32 rounded-[2rem] bg-[#10210a] p-8 text-white sm:p-10">
-            <h2 className="font-syne text-3xl font-extrabold tracking-tight">Where it landed</h2>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-white/75">{study.outcome}</p>
-            <Link
-              href="/contact-us"
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#d6ff4a] px-5 py-3 text-sm font-extrabold text-[#10210a]"
+  return (
+    <>
+      <JsonLd items={schema.breadcrumb.enabled ? [breadcrumb] : []} />
+      <article className="overflow-x-clip bg-white text-[#10210a]">
+        <header className="hero-mesh relative overflow-hidden text-white">
+          <div className="dot-grid pointer-events-none absolute inset-0" />
+          <div className="orb pointer-events-none absolute top-20 -right-24 h-96 w-96 rounded-full bg-brand/40 blur-3xl" />
+          <div className="orb orb-b pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-brand-2/30 blur-3xl" />
+          <div className="relative mx-auto w-full max-w-[92rem] px-5 pt-36 pb-20 sm:px-8 lg:pt-40 xl:px-12">
+            <nav
+              aria-label="Breadcrumb"
+              className="text-xs font-bold tracking-[0.16em] text-white/55 uppercase"
             >
-              Plan a build like this
-              <Arrow />
-            </Link>
-          </section>
-        </div>
-      </div>
-
-      <section className="border-t border-[#10210a]/10">
-        <div className="mx-auto flex w-full max-w-[92rem] flex-wrap items-center justify-between gap-6 px-5 py-10 sm:px-8 xl:px-12">
-          <div>
-            <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">Next file</p>
-            <p className="font-syne mt-2 text-2xl font-extrabold">{next.client}</p>
-            <p className="mt-1 max-w-md text-sm text-[#10210a]/70">{next.summary}</p>
+              <Link href="/" className="hover:text-white">
+                {copy.homeCrumb}
+              </Link>
+              <span className="px-2 text-white/30">/</span>
+              <Link href="/case-studies" className="hover:text-white">
+                {copy.listCrumb}
+              </Link>
+            </nav>
+            <p className="mt-8 text-xs font-bold tracking-[0.28em] text-brand-2 uppercase">
+              {study.industry} · {copy.kindLabel}
+            </p>
+            <h1 className="mt-4 max-w-4xl text-4xl leading-[1.02] font-extrabold tracking-tight text-balance break-words sm:text-6xl">
+              {study.title}
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-pretty text-white/70">{study.summary}</p>
+            <dl className="mt-10 grid gap-4 sm:grid-cols-3">
+              {study.facts.map((fact) => (
+                <div
+                  key={fact.label}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur"
+                >
+                  <dt className="text-xs font-bold tracking-[0.16em] text-white/45 uppercase">
+                    {fact.label}
+                  </dt>
+                  <dd className="mt-2 text-lg font-extrabold break-words">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
-          <Link
-            href={`/case-studies/${next.slug}`}
-            className="inline-flex items-center gap-2 rounded-full bg-[#10210a] px-5 py-3 text-sm font-extrabold text-[#d6ff4a]"
-          >
-            Read {next.client}
-            <Arrow />
-          </Link>
+          <Wave className="fill-white" />
+        </header>
+
+        <div className="mx-auto grid w-full max-w-[92rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:py-16 xl:px-12">
+          <CaseStudyFileNav title={copy.navTitle} items={copy.nav.map((item) => ({ id: String(item.id ?? ""), label: String(item.label ?? "") }))} />
+
+          <div className="min-w-0 max-w-full space-y-16">
+            <section className="scroll-mt-32">
+              <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words text-[#1a3314]">
+                {copy.screensTitle}
+              </h2>
+              <p className="mt-3 max-w-2xl text-base leading-7 text-pretty text-[#10210a]/70">
+                {copy.screensText}
+              </p>
+              <CaseStudyScreens screens={study.screens} />
+            </section>
+
+            {sections.map((section) => (
+              <section key={section.id} id={section.id} className="scroll-mt-32">
+                <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words text-[#1a3314]">
+                  {section.title}
+                </h2>
+                {section.subtitle ? (
+                  <p className="mt-3 max-w-3xl text-lg font-semibold leading-8 text-pretty text-[#10210a]/85">
+                    {section.subtitle}
+                  </p>
+                ) : null}
+                <NarrativeBlocks blocks={section.blocks} />
+              </section>
+            ))}
+
+            <section className="rounded-[2rem] bg-[#10210a] px-5 py-10 text-white sm:px-10 sm:py-12">
+              <h2 className="text-3xl font-extrabold tracking-tight text-balance break-words sm:text-4xl">
+                {copy.ctaTitle}
+              </h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
+                {copy.ctaText}
+              </p>
+              <Link
+                href={copy.ctaButton.href}
+                className="mt-8 inline-flex max-w-full items-center gap-2 rounded-full bg-[#d6ff4a] px-6 py-3 text-sm font-extrabold whitespace-nowrap text-[#10210a] transition hover:-translate-y-0.5 hover:brightness-110"
+              >
+                {copy.ctaButton.label} <Arrow />
+              </Link>
+            </section>
+          </div>
         </div>
-      </section>
-    </article>
+
+        {next ? (
+          <section className="border-t border-[#10210a]/10">
+            <div className="mx-auto flex w-full max-w-[92rem] flex-col gap-4 px-5 py-12 sm:px-8 sm:flex-row sm:items-end sm:justify-between xl:px-12">
+              <div>
+                <p className="text-xs font-bold tracking-[0.18em] text-[#3d6b12] uppercase">
+                  {copy.nextLabel}
+                </p>
+                <p className="mt-3 text-3xl font-extrabold tracking-tight">{next.client}</p>
+                <p className="mt-3 max-w-xl text-base leading-7 text-[#10210a]/70">
+                  {next.summary}
+                </p>
+              </div>
+              <Link
+                href={`/case-studies/${next.slug}`}
+                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#10210a] px-7 py-3.5 text-sm font-extrabold text-[#d6ff4a] transition hover:-translate-y-0.5 hover:brightness-110"
+              >
+                {copy.readNext} {next.client} <Arrow />
+              </Link>
+            </div>
+          </section>
+        ) : null}
+      </article>
+    </>
   );
 }

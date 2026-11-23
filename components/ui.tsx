@@ -38,16 +38,25 @@ export function Photo({
   className = "",
   priority = false,
   sizes = "(max-width: 1024px) 100vw, 50vw",
+  fit = "cover",
 }: {
   src: string;
   alt?: string;
   className?: string;
   priority?: boolean;
   sizes?: string;
+  fit?: "cover" | "contain";
 }) {
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        priority={priority}
+        sizes={sizes}
+        className={fit === "contain" ? "object-contain" : "object-cover"}
+      />
     </div>
   );
 }

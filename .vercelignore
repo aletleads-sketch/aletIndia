@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+.git
+.claude
+.cursor
+scripts/_journey-debug
+*.pem
+.env*

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { ServicePage, serviceMetadata } from "@/components/service-page";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = serviceMetadata("salesforce");
+export async function generateMetadata(): Promise<Metadata> {
+  return withSeoOverrides("/salesforce-solutions", await serviceMetadata("salesforce"));
+}
 
 export default function Page() {
   return <ServicePage id="salesforce" />;

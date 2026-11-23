@@ -11,53 +11,82 @@ import {
   TestimonialsSection,
 } from "@/components/sections";
 import { Arrow, Check, Eyebrow, Photo } from "@/components/ui";
-import { services } from "@/lib/content";
-import { serviceDetails, serviceVisuals, type ServiceDetail, type ServiceVisual } from "@/lib/pages";
+import { services as codeServices } from "@/lib/content";
+import { serviceDetails as codeDetails, type ServiceDetail, type ServiceVisual } from "@/lib/pages";
+import { loadFields, loadSiteContent } from "@/lib/site-content";
+import type { SectionValues } from "@/lib/section-fields";
+import type { SiteContent } from "@/lib/site-content-shared";
+import { breadcrumbJsonLd, canonical, ORGANIZATION_ID, pageUrl } from "@/lib/seo";
+import { JsonLd } from "@/components/json-ld";
+import { loadSchemaSettings } from "@/lib/seo-schema";
 
-type Service = (typeof services)[number];
+type Service = SiteContent["services"][number];
 
 type LayoutProps = {
+  copy: SectionValues<"_shared#service_page">;
   service: Service;
   detail: ServiceDetail;
   visual: ServiceVisual;
   related: Service[];
 };
 
-export function getService(id: string) {
-  const service = services.find((item) => item.id === id);
+/** The service with this code id (e.g. "mobile-apps"), from the database or the code. */
+async function getService(id: string) {
+  const content = await loadSiteContent();
+  const service = content.services.find((item) => item.id === id) ?? codeServices.find((item) => item.id === id);
   if (!service) throw new Error(`Unknown service: ${id}`);
-  return service;
+  return { service, content };
 }
 
-export function serviceMetadata(id: string) {
-  const service = getService(id);
+export async function serviceMetadata(id: string) {
+  const { service, content } = await getService(id);
   return {
     title: `${service.nav} — Alet India`,
-    description: serviceDetails[id].intro,
+    description: (content.serviceDetails[id] ?? codeDetails[id]).intro,
+    alternates: canonical(`/${service.slug}`),
   };
 }
 
-export function ServicePage({ id }: { id: string }) {
-  const service = getService(id);
-  const detail = serviceDetails[id];
-  const visual = serviceVisuals[id];
-  const index = services.indexOf(service);
+export async function ServicePage({ id }: { id: string }) {
+  const [schema, { service, content }, copy] = await Promise.all([loadSchemaSettings(), getService(id), loadFields("_shared#service_page")]);
+  const { services } = content;
+  const detail = content.serviceDetails[id];
+  const visual = content.serviceVisuals[id];
+  const index = Math.max(0, services.findIndex((item) => item.id === id));
   const related = [1, 2, 3].map((step) => services[(index + step) % services.length]);
   const theme = { "--a": visual.theme[0], "--b": visual.theme[1] } as CSSProperties;
-  const props = { service, detail, visual, related };
+  const props = { copy, service, detail, visual, related };
+  const structured = [
+    schema.service.enabled && {
+      "@type": "Service",
+      name: service.nav,
+      serviceType: service.title,
+      description: detail.intro,
+      url: pageUrl(`/${service.slug}`),
+      provider: { "@id": ORGANIZATION_ID },
+      areaServed: "Worldwide",
+    },
+    schema.breadcrumb.enabled &&
+      breadcrumbJsonLd([
+        { name: "Services", path: "/services" },
+        { name: service.nav, path: `/${service.slug}` },
+      ]),
+  ].filter((item) => item !== false);
 
   return (
     <div style={theme}>
+      <JsonLd items={structured} />
       {visual.layout === "split" ? <SplitLayout {...props} /> : null}
       {visual.layout === "immersive" ? <ImmersiveLayout {...props} /> : null}
       {visual.layout === "editorial" ? <EditorialLayout {...props} /> : null}
-      <ContactSection title="Let's discuss your" accent="project" defaultService={service.title} />
+      <ContactSection placement="ServicePages" defaultService={service.title} />
     </div>
   );
 }
 
-function SplitLayout({ service, detail, visual, related }: LayoutProps) {
+function SplitLayout({ copy, service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
+  const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   return (
     <>
       <section className="theme-mesh relative overflow-hidden text-white">
@@ -72,9 +101,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
 
           <div className="rise d2 relative mx-auto w-full max-w-xl">
             <div className="grid h-[26rem] grid-cols-[1.3fr_1fr] grid-rows-2 gap-4 sm:h-[30rem]">
-              <Photo src={main} alt={service.imageAlt} priority className="row-span-2 rounded-[2rem]" />
-              <Photo src={second} className="rounded-[1.6rem]" />
-              <Photo src={third} className="rounded-[1.6rem]" />
+              <Photo src={main} alt={service.imageAlt} priority fit="cover" className="row-span-2 rounded-[2rem] bg-white/10" />
+              <Photo src={second} fit="cover" className="rounded-[1.6rem] bg-white/10" />
+              <Photo src={third} fit="cover" className="rounded-[1.6rem] bg-white/10" />
             </div>
             <StatBadge visual={visual} className="float absolute -bottom-8 -left-4 sm:-left-10" />
             <div className="float float-b glass absolute -top-6 right-6 rounded-2xl px-4 py-3 text-xs font-bold">
@@ -102,9 +131,12 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
         </ul>
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] space-y-16 overflow-x-clip px-5 py-16 sm:px-8 md:space-y-24 md:py-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] space-y-12 overflow-x-clip px-5 py-12 sm:px-8 md:space-y-16 md:py-16 xl:px-12">
         {detail.sections.map((section, index) => {
           const flip = index % 2 === 1;
+          const imageSrc = visual.gallery[index % visual.gallery.length];
+          const imageFit = galleryFit[index % galleryFit.length];
+          const showFullImage = imageFit === "contain";
           return (
             <div key={section.title} className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
               <Reveal from={flip ? "right" : "left"} className={flip ? "lg:order-2" : ""}>
@@ -115,10 +147,24 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
                     }`}
                     aria-hidden="true"
                   />
-                  <Photo
-                    src={visual.gallery[index % visual.gallery.length]}
-                    className="relative h-72 rounded-[2rem] sm:h-96"
-                  />
+                  {showFullImage ? (
+                    <div className="relative z-10 overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_50px_-28px_rgb(30_27_75_/_0.35)]">
+                      <Image
+                        src={imageSrc}
+                        alt=""
+                        width={1200}
+                        height={900}
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        className="h-auto w-full"
+                      />
+                    </div>
+                  ) : (
+                    <Photo
+                      src={imageSrc}
+                      fit={imageFit}
+                      className="relative h-72 rounded-[2rem] sm:h-96"
+                    />
+                  )}
                 </div>
               </Reveal>
               <Reveal delay={100}>
@@ -146,9 +192,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
           <Reveal className="theme-gradient relative mx-auto max-w-[92rem] overflow-hidden rounded-[2.5rem] px-6 pt-12 text-white sm:px-12">
             <div className="dot-grid pointer-events-none absolute inset-0" />
             <div className="relative text-center">
-              <Eyebrow light>From our portfolio</Eyebrow>
+              <Eyebrow light>{copy.portfolioEyebrow}</Eyebrow>
               <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Screens from apps we&apos;ve shipped
+                {copy.portfolioTitle}
               </h2>
             </div>
             <div className="relative mt-10 flex items-end justify-center gap-3 sm:gap-6">
@@ -169,12 +215,12 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
         </section>
       ) : null}
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
         <Reveal className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <Eyebrow>Our stack</Eyebrow>
+            <Eyebrow>{copy.stackEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Technologies <span className="theme-text">we trust</span>
+              {copy.stackTitle} <span className="theme-text">{copy.stackAccent}</span>
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-muted">{service.description}</p>
           </div>
@@ -196,11 +242,11 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
 
       <ProcessSection showIdeology={false} />
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 pt-16 sm:px-8 md:pt-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal>
-          <Eyebrow>More services</Eyebrow>
+          <Eyebrow>{copy.moreEyebrow}</Eyebrow>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Explore <span className="theme-text">other services</span>
+            {copy.moreSplitTitle} <span className="theme-text">{copy.moreSplitAccent}</span>
           </h2>
         </Reveal>
         <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -217,8 +263,9 @@ function SplitLayout({ service, detail, visual, related }: LayoutProps) {
   );
 }
 
-function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
+function ImmersiveLayout({ copy, service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
+  const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
   const [a, b] = visual.theme;
   return (
     <>
@@ -250,7 +297,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
         <Wave />
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-14 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2 xl:px-12">
+      <section className="mx-auto grid w-full max-w-[92rem] items-center gap-14 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-2 xl:px-12">
         <Reveal>
           <Eyebrow>{detail.eyebrow}</Eyebrow>
           <p className="mt-6 text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-4xl">
@@ -262,26 +309,27 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
           </div>
         </Reveal>
         <Reveal delay={120} className="relative pb-16 sm:pr-16">
-          <Photo src={second} className="h-80 rounded-[2rem] sm:h-[26rem]" />
+          <Photo src={second} fit={galleryFit[1]} className="h-80 rounded-[2rem] bg-[#f4f7fb] sm:h-[26rem]" />
           <div className="absolute right-0 -bottom-2 w-1/2 overflow-hidden rounded-[1.6rem] border-[6px] border-white shadow-[0_30px_60px_-25px_rgb(30_27_75_/_0.6)]">
-            <Photo src={third} className="h-44 sm:h-56" />
+            <Photo src={third} fit={galleryFit[2]} className="h-44 bg-[#f4f7fb] sm:h-56" />
           </div>
           <div className="theme-gradient absolute -top-5 -left-5 -z-10 h-32 w-32 rounded-[2rem]" aria-hidden="true" />
         </Reveal>
       </section>
 
       <section className="theme-soft">
-        <div className="mx-auto w-full max-w-[92rem] px-5 py-16 sm:px-8 md:py-24 xl:px-12">
+        <div className="mx-auto w-full max-w-[92rem] px-5 py-12 sm:px-8 md:py-16 xl:px-12">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <Eyebrow>What we deliver</Eyebrow>
+            <Eyebrow>{copy.deliverEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Built for <span className="theme-text">real results</span>
+              {copy.deliverTitle} <span className="theme-text">{copy.deliverAccent}</span>
             </h2>
           </Reveal>
           <ul className={`mt-12 grid gap-6 ${detail.sections.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2"}`}>
             {detail.sections.map((section, index) => {
               const image = visual.gallery[(index + 1) % visual.gallery.length];
-              const diagram = /hybrid_app|same_code_different/.test(image);
+              const fit = galleryFit[(index + 1) % galleryFit.length];
+              const diagram = fit === "contain";
               return (
               <li key={section.title}>
                 <Reveal delay={index * 90} className="h-full">
@@ -347,21 +395,20 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
       </section>
 
       {visual.screens ? (
-        <section className="mx-auto grid w-full max-w-[92rem] items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[0.9fr_1.1fr] xl:px-12">
+        <section className="mx-auto grid w-full max-w-[92rem] items-center gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[0.9fr_1.1fr] xl:px-12">
           <Reveal>
-            <Eyebrow>Crafted by ALET</Eyebrow>
+            <Eyebrow>{copy.craftedEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-              Interfaces people <span className="theme-text">enjoy using</span>
+              {copy.craftedTitle} <span className="theme-text">{copy.craftedAccent}</span>
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-muted">
-              A look at screens we designed and built for clients across real estate, fashion,
-              sports, and travel.
+              {copy.craftedText}
             </p>
             <Link
-              href="/portfolio"
+              href={copy.craftedLink.href}
               className="theme-gradient mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5"
             >
-              See the full portfolio
+              {copy.craftedLink.label}
               <Arrow />
             </Link>
           </Reveal>
@@ -396,9 +443,9 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
       <section className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 xl:px-12">
         <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <Eyebrow>More services</Eyebrow>
+            <Eyebrow>{copy.moreEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Keep <span className="theme-text">exploring</span>
+              {copy.moreImmersiveTitle} <span className="theme-text">{copy.moreImmersiveAccent}</span>
             </h2>
           </div>
         </Reveal>
@@ -417,7 +464,7 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
                   <div className="relative p-7">
                     <h3 className="text-2xl font-extrabold tracking-tight">{item.title}</h3>
                     <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-white/85">
-                      Explore
+                      {copy.explore}
                       <span className="transition group-hover:translate-x-1.5">
                         <Arrow />
                       </span>
@@ -433,9 +480,12 @@ function ImmersiveLayout({ service, detail, visual, related }: LayoutProps) {
   );
 }
 
-function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
+function EditorialLayout({ copy, service, detail, visual, related }: LayoutProps) {
   const [main, second, third] = visual.gallery;
+  const galleryFit = visual.galleryFit ?? ["cover", "cover", "cover"] as const;
+  const deliverFit = visual.deliverFit ?? galleryFit[0];
   const browserShot = visual.screens?.[0];
+  const screensMockup = visual.screensMockup;
   return (
     <>
       <section className="theme-mesh relative overflow-hidden text-white">
@@ -454,23 +504,24 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
 
       <section className="relative z-10 -mt-40 px-5 sm:px-8 lg:-mt-48">
         <div className="mx-auto grid max-w-6xl grid-cols-3 items-end gap-3 sm:gap-5">
-          <Photo src={second} className="rise d2 h-40 rounded-[1.6rem] border-4 border-white shadow-xl sm:h-64" />
+          <Photo src={second} fit={galleryFit[1]} className="rise d2 h-40 rounded-[1.6rem] border-4 border-white bg-[#f4f7fb] shadow-xl sm:h-64" />
           <div className="rise d3 relative">
             <Photo
               src={main}
               alt={service.imageAlt}
               priority
-              className="h-56 rounded-[2rem] border-4 border-white shadow-2xl sm:h-80"
+              fit={galleryFit[0]}
+              className="h-56 rounded-[2rem] border-4 border-white bg-[#f4f7fb] shadow-2xl sm:h-80"
             />
             <StatBadge visual={visual} className="absolute -bottom-6 left-1/2 hidden -translate-x-1/2 sm:flex" />
           </div>
-          <Photo src={third} className="rise d4 h-40 rounded-[1.6rem] border-4 border-white shadow-xl sm:h-64" />
+          <Photo src={third} fit={galleryFit[2]} className="rise d4 h-40 rounded-[1.6rem] border-4 border-white bg-[#f4f7fb] shadow-xl sm:h-64" />
         </div>
       </section>
 
-      <section className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2 xl:px-12">
+      <section className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-2 xl:px-12">
         <Reveal>
-          <Eyebrow>Overview</Eyebrow>
+          <Eyebrow>{copy.overviewEyebrow}</Eyebrow>
           <p className="mt-6 text-xl leading-9 font-medium text-ink/85">{detail.intro}</p>
         </Reveal>
         <Reveal delay={120}>
@@ -486,12 +537,31 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
       </section>
 
       <section className="bg-surface">
-        <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[0.85fr_1.15fr] xl:px-12">
+        <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[0.85fr_1.15fr] xl:px-12">
           <Reveal className="lg:sticky lg:top-32 lg:self-start">
             <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
               What we <span className="theme-text">deliver</span>
             </h2>
-            <Photo src={main} className="mt-8 h-72 rounded-[2rem] sm:h-80" />
+            {deliverFit === "contain" ? (
+              <div className="relative mt-8 pb-4 sm:pr-4">
+                <div
+                  className="theme-gradient absolute inset-0 translate-x-3 translate-y-3 rounded-[2rem] sm:translate-x-4 sm:translate-y-4"
+                  aria-hidden="true"
+                />
+                <div className="relative z-10 overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_50px_-28px_rgb(30_27_75_/_0.35)]">
+                  <Image
+                    src={main}
+                    alt=""
+                    width={1200}
+                    height={900}
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    className="h-auto w-full"
+                  />
+                </div>
+              </div>
+            ) : (
+              <Photo src={main} fit={deliverFit} className="mt-8 h-72 rounded-[2rem] bg-[#f4f7fb] sm:h-80" />
+            )}
             <ul className="mt-6 flex flex-wrap gap-2">
               {detail.stack.map((tech) => (
                 <li key={tech} className="rounded-full bg-white px-3.5 py-1.5 text-xs font-bold text-ink ring-1 ring-line">
@@ -527,40 +597,80 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
       </section>
 
       {browserShot ? (
-        <section className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+        <section className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 md:py-16">
           <Reveal className="text-center">
-            <Eyebrow>Live project</Eyebrow>
+            <Eyebrow>{copy.liveEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Built and launched <span className="theme-text">by ALET</span>
+              {copy.liveTitle} <span className="theme-text">{copy.liveAccent}</span>
             </h2>
           </Reveal>
           <Reveal delay={120} className="relative mt-12">
-            <div className="theme-gradient absolute -inset-4 rounded-[2.5rem] opacity-25 blur-2xl" aria-hidden="true" />
-            <div className="relative overflow-hidden rounded-[1.6rem] border-[6px] border-night bg-night shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.6)]">
-              <Image src={browserShot} alt="" width={1920} height={1080} className="h-auto w-full" />
-            </div>
+            {screensMockup ? (
+              <div className="relative mx-auto w-full max-w-5xl">
+                <div
+                  className="theme-gradient absolute -inset-4 rounded-[2.5rem] opacity-20 blur-2xl"
+                  aria-hidden="true"
+                />
+                <div className="relative overflow-hidden rounded-[1.6rem] border-[8px] border-[#161b27] bg-[#161b27] p-1.5 shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.55)]">
+                  <span
+                    className="absolute top-[0.35rem] left-1/2 z-10 h-1.5 w-12 -translate-x-1/2 rounded-full bg-[#080b12]"
+                    aria-hidden="true"
+                  />
+                  <div className="relative z-10 flex h-9 items-end bg-[#dfe3ea] px-2.5 pt-1.5">
+                    <span className="flex h-7 min-w-44 items-center rounded-t-lg bg-white px-3.5 text-[0.7rem] font-semibold text-[#3b4352] shadow-[0_-1px_3px_rgb(0_0_0_/_0.08)]">
+                      <span className="mr-2 h-2.5 w-2.5 rounded-full bg-[#f04438]" aria-hidden="true" />
+                      {copy.liveTab}
+                    </span>
+                  </div>
+                  <div className="overflow-hidden rounded-b-[0.85rem] bg-white">
+                    <Image
+                      src={browserShot}
+                      alt={copy.liveImageAlt}
+                      width={1920}
+                      height={900}
+                      className="h-auto w-full"
+                      sizes="(max-width: 1024px) 100vw, 64rem"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="theme-gradient absolute -inset-4 rounded-[2.5rem] opacity-25 blur-2xl" aria-hidden="true" />
+                <div className="relative overflow-hidden rounded-[1.6rem] border-[6px] border-night bg-night shadow-[0_40px_80px_-30px_rgb(30_27_75_/_0.6)]">
+                  <Image src={browserShot} alt="" width={1920} height={1080} className="h-auto w-full" />
+                </div>
+              </>
+            )}
           </Reveal>
         </section>
       ) : null}
 
       <section className={`overflow-hidden ${browserShot ? "bg-surface" : ""} py-16 md:py-24`}>
         <div className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 xl:px-12">
-          <Reveal>
-            <Eyebrow>Portfolio</Eyebrow>
-            <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Recent <span className="theme-text">projects</span>
-            </h2>
+          <Reveal className={service.id === "web-apps" ? "" : "grid items-end gap-8 lg:grid-cols-[0.8fr_1.2fr]"}>
+            <div>
+              <Eyebrow>{copy.recentEyebrow}</Eyebrow>
+              <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+                {copy.recentTitle} <span className="theme-text">{copy.recentAccent}</span>
+              </h2>
+            </div>
+            {service.id !== "web-apps" ? (
+              <p className="max-w-2xl text-base leading-7 text-muted lg:justify-self-end">
+                {copy.recentTextBefore} {service.nav.toLowerCase()} {copy.recentTextAfter}
+              </p>
+            ) : null}
           </Reveal>
         </div>
         <PortfolioSlider />
       </section>
 
-      <section className="mx-auto w-full max-w-[92rem] px-5 pt-16 sm:px-8 md:pt-24 xl:px-12">
+      <section className="mx-auto w-full max-w-[92rem] px-5 pt-12 sm:px-8 md:pt-16 xl:px-12">
         <Reveal className="grid gap-8 lg:grid-cols-[0.6fr_1.4fr]">
           <div>
-            <Eyebrow>More services</Eyebrow>
+            <Eyebrow>{copy.moreEyebrow}</Eyebrow>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              You may <span className="theme-text">also need</span>
+              {copy.moreEditorialTitle} <span className="theme-text">{copy.moreEditorialAccent}</span>
             </h2>
           </div>
           <ul className="divide-y divide-line border-y border-line">
@@ -584,7 +694,7 @@ function EditorialLayout({ service, detail, visual, related }: LayoutProps) {
         </Reveal>
       </section>
 
-      <div className="pt-16 md:pt-24">
+      <div className="pt-12 md:pt-16">
         <TestimonialsSection />
       </div>
     </>
