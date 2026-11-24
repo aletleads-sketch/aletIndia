@@ -39,6 +39,10 @@ const nextConfig: NextConfig = {
   // Empty NEXT_PUBLIC_BASE_PATH serves the app at the domain root.
   ...(BASE_PATH ? { basePath: BASE_PATH } : {}),
   trailingSlash: false,
+  // The Our Journey embed reads this design file from disk at request time.
+  outputFileTracingIncludes: {
+    "/embeds/our-journey": ["./public/alet-india-our-journey.html"],
+  },
   experimental: {
     // The desktop build environment cannot reliably spawn the default worker pool.
     cpus: 1,
