@@ -11,6 +11,7 @@ export const SEO_NAV = [
   { label: "SEO Dashboard", href: "/admin/seo/dashboard" },
   { label: "Meta Tags", href: "/admin/seo/meta-tags" },
   { label: "Keywords Tracking", href: "/admin/seo/keywords" },
+  { label: "Ranking Monitor", href: "/admin/seo/rankings" },
   { label: "Sitemap & Robots", href: "/admin/seo/sitemap" },
   { label: "Redirects", href: "/admin/seo/redirects" },
   { label: "Schema Markup", href: "/admin/seo/schema" },
